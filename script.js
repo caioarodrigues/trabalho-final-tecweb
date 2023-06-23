@@ -1,6 +1,14 @@
 const playground = document.querySelector('.playground');
 const espacoJogador = document.querySelector('.espaco-jogador');
+const main = document.querySelector('main');
+const larguraTela = main.clientWidth;
+const larguraPlayground = playground.clientWidth;
+const larguraMargem = (larguraTela - larguraPlayground) / 2
+const larguraPlayer = 50;
+const ptoInicialPlayround = 0 + larguraPlayer;
+const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 
+console.log(larguraPlayground, larguraTela, larguraMargem)
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
     elemento.className = className;
@@ -11,44 +19,44 @@ function novoElemento(tagName, className) {
 class Player {
     constructor(largura) {
         this.elemento = novoElemento('span', 'player');
+        this.largura = largura;
     }
 
     adicionaPlayer(){
         espacoJogador.appendChild(this.elemento);
     }
     getX(){
-        const x = parseInt(this.elemento.style.left.split('px')[0]) || 0;
-    
-        console.log(`x = ${x}`, this.elemento.style.left);
+        const x = parseInt(this.elemento.style.left.split('px')[0]) || 375;
+
         return x;
     }
     setX(x){
-        this.elemento.style.left = `${x}vw`;
+        this.elemento.style.left = `${x}px`;
     }
     movimenta(x){
         const coordX = this.getX();
         const soma = x + coordX;
         const bgColor = this.elemento.style.backgroundColor;
         
-        
-        if(soma > 0 && soma < 100){
+        if(soma < ptoFinalPlayground && soma > 0){
             if(bgColor === "red")
                 this.elemento.style.backgroundColor = "yellow";
             
             this.setX(soma);
         }
-        else if(soma === 0 || soma === 100)
+        else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
             this.elemento.style.backgroundColor = "red";
     }
 }
 
 class Jogo {
+
     constructor(){
         this.pontos = 0;
         this.areaDoJogo = document.querySelector(".playground");
-        //this.altura = this.areaDoJogo.clientHeight;
+        this.altura = this.areaDoJogo.clientHeight;
         this.largura = this.areaDoJogo.clientWidth;
-        this.jogador = new Player();
+        this.jogador = new Player(this.largura);
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -63,7 +71,7 @@ class Jogo {
     }
     
     inicia(){
-        this.jogador.adicionaPlayer({ largura: this.largura });
+        this.jogador.adicionaPlayer();
     }
 }
 

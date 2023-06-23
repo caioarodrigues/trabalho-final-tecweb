@@ -15,8 +15,8 @@ main{
 
 .playground{
     background-color: lightslategray;
-    width: 80vw;
-    height: 80vw;
+    width: 800px;
+    height: 600px;
     border-radius: 5px;
     border: solid .25rem white;
     display: flex;
@@ -31,11 +31,11 @@ main{
     align-items: flex-end;
 }
 .player {
-    height: 4rem;
-    width: 4rem;
+    height: 50px;
+    width: 50px;
     background-color: yellow;
-    position: absolute;
-    left: 10vw;
+    position: relative;
+    left: 375px;
 }
 
 .display{
