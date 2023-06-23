@@ -16,6 +16,20 @@ function novoElemento(tagName, className) {
     return elemento;
 }
 
+class Timer{
+    constructor(){
+        this.docTimer = document.querySelector('.timer');
+    }
+    inicia(contador = 0){
+        this.docTimer.innerText = `${contador.toFixed(3)}`;
+        
+        setTimeout(() => {
+            const fracSegundo = 0.001;
+
+            this.inicia(contador + fracSegundo);
+        }, 1);
+    }
+}
 class Player {
     constructor(largura) {
         this.elemento = novoElemento('span', 'player');
@@ -57,6 +71,7 @@ class Jogo {
         this.altura = this.areaDoJogo.clientHeight;
         this.largura = this.areaDoJogo.clientWidth;
         this.jogador = new Player(this.largura);
+        this.timer = new Timer();
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -72,6 +87,7 @@ class Jogo {
     
     inicia(){
         this.jogador.adicionaPlayer();
+        this.timer.inicia();
     }
 }
 
