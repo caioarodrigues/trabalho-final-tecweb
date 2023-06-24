@@ -30,12 +30,17 @@ main{
     display: flex;
     align-items: flex-end;
 }
+
+
+/*Parte modificada, coloquei altura e tamanho relativos ao tamanho do sprite 96px de largura por 64 de altura e coloquei como background a figura, tbm retirei a cor que estava*/
 .player {
-    height: 50px;
-    width: 50px;
-    background-color: yellow;
+    height: 64px;
+    width: 96px;
     position: relative;
     left: 375px;
+    margin-top: 50px;
+    background-image: url('/Sprites/tile000.png');
+    background-size: 100% 100%;
 }
 
 .display{
