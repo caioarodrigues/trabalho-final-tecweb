@@ -39,7 +39,7 @@ main{
     position: relative;
     left: 375px;
     margin-top: 50px;
-    background-image: url('/Sprites/tile000.png');
+    background-image: url('/Sprites/carBack.gif');
     background-size: 100% 100%;
 }
 
