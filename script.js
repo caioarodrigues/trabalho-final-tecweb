@@ -39,12 +39,36 @@ class velController {
     getVelocidadeAtual(){
         return parseInt(this.docVel.innerHTML);
     }
+
+/*////////////FUNÇÃO DE ATUALIZAÇÃO DO SOM DO CARRO DE ACORDO COM A VELOCIDADE//////////*/
+    atualizaFrequenciaOscilador(velocidadeFinal) {
+        const frequenciaMinima = 20; // Defina a frequência mínima desejada
+        const frequenciaMaxima = 120; // Defina a frequência máxima desejada
+        const intervaloVelocidade = 120; // Defina o intervalo de velocidade em que a frequência deve variar
+    
+        // Mapeia a velocidade final para um intervalo entre 0 e 1
+        const proporcao = (velocidadeFinal - 0) / (120 - 0);
+    
+        // Calcula a frequência com base na proporção e no intervalo de frequência desejado
+        const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
+    
+        playground.audio.oscillator.frequency.value = frequencia;
+      }
+/*////////////FUNÇÃO DE ATUALIZAÇÃO DO SOM DO CARRO DE ACORDO COM A VELOCIDADE//////////*/
+
+
+
+
     acelera(valor){
         const velocidadeAtual = this.getVelocidadeAtual();
         const velocidadeFinal = velocidadeAtual + valor;
 
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
+/*////////////atualização do som do carro de acordo com a velocidade//////////*/
+            
+            this.atualizaFrequenciaOscilador(velocidadeFinal);
+/*////////////atualização do som do carro de acordo com a velocidade//////////*/
     }
     bufferizaVelocidade(contRepeticoes = 0){
         const limiteRepeticoes = 2;
@@ -66,6 +90,10 @@ class velController {
             this.bufferizaVelocidade(++contRepeticoes);
         }, 300);
     }
+
+
+
+    
 }
 class BordaDaPista{
     constructor(){
@@ -171,8 +199,10 @@ class Jogo {
         this.insereNoPlayground(...elementos);
         this.timer.inicia();
         
+        
     }
 }
+
 /*Parte modificada voltada ao audio do jogo ainda não implementado*/
 /*Modo de uso (Todos os métodos abaixo são relativos a velocidade do carro, podendo ser usado tal característica para manipular o som pela frequência).
 - playground.audio() Quando iniciar o jogo
@@ -196,7 +226,6 @@ playground.audio = function () {
     o.detune.value = 0;
     o.type = 'sawtooth';
     o.connect(playground.audio.volume);
-    o.frequency.value = 90;
     playground.audio.oscillator = o;
     playground.audio.oscillator.start(0);
   };
@@ -211,5 +240,5 @@ playground.audio = function () {
 
 const jogo = new Jogo();
 jogo.inicia();
-
+playground.audio();
 
