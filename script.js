@@ -170,8 +170,46 @@ class Jogo {
 
         this.insereNoPlayground(...elementos);
         this.timer.inicia();
+        
     }
 }
+/*Parte modificada voltada ao audio do jogo ainda não implementado*/
+/*Modo de uso (Todos os métodos abaixo são relativos a velocidade do carro, podendo ser usado tal característica para manipular o som pela frequência).
+- playground.audio() Quando iniciar o jogo
+-playground.audio.oscillator.frequency.value += car.acc * 10; Aumento da frequência do oscilador, passando a impressão de aumento da velocidade
+- playground.audio.oscillator.frequency.value -= car.break * 10; Diminução da frequência do oscilador, passando a impressão de redução da velocidade
+-playground.audio.oscillator.stop(); Carro após bater
+*/
+
+playground.audio = function () {
+    if (playground.audio.oscillator) {
+      playground.audio.oscillator.stop(playground.audio.context.currentTime);
+      playground.audio.oscillator.disconnect(playground.audio.volume);
+      delete playground.audio.oscillator;
+    }
+    playground.audio.context = new AudioContext();
+    playground.audio.volume = playground.audio.context.createGain();
+    playground.audio.volume.gain.value = 0.1;
+    playground.audio.volume.connect(playground.audio.context.destination);  
+    var o = playground.audio.context.createOscillator();
+    o.frequency.value = 0;
+    o.detune.value = 0;
+    o.type = 'sawtooth';
+    o.connect(playground.audio.volume);
+    o.frequency.value = 90;
+    playground.audio.oscillator = o;
+    playground.audio.oscillator.start(0);
+  };
+
+
+
+
+
+
+
+
 
 const jogo = new Jogo();
 jogo.inicia();
+
+
