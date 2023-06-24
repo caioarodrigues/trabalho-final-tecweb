@@ -49,7 +49,7 @@ class velController {
     bufferizaVelocidade(contRepeticoes = 0){
         const limiteRepeticoes = 2;
         bufferVelocidadeAcionado = true;
-
+        //pause
         if(contRepeticoes === limiteRepeticoes){
             bufferVelocidadeAcionado = false;
 
