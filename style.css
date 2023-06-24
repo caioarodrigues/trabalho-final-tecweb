@@ -52,3 +52,15 @@ main{
     justify-content: center;
     background-color: darkred;
 }
+
+.borda-da-pista{
+    position: absolute;
+    width: 5px;
+}
+
+.pista{
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    width: 100px;
+}
