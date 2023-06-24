@@ -8,6 +8,7 @@ const larguraMargem = (larguraTela - larguraPlayground) / 2
 const larguraPlayer = 50;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
+let bufferVelocidadeAcionado = false;
 
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
@@ -31,6 +32,41 @@ class Timer{
     }
 }
 
+class velController {
+    constructor(){
+        this.docVel = document.querySelector('.velocidade-span');
+    }
+    getVelocidadeAtual(){
+        return parseInt(this.docVel.innerHTML);
+    }
+    acelera(valor){
+        const velocidadeAtual = this.getVelocidadeAtual();
+        const velocidadeFinal = velocidadeAtual + valor;
+
+        if(velocidadeFinal > 0 && velocidadeFinal <= 120)
+            this.docVel.innerHTML = velocidadeFinal;
+    }
+    bufferizaVelocidade(contRepeticoes = 0){
+        const limiteRepeticoes = 2;
+        bufferVelocidadeAcionado = true;
+
+        if(contRepeticoes === limiteRepeticoes){
+            bufferVelocidadeAcionado = false;
+
+            return;
+        }
+
+        setTimeout(() => {
+            const velocidadeAtual = this.getVelocidadeAtual();
+            const velocidadeFinal = velocidadeAtual - 1;
+
+            if(velocidadeFinal > 0)
+                this.docVel.innerHTML = velocidadeFinal;
+            
+            this.bufferizaVelocidade(++contRepeticoes);
+        }, 300);
+    }
+}
 class BordaDaPista{
     constructor(){
         this.elemento = novoElemento('div', 'borda-da-pista');
@@ -56,12 +92,14 @@ class Pista {
         return this.elemento;
     }
 }
-class Player {
+class Carro {
     constructor(largura) {
         this.elemento = novoElemento('span', 'player');
         this.largura = largura;
+        this.velocidade = 0;
+        this.velController = new velController();
     }
-    getJogador(){
+    getCarro(){
         return this.elemento;
     }
     getX(){
@@ -72,7 +110,10 @@ class Player {
     setX(x){
         this.elemento.style.left = `${x}px`;
     }
-    movimenta(x){
+    movientaVertical(valor){
+        this.velController.acelera(valor);
+    }
+    movimentaHorinzotal(x){
         const coordX = this.getX();
         const soma = x + coordX;
         const bgColor = this.elemento.style.backgroundColor;
@@ -95,7 +136,7 @@ class Jogo {
         this.areaDoJogo = document.querySelector(".playground");
         this.altura = this.areaDoJogo.clientHeight;
         this.largura = this.areaDoJogo.clientWidth;
-        this.jogador = new Player(this.largura);
+        this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
 
@@ -103,24 +144,31 @@ class Jogo {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
             if (teclaPressionada.toLowerCase() === 'd') {
-                this.jogador.movimenta(10);
+                this.carro.movimentaHorinzotal(10);
             }
-            if (teclaPressionada.toLowerCase() === 'a') {
-                this.jogador.movimenta(-10);
+            else if (teclaPressionada.toLowerCase() === 'a') {
+                this.carro.movimentaHorinzotal(-10);
+            }
+            else if (teclaPressionada.toLowerCase() === 'w') {
+                this.carro.movientaVertical(10);
+                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
+            }
+            else if (teclaPressionada.toLowerCase() === 's') {
+                this.carro.movientaVertical(-10);
             }
         });
     }
-    inserePlayground(...array){
+    insereNoPlayground(...array){
         array.forEach(el => {
             espacoJogador.appendChild(el);
         });
     }
     inicia(){
         const pista = this.pista.getPista();
-        const jogador = this.jogador.getJogador();
+        const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
 
-        this.inserePlayground(...elementos);
+        this.insereNoPlayground(...elementos);
         this.timer.inicia();
     }
 }
