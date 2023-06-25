@@ -69,3 +69,22 @@ main{
     top: 0;
     width: 100px;
 }
+
+/*PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS*/
+  
+  .player.w {
+    background-image: url('/Sprites/carBack.gif');
+  }
+  
+  .player.a {
+    background-image: url('/Sprites/carLeft.gif');
+  }
+  
+  .player.d {
+    background-image: url('/Sprites/carRight.gif');
+  }
+  
+  .player.s {
+    background-image: url('/Sprites/carBack.gif');
+  }
+  

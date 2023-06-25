@@ -155,7 +155,31 @@ class Carro {
         else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
             this.elemento.style.backgroundColor = "red";
     }
+
+
+      
 }
+/*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/
+  
+document.addEventListener('keydown', (event) => {
+    const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
+    const player = document.querySelector('.player');
+    
+    if (teclaPressionada === 'w') {
+      player.classList.add('w');
+      player.classList.remove('a', 'd', 's');
+    } else if (teclaPressionada === 'a') {
+      player.classList.add('a');
+      player.classList.remove('w', 'd', 's');
+    } else if (teclaPressionada === 'd') {
+      player.classList.add('d');
+      player.classList.remove('w', 'a', 's');
+    } else if (teclaPressionada === 's') {
+      player.classList.add('s');
+      player.classList.remove('w', 'a', 'd');
+    }
+  });
+ /*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/ 
 
 class Jogo {
 
@@ -203,7 +227,7 @@ class Jogo {
     }
 }
 
-/*Parte modificada voltada ao audio do jogo ainda não implementado*/
+///////////////*Parte modificada voltada ao audio do jogo ainda não implementado///////////////*/
 /*Modo de uso (Todos os métodos abaixo são relativos a velocidade do carro, podendo ser usado tal característica para manipular o som pela frequência).
 - playground.audio() Quando iniciar o jogo
 -playground.audio.oscillator.frequency.value += car.acc * 10; Aumento da frequência do oscilador, passando a impressão de aumento da velocidade
@@ -229,9 +253,8 @@ playground.audio = function () {
     playground.audio.oscillator = o;
     playground.audio.oscillator.start(0);
   };
-
-
-
+  
+///////////////*Parte modificada voltada ao audio do jogo ainda não implementado///////////////*/
 
 
 
