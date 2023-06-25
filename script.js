@@ -49,6 +49,7 @@ class velController {
 
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
           playgroundAudio.play();
+          playgroundAudio.playMusic();
           playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
     
@@ -131,13 +132,21 @@ class Carro {
         const bgColor = this.elemento.style.backgroundColor;
         
         if(soma < ptoFinalPlayground && soma > 0){
-            if(bgColor === "red")
-                this.elemento.style.backgroundColor = "yellow";
+            if (bgColor === "red") 
+
+            /*Parte modificada para dano no carro após deixar os limites da estrada, desativa o filtro de dano*/ 
+                this.elemento.style.backgroundColor = "transparent";
+                this.elemento.style['filter'] = 'none';
+            /*Parte modificada para dano no carro após deixar os limites, desativa o filtro de dano*/  
             
             this.setX(soma);
         }
         else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
-            this.elemento.style.backgroundColor = "red";
+
+        /*Parte modificada para dano no carro após bater nos limites da estrada, ativa o filtro de dano*/ 
+        this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
+
+            
     }
 
 
@@ -148,10 +157,13 @@ class Carro {
 class PlaygroundAudio {
     constructor() {
       this.context = new AudioContext();
-      this.volume = this.context.createGain();
-      this.volume.gain.value = 0.1;
+      this.volume = this.context.createGain();   
       this.volume.connect(this.context.destination);
       this.oscillator = null;
+      this.audio = new Audio('/music/musicCar.mp3');
+      this.audio.loop = true;
+      this.volumeFixo = 0.2; // Valor fixo para o volume (por exemplo, 0.5)
+      this.volume.gain.value = this.volumeFixo;
     }
   
     play() {
@@ -175,6 +187,16 @@ class PlaygroundAudio {
       const proporcao = (velocidadeFinal - 0) / (120 - 0);
       const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
       this.oscillator.frequency.value = frequencia;
+    }
+  /*adição de trilha sonora do jogo, resta ainda ativa-la assim qque iniciar o jogo, por enquanto é só ativada ao acelerar*/
+    playMusic() {
+    
+      this.audio.play();
+    }
+  
+    stopMusic() {
+      this.audio.pause();
+      this.audio.currentTime = 0;
     }
   }
 
@@ -244,28 +266,20 @@ class Jogo {
         });
     }
     inicia(){
-        
-        const playgroundAudio = new PlaygroundAudio();
+       
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
 
         this.insereNoPlayground(...elementos);
-        this.timer.inicia();
-        
-        
+        this.timer.inicia();       
     }
 }
 
 
-  
-
-
-
-
-
-
 const jogo = new Jogo();
 jogo.inicia();
+
+
 
 
