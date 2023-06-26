@@ -41,11 +41,17 @@ class velController {
     }
     
     acelera(valor){
+        
         const velocidadeAtual = this.getVelocidadeAtual();
         const velocidadeFinal = velocidadeAtual + valor;
 
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
+            
+/*////////////atualização da animação do cenário de fundo em linha reta/////////////*/
+            const jogador = new BackgroundLoop('.espaco-jogador', velocidadeAtual/3);
+            jogador.start();
+/*////////////atualização da animação do cenário de fundo em linha reta/////////////*/           
 
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
           playgroundAudio.play();
@@ -277,8 +283,56 @@ class Jogo {
 }
 
 
+
+/*//////////AUMENTO DA FREQUENCIA DOS FRAMES DE ANIMAÇÃO DA PISTA////////////*/
+
+class BackgroundLoop {
+    constructor(selector, frequency = 1) {
+      this.element = document.querySelector(selector);
+      this.frequency = frequency;
+      this.currentFrame = 0;
+      this.lastFrameTime = 0;
+      this.frameDelay = frequency !== 0 ? 1000 / frequency : 0;
+  
+      this.images = [
+        '/cenarios/frame1Forward.jpg',
+        '/cenarios/frame2Forward.jpg',
+        '/cenarios/frame3Forward.jpg',
+        '/cenarios/frame4Forward.jpg'
+      ];
+    }
+  
+    start() {
+      if (this.frequency !== 0) {
+        this.changeBackgroundImage();
+      }
+    }
+  
+    changeBackgroundImage() {
+      const currentTime = Date.now();
+      if (currentTime - this.lastFrameTime > this.frameDelay) {
+        this.currentFrame = (this.currentFrame + 1) % this.images.length;
+        this.lastFrameTime = currentTime;
+  
+        const imageUrl = this.images[this.currentFrame];
+        this.element.style.backgroundImage = `url('${imageUrl}')`;
+      }
+  
+      requestAnimationFrame(() => this.changeBackgroundImage());
+    }
+  }
+  
+  
+  
+  
+  
+/*//////////AUMENTO DA FREQUENCIA DOS FRAMES DE ANIMAÇÃO DA PISTA////////////*/
+
+
 const jogo = new Jogo();
 jogo.inicia();
+
+
 
 
 
