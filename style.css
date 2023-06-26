@@ -22,6 +22,7 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    
 }
 
 .espaco-jogador{
@@ -29,6 +30,10 @@ main{
     height: 100%;
     display: flex;
     align-items: flex-end;
+    background-image: url('/cenarios/animacaoCenario.gif');
+    
+    
+    
 }
 
 
@@ -50,6 +55,7 @@ main{
     padding: 1rem;
     width: fit-content;
     margin-block: 0.25rem;
+    
 }
 
 .metricas{
@@ -68,6 +74,7 @@ main{
     z-index: 2;
     top: 0;
     width: 100px;
+    
 }
 
 /*PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS*/
