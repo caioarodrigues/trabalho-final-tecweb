@@ -47,11 +47,8 @@ class velController {
 
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
-            
-/*////////////atualização da animação do cenário de fundo em linha reta/////////////*/
-            const jogador = new BackgroundLoop('.espaco-jogador', velocidadeAtual/3);
-            jogador.start();
-/*////////////atualização da animação do cenário de fundo em linha reta/////////////*/           
+          
+         
 
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
           playgroundAudio.play();
@@ -104,12 +101,67 @@ class Pista {
 
         this.elemento.appendChild(this.bordaEsquerda);
         this.elemento.appendChild(this.bordaDireita);
+        const pistAnima = new PistaAnimacao();
+        pistAnima.criarDivs();
+        pistAnima.empilhamento(); 
+
+        
+        
     }
 
     getPista(){
         return this.elemento;
     }
 }
+
+class PistaAnimacao {
+    constructor() {
+      this.container = document.querySelector('.containeras');
+    }
+  
+    novoElemento(tagName, className) {
+      const elemento = document.createElement(tagName);
+      elemento.className = className;
+      return elemento;
+    }
+  
+    criarDivs() {
+        for (let i = 0; i < 100; i++) {
+          const div = this.novoElemento('div', 'div-layer');
+          const primeiraDiv = this.container.firstChild;
+          if (primeiraDiv) {
+            this.container.insertBefore(div, primeiraDiv);
+          } else {
+            this.container.appendChild(div);
+          }
+        }
+      }
+      
+  
+    empilhamento() {
+      const divLayers = document.querySelectorAll('.containeras .div-layer');
+      
+      for (let i = 0; i < divLayers.length; i++) {
+        const widthPercentage =(i * 1);
+  
+        divLayers[i].style.width = widthPercentage + '%';   
+        
+        if (i >= 0 && i < 30) {
+            divLayers[i].remove();
+          }
+      }
+    }
+
+   
+    
+  }
+  
+
+  
+
+
+
+
 class Carro {
     
     constructor(largura) {
@@ -278,59 +330,20 @@ class Jogo {
         const elementos = [jogador, pista];
 
         this.insereNoPlayground(...elementos);
-        this.timer.inicia();       
+        this.timer.inicia();  
+        
+        
     }
 }
 
 
 
-/*//////////AUMENTO DA FREQUENCIA DOS FRAMES DE ANIMAÇÃO DA PISTA////////////*/
 
-class BackgroundLoop {
-    constructor(selector, frequency = 1) {
-      this.element = document.querySelector(selector);
-      this.frequency = frequency;
-      this.currentFrame = 0;
-      this.lastFrameTime = 0;
-      this.frameDelay = frequency !== 0 ? 1000 / frequency : 0;
-  
-      this.images = [
-        '/cenarios/frame1Forward.jpg',
-        '/cenarios/frame2Forward.jpg',
-        '/cenarios/frame3Forward.jpg',
-        '/cenarios/frame4Forward.jpg'
-      ];
-    }
-  
-    start() {
-      if (this.frequency !== 0) {
-        this.changeBackgroundImage();
-      }
-    }
-  
-    changeBackgroundImage() {
-      const currentTime = Date.now();
-      if (currentTime - this.lastFrameTime > this.frameDelay) {
-        this.currentFrame = (this.currentFrame + 1) % this.images.length;
-        this.lastFrameTime = currentTime;
-  
-        const imageUrl = this.images[this.currentFrame];
-        this.element.style.backgroundImage = `url('${imageUrl}')`;
-      }
-  
-      requestAnimationFrame(() => this.changeBackgroundImage());
-    }
-  }
-  
-  
-  
-  
-  
-/*//////////AUMENTO DA FREQUENCIA DOS FRAMES DE ANIMAÇÃO DA PISTA////////////*/
 
 
 const jogo = new Jogo();
 jogo.inicia();
+
 
 
 

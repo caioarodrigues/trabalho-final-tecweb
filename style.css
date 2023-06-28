@@ -28,21 +28,32 @@ main{
 .espaco-jogador{
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: flex-end;
-    
+    display: flex;   
+    flex-direction: column;
+   background-color: green;
+   position: relative;
+
     
     
 }
+
+.div-layer {
+  height: 6px;
+  background-color: rgb(40, 38, 38);
+  /* Define a origem da transformação no centro da parte inferior da div */
+
+}
+
+
 
 
 /*Parte modificada, coloquei altura e tamanho relativos ao tamanho do sprite 96px de largura por 64 de altura e coloquei como background a figura, tbm retirei a cor que estava*/
 .player {
     height: 64px;
     width: 96px;
-    position: relative;
+    bottom: 0;
     left: 375px;
-    margin-top: 50px;
+    position: absolute;
     background-image: url('/Sprites/carBack.gif');
     background-size: 100% 100%;
 }
@@ -92,5 +103,14 @@ main{
   
   .player.s {
     background-image: url('/Sprites/carBack.gif');
+  }
+
+
+  .container {
+    height: 600px; /* Defina a altura desejada para a pilha de divs */ 
+    align-items:flex-end;   
+    flex-direction: column;
+  
+    justify-content:end;
   }
   
