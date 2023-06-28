@@ -5,7 +5,7 @@ const alturaEspacoJogador = espacoJogador.clientHeight;
 const larguraTela = main.clientWidth;
 const larguraPlayground = playground.clientWidth;
 const larguraMargem = (larguraTela - larguraPlayground) / 2
-const larguraPlayer = 50;
+const larguraPlayer = 100;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let bufferVelocidadeAcionado = false;
@@ -114,6 +114,8 @@ class Pista {
     }
 }
 
+
+/*////////////////////////////////criação da pista //////////////////////////////////////////*/
 class PistaAnimacao {
     constructor() {
       this.container = document.querySelector('.container');
@@ -152,6 +154,9 @@ class PistaAnimacao {
       }
     }  
   }
+
+  
+/*////////////////////////////////criação da pista //////////////////////////////////////////*/
 class Carro {
     
     constructor(largura) {
