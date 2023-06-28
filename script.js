@@ -116,7 +116,7 @@ class Pista {
 
 class PistaAnimacao {
     constructor() {
-      this.container = document.querySelector('.containeras');
+      this.container = document.querySelector('.container');
     }
   
     novoElemento(tagName, className) {
@@ -139,7 +139,7 @@ class PistaAnimacao {
       
   
     empilhamento() {
-      const divLayers = document.querySelectorAll('.containeras .div-layer');
+      const divLayers = document.querySelectorAll('.container .div-layer');
       
       for (let i = 0; i < divLayers.length; i++) {
         const widthPercentage =(i * 1);
@@ -150,18 +150,8 @@ class PistaAnimacao {
             divLayers[i].remove();
           }
       }
-    }
-
-   
-    
+    }  
   }
-  
-
-  
-
-
-
-
 class Carro {
     
     constructor(largura) {

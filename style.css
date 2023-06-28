@@ -40,6 +40,7 @@ main{
 .div-layer {
   height: 6px;
   background-color: rgb(40, 38, 38);
+  
   /* Define a origem da transformação no centro da parte inferior da div */
 
 }
@@ -108,9 +109,6 @@ main{
 
   .container {
     height: 600px; /* Defina a altura desejada para a pilha de divs */ 
-    align-items:flex-end;   
-    flex-direction: column;
-  
-    justify-content:end;
+    margin-top: 100px;
   }
   
