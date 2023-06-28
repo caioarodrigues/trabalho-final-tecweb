@@ -325,8 +325,7 @@ class Jogo {
         const elementos = [jogador, pista];
 
         this.insereNoPlayground(...elementos);
-        this.timer.inicia();  
-        
+        this.timer.inicia(); 
         
     }
 }
