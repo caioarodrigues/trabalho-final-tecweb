@@ -98,10 +98,14 @@ main{
     
 }
 .div-layer {
-  height: 6px;
+  height: 10px;
   background-color: rgb(40, 38, 38);
-  
-  /* Define a origem da transformação no centro da parte inferior da div */
+  background-size: cover;
+  background-position: center;
+  background-image: url('/cenarios/work-tools.png');
+  overflow: hidden;
+  background-size: cover;
+  background-position: center; /* Define a origem da transformação no centro da parte inferior da div */
 
 }
 
@@ -112,5 +116,12 @@ main{
 
     display: flex;
     flex-direction: column;
+  }
+
+  .montanha{
+    height: 50px;
+    width: 100%;
+    background-image:url('cenarios/frame1Forward.jpg');
+    background-size: 100% 100%;
   }
   

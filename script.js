@@ -104,6 +104,11 @@ class Pista {
         const pistAnima = new PistaAnimacao();
         pistAnima.criarDivs();
         pistAnima.empilhamento(); 
+        //pistAnima.moveDivsToLeft(100);
+        //pistAnima.moveDivsToRight(200);
+        const manager = new ImageDivManager('.container', '.div-layer', 6, 500, '/cenarios/animation.gif');
+        manager.distributeImage();
+
 
         
         
@@ -152,11 +157,68 @@ class PistaAnimacao {
             divLayers[i].remove();
           }
       }
-    }  
+    }
+    
+    moveDivsToLeft(pixels) {
+      const divLayers = document.querySelectorAll('.container .div-layer');
+      
+      for (var i = 0; i < 10; i++) {
+        var div = divLayers[i];
+        var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
+        var newMargin = currentMargin - pixels; // Mover 'pixels' pixels para a esquerda
+      
+        div.style.marginLeft = newMargin + 'px';
+      }
+    }
+
+    moveDivsToRight(pixels) {
+      const divLayers = document.querySelectorAll('.container .div-layer');
+    
+      for (var i = 10; i < 30; i++) {
+        var div = divLayers[i];
+        var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
+        var newMargin = currentMargin + pixels; // Mover 'pixels' pixels para a direita
+    
+        div.style.marginLeft = newMargin + 'px';
+      }
+    }
+    
+    
   }
 
   
 /*////////////////////////////////criação da pista //////////////////////////////////////////*/
+
+
+/*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
+
+class ImageDivManager {
+  constructor(containerSelector, divSelector, divHeight, imageHeight, imagePath) {
+    this.container = document.querySelector(containerSelector);
+    this.divs = this.container.querySelectorAll(divSelector);
+    this.divHeight = divHeight;
+    this.imageHeight = imageHeight;
+    this.imagePath = imagePath;
+  }
+
+  distributeImage() {
+    this.container.style.position = 'relative';
+
+    this.divs.forEach((div, index) => {
+      const offsetY = -index * this.divHeight;
+      div.style.backgroundImage = `url(${this.imagePath})`;
+      div.style.backgroundSize = 'cover';
+      div.style.backgroundPosition = `center ${offsetY}px`;
+      div.style.overflow = 'hidden';
+      
+      div.style.top = '0';
+      div.style.left = '0';
+      div.style.height = `${this.divHeight}px`;
+     
+    });
+  }
+}
+
 class Carro {
     
     constructor(largura) {
@@ -207,6 +269,7 @@ class Carro {
 }
 
 /*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
+
 class PlaygroundAudio {
     constructor() {
       this.context = new AudioContext();
