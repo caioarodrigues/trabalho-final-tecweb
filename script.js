@@ -132,7 +132,6 @@ class Pista {
         pistAnima.empilhamento(); 
         //pistAnima.moveDivsToLeft(100);
         //pistAnima.moveDivsToRight(200);
-        const playgroundAudio = new PlaygroundAudio();
         
 
 
@@ -347,7 +346,7 @@ class PlaygroundAudio {
   }
 
 /*Expressão necessária para instanciar a classe audio*/ 
-
+const playgroundAudio = new PlaygroundAudio();
 
 /*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
 
