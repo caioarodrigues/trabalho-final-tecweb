@@ -10,6 +10,7 @@ const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let bufferVelocidadeAcionado = false;
 
+
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
     elemento.className = className;
@@ -44,12 +45,33 @@ class velController {
         
         const velocidadeAtual = this.getVelocidadeAtual();
         const velocidadeFinal = velocidadeAtual + valor;
-
+        
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
-          
-         
 
+
+        if(velocidadeFinal===0){
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/frame1.png');
+            manager.distributeImage();}
+        if(velocidadeFinal>0 && velocidadeFinal<30){
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/devagar.gif');
+            manager.distributeImage();
+            }
+        if(velocidadeFinal>30 && velocidadeFinal<60){
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/medio.gif');
+            manager.distributeImage();
+            }
+        if(velocidadeFinal>60 && velocidadeFinal<90){
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/rapido.gif');
+            manager.distributeImage();
+            }
+        if(velocidadeFinal>90&&velocidadeFinal<120){
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/muito_rapido.gif');
+            manager.distributeImage();
+            }
+
+          
+          
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
           playgroundAudio.play();
           playgroundAudio.playMusic();
@@ -70,11 +92,15 @@ class velController {
         setTimeout(() => {
             const velocidadeAtual = this.getVelocidadeAtual();
             const velocidadeFinal = velocidadeAtual - 1;
+         
 
             if(velocidadeFinal > 0)
                 this.docVel.innerHTML = velocidadeFinal;
             
             this.bufferizaVelocidade(++contRepeticoes);
+
+               
+            
         }, 300);
     }
 
@@ -106,8 +132,7 @@ class Pista {
         pistAnima.empilhamento(); 
         //pistAnima.moveDivsToLeft(100);
         //pistAnima.moveDivsToRight(200);
-        const manager = new ImageDivManager('.container', '.div-layer', 6, 500, '/cenarios/animation.gif');
-        manager.distributeImage();
+        
 
 
         
@@ -118,6 +143,11 @@ class Pista {
         return this.elemento;
     }
 }
+
+
+
+
+
 
 
 /*////////////////////////////////criação da pista //////////////////////////////////////////*/
@@ -363,6 +393,7 @@ class Jogo {
 
             if (teclaPressionada.toLowerCase() === 'd') {
                 this.carro.movimentaHorinzotal(10);
+                
             }
             else if (teclaPressionada.toLowerCase() === 'a') {
                 this.carro.movimentaHorinzotal(-10);
@@ -389,9 +420,18 @@ class Jogo {
 
         this.insereNoPlayground(...elementos);
         this.timer.inicia(); 
+        const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/frame1.png');
+        manager.distributeImage();
         
     }
 }
+
+
+
+
+// Exemplo de uso
+
+
 
 
 
