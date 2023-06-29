@@ -4,6 +4,13 @@
     font-family: sans-serif;
 }
 
+.titulo h1{
+  font-size: 40px;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: rgb(14, 14, 114);
+
+}
+
 main{
     height: 100vh;
     background-color: cornflowerblue;
@@ -54,7 +61,28 @@ main{
     display: flex;
     justify-content: center;
     background-color: darkred;
+    font-size: 20px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color:rgba(194, 194, 237, 0.862);
+
+
 }
+
+
+.metricas .timer{
+  color: rgb(153, 226, 43);
+  font-style: oblique;
+  font-size: x-large;
+
+}
+
+.metricas .display{
+ color: rgb(139, 139, 161);
+  font-size: x-large;
+
+}
+
+
 
 .borda-da-pista{
     position: absolute;
@@ -117,13 +145,25 @@ main{
     
   }
 
-  .montanha{
+  .horizonte{
     height: 180px;
     width: 100%;
     background-color: rgb(85, 85, 125);
     background-size: 100% 100%;
     background-image: url('/cenarios/tempo_dia/noite.gif');
     position: absolute;
-    filter: brightness(5) grayscale(1%) sepia(2%);
+    filter: brightness(1) grayscale(1%) sepia(2%);
+    display: flex;
+    justify-content: center;
+  }
+
+  .montanha{
+    height: 50px;
+    width: 40%;
+    background-size: 100% 100%;
+    background-image: url('/cenarios/montanhas/montanha1.png');
+    position: absolute;
+    bottom: 0;
+
   }
   
