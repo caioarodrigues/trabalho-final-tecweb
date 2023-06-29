@@ -5,7 +5,7 @@ const alturaEspacoJogador = espacoJogador.clientHeight;
 const larguraTela = main.clientWidth;
 const larguraPlayground = playground.clientWidth;
 const larguraMargem = (larguraTela - larguraPlayground) / 2
-const larguraPlayer = 100;
+const larguraPlayer = 130;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let bufferVelocidadeAcionado = false;
@@ -51,22 +51,22 @@ class velController {
 
 
         if(velocidadeFinal===0){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/frame1.png');
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
             manager.distributeImage();}
         if(velocidadeFinal>0 && velocidadeFinal<30){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/devagar.gif');
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/devagar.gif');
             manager.distributeImage();
             }
         if(velocidadeFinal>30 && velocidadeFinal<60){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/medio.gif');
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/medio.gif');
             manager.distributeImage();
             }
         if(velocidadeFinal>60 && velocidadeFinal<90){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/rapido.gif');
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/rapido.gif');
             manager.distributeImage();
             }
         if(velocidadeFinal>90&&velocidadeFinal<120){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/muito_rapido.gif');
+            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/muito_rapido.gif');
             manager.distributeImage();
             }
 
@@ -132,6 +132,7 @@ class Pista {
         pistAnima.empilhamento(); 
         //pistAnima.moveDivsToLeft(100);
         //pistAnima.moveDivsToRight(200);
+        const playgroundAudio = new PlaygroundAudio();
         
 
 
@@ -311,7 +312,6 @@ class PlaygroundAudio {
       this.volumeFixo = 0.2; // Valor fixo para o volume (por exemplo, 0.5)
       this.volume.gain.value = this.volumeFixo;
     }
-  
     play() {
       if (this.oscillator) {
         this.oscillator.stop(this.context.currentTime);
@@ -347,7 +347,7 @@ class PlaygroundAudio {
   }
 
 /*Expressão necessária para instanciar a classe audio*/ 
-const playgroundAudio = new PlaygroundAudio();
+
 
 /*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
 
@@ -420,7 +420,7 @@ class Jogo {
 
         this.insereNoPlayground(...elementos);
         this.timer.inicia(); 
-        const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/frame1.png');
+        const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
         manager.distributeImage();
         
     }

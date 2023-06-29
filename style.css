@@ -31,8 +31,8 @@ main{
 
 /*Parte modificada, coloquei altura e tamanho relativos ao tamanho do sprite 96px de largura por 64 de altura e coloquei como background a figura, tbm retirei a cor que estava*/
 .player {
-    height: 64px;
-    width: 96px;
+    height: 100px;
+    width: 130px;
     bottom: 0;
     left: 375px;
     position: absolute;
@@ -109,7 +109,7 @@ main{
 }
 
   .container {
-    height: 600px; /* Defina a altura desejada para a pilha de divs */ 
+    height: 400px; /* Defina a altura desejada para a pilha de divs */ 
     margin-top: 180px;
     align-items:center;
     display: flex;
@@ -118,8 +118,12 @@ main{
   }
 
   .montanha{
-    height: 50px;
+    height: 180px;
     width: 100%;
+    background-color: rgb(85, 85, 125);
     background-size: 100% 100%;
+    background-image: url('/cenarios/tempo_dia/noite.gif');
+    position: absolute;
+    filter: brightness(5) grayscale(1%) sepia(2%);
   }
   
