@@ -30,6 +30,14 @@ main{
     display: flex;
     align-items: flex-end;
 }
+
+.obstaculos{
+    position: relative;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .player {
     height: 50px;
     width: 50px;
@@ -63,4 +71,12 @@ main{
     z-index: 2;
     top: 0;
     width: 100px;
+}
+
+.obstaculo{
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    display: inline-block;
+    position: relative;
 }

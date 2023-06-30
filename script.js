@@ -16,6 +16,13 @@ function novoElemento(tagName, className) {
     
     return elemento;
 }
+function geraDelayAleatorio(){
+    const inteiro = Math.floor(Math.random() * 5)
+    const delay = Math.random() * 10;
+    const resultado = inteiro + delay;
+
+    return resultado;
+}
 
 class Timer{
     constructor(){
@@ -32,7 +39,7 @@ class Timer{
     }
 }
 
-class velController {
+class VelController {
     constructor(){
         this.docVel = document.querySelector('.velocidade-span');
     }
@@ -92,12 +99,73 @@ class Pista {
         return this.elemento;
     }
 }
+class ObstaculoController{
+    getY(className){
+        const el = document.querySelector(`.${className}`);
+        const pos = parseInt(el.style.top) || 0;
+        
+        return pos;
+    }
+    setY(className, posAtual = 0){
+        const velocidade = 10;
+        const obstaculo = document.querySelector(`.${className}`);
+
+        if(posAtual === 0 || posAtual > 0) obstaculo.style.top = `${posAtual + velocidade}px`;
+        if (posAtual > 440) obstaculo.style.top = `0px`;
+    }
+    setPosicaoInicial(className){
+        this.setY(className);
+    }
+    acelera(className){
+        const velocidade = 10;
+        const pos = this.getY(className); 
+        const obstaculo = document.querySelector(`.${className}`);
+
+        this.setY(className, pos);
+    }
+}
+class Obstaculo {
+    constructor(id){
+        this.id = id;
+        this.elemento = novoElemento('span', `obstaculo obs-${id}`);
+        this.velocidade = 10;
+        this.obstaculoController = new ObstaculoController();
+    }
+    getObstaculo(qtde = 0){
+        if(qtde > 0){
+            const obstaculos = [];
+
+            for(let i = 0; i < qtde; i++)
+                obstaculos.push(new Obstaculo(i));
+
+            return obstaculos; 
+        }
+
+        return this.elemento;
+    }
+    anima(){
+        setTimeout(() => {
+            this.movimentaY();
+        }, 100);
+        this.anima();
+    }
+}
+
+class FabricaDeObstaculo {
+    constructor(limite = 8){
+        this.obstaculo = new Obstaculo();
+        this.obstaculos = this.obstaculo.getObstaculo(limite);
+    }
+    getObstaculos(){
+        return this.obstaculos.map(({ elemento }) => elemento);
+    }
+}
 class Carro {
     constructor(largura) {
         this.elemento = novoElemento('span', 'player');
         this.largura = largura;
         this.velocidade = 0;
-        this.velController = new velController();
+        this.velController = new VelController();
     }
     getCarro(){
         return this.elemento;
@@ -130,7 +198,6 @@ class Carro {
 }
 
 class Jogo {
-
     constructor(){
         this.pontos = 0;
         this.areaDoJogo = document.querySelector(".playground");
@@ -139,6 +206,8 @@ class Jogo {
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
+        this.fabricaDeObstaculo = new FabricaDeObstaculo();
+        this.obstaculoController = new ObstaculoController();
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -163,13 +232,36 @@ class Jogo {
             espacoJogador.appendChild(el);
         });
     }
+    insereObstaculo(...obstaculos){
+        const divObstaculos = document.querySelector(".obstaculos");
+
+        obstaculos.forEach(obs => divObstaculos.appendChild(obs));
+    }
+    movimentaObstaculos(indice = 0, ...obstaculos){
+        const delay = geraDelayAleatorio();
+        const obstaculo = obstaculos[indice];
+        const className = obstaculo.classList.value.split(' ')[1];
+        
+        console.log(`indice = ${indice}`)
+        this.obstaculoController.acelera(className);
+
+        
+        setTimeout(() => {
+            if(indice === obstaculos.length - 1) indice = -1;
+
+            this.movimentaObstaculos(++indice, ...obstaculos);
+        }, delay);
+    }
     inicia(){
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
-        const elementos = [jogador, pista];
+        const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
+        const elementos = [jogador];
 
         this.insereNoPlayground(...elementos);
+        this.insereObstaculo(...obstaculosSpan);
         this.timer.inicia();
+        this.movimentaObstaculos(0, ...obstaculosSpan);
     }
 }
 
