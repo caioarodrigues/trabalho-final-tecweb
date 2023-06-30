@@ -21,6 +21,7 @@ function novoElemento(tagName, className) {
 class Timer{
     constructor(){
         this.docTimer = document.querySelector('.timer');
+        
     }
     inicia(contador = 0){
         this.docTimer.innerText = `${contador.toFixed(3)}`;
@@ -30,7 +31,16 @@ class Timer{
 
             this.inicia(contador + fracSegundo);
         }, 1);
+        
     }
+    
+    
+     
+    getValor() {
+      return this.contador;
+    }
+
+
 }
 
 class velController {
@@ -48,7 +58,7 @@ class velController {
         
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
-
+            curvasAnimacao(velocidadeFinal);
 
         if(velocidadeFinal===0){
             const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
@@ -71,6 +81,7 @@ class velController {
             }
 
           
+           
           
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
           playgroundAudio.play();
@@ -129,9 +140,7 @@ class Pista {
         this.elemento.appendChild(this.bordaDireita);
         const pistAnima = new PistaAnimacao();
         pistAnima.criarDivs();
-        pistAnima.empilhamento(); 
-        pistAnima.moveDivsToLeft();
-        //pistAnima.moveDivsToRight();   
+        pistAnima.empilhamento();
         
     }
 
@@ -150,6 +159,7 @@ class Pista {
 class PistaAnimacao {
     constructor() {
       this.container = document.querySelector('.container');
+      
     }
   
     novoElemento(tagName, className) {
@@ -185,50 +195,52 @@ class PistaAnimacao {
       }
     }
     
-    moveDivsToRight() {
+    moveDivsToRight(tempoDeTransicao) {
       const divLayers = document.querySelectorAll('.container .div-layer'); 
       const montanha = document.querySelector('.montanha');
      
       for (var i = 0; i < 70; i++) {
         var div = divLayers[i];
         var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
-        var newMargin = currentMargin + Math.exp((50-i/2)/8);      
+        var newMargin = currentMargin + Math.exp((50 - i/2) / 8);      
         div.style.marginLeft = newMargin + 'px';
-        div.style.transition = 'margin-left 3s ease';
+        div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
       }
       montanha.style.marginRight = 200 + 'px';
-      montanha.style.transition = 'margin-right 10s ease';
-
-
-
-
-
-
-
+      montanha.style.transition = `margin-right ${tempoDeTransicao*5}s ease`;
       
     }
     
     
-    moveDivsToLeft() {
+    moveDivsToLeft(tempoDeTransicao) {
       const divLayers = document.querySelectorAll('.container .div-layer'); 
       const montanha = document.querySelector('.montanha');
-     
+      
       for (var i = 0; i < 70; i++) {
         var div = divLayers[i];
         var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
-        var newMargin = currentMargin + Math.exp((50-i/2)/8);      
+        var newMargin = currentMargin + Math.exp((50 - i / 2) / 8);      
         div.style.marginRight = newMargin + 'px';
-        div.style.transition = 'margin-right 3s ease';
+        div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
       }
+      
       montanha.style.marginLeft = 200 + 'px';
-      montanha.style.transition = 'margin-left 10s ease';
+      montanha.style.transition = `margin-left ${tempoDeTransicao*5}s ease`;
     }
+   
+    
 
 
   }
 
   
 /*////////////////////////////////criação da pista //////////////////////////////////////////*/
+
+
+
+
+
+
 
 
 /*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
@@ -370,8 +382,10 @@ const playgroundAudio = new PlaygroundAudio();
 document.addEventListener('keydown', (event) => {
     const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
     const player = document.querySelector('.player');
-    
-    if (teclaPressionada === 'w') {
+    const pistAnima2 = new PistaAnimacao();
+    if (teclaPressionada === 'w') { 
+        
+       // pistAnima2.moveDivsToRight(3);
       player.classList.add('w');
       player.classList.remove('a', 'd', 's');
     } else if (teclaPressionada === 'a') {
@@ -383,6 +397,8 @@ document.addEventListener('keydown', (event) => {
     } else if (teclaPressionada === 's') {
       player.classList.add('s');
       player.classList.remove('w', 'a', 'd');
+     
+     // pistAnima2.moveDivsToLeft(3);
     }
   });
  /*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/ 
@@ -397,6 +413,8 @@ class Jogo {
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
+        this.timer.inicia();
+        
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -427,27 +445,71 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
+        this.timer.inicia();
 
         this.insereNoPlayground(...elementos);
-        this.timer.inicia(); 
         const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
-        manager.distributeImage();
-        
+        manager.distributeImage(); 
         
     }
 }
 
 
 
+function curvasAnimacao(velocidade) {
+  var startTime = Date.now();
 
+  function atualizarTimer() {
+    var currentTime = Date.now();
+    var elapsedTime = currentTime - startTime;
+    const pistaAnimacao = new PistaAnimacao();
+    
+  
+    // Verifique o valor do elapsedTime e ative o método da outra classe, se necessário
+    if (elapsedTime > 500 && elapsedTime < 1500 && velocidade>0) {
+      pistaAnimacao.moveDivsToLeft(1);
+      
+    } else if (elapsedTime > 29500 && elapsedTime < 30500 && velocidade>0) {
+      pistaAnimacao.moveDivsToRight(1);
+      
+    } else if (elapsedTime > 31500 && elapsedTime < 32500 && velocidade>0) {
+      pistaAnimacao.moveDivsToRight(10);
+      
+    } else if (elapsedTime > 43500 && elapsedTime < 44500 && velocidade>0) {
+      pistaAnimacao.moveDivsToLeft(10);
+      
+    } else if (elapsedTime > 62500 && elapsedTime < 63500 && velocidade>0) {
+      pistaAnimacao.moveDivsToLeft(1);
+      
+    } else if (elapsedTime > 73500 && elapsedTime < 74500 && velocidade>0) {
+      pistaAnimacao.moveDivsToRight(1);
+      
+    } else if (elapsedTime > 75500 && elapsedTime < 76500 && velocidade>0) {
+      pistaAnimacao.moveDivsToLeft(10);
+      
+    } else if (elapsedTime > 95500 && elapsedTime < 96500 && velocidade>0) {
+      pistaAnimacao.moveDivsToRight(10);
+      
+    }else if(elapsedTime > 107500 && velocidade>0) {
+      // Reinicie o elapsedTime com um novo startTime e currentTime
+      startTime = Date.now();
+      elapsedTime = 0;
+    }
 
+    // Atualize o timer a cada segundo (1000ms)
+    setTimeout(atualizarTimer, 1000);
+  }
 
+  // Inicie o timer pela primeira vez
+  atualizarTimer();
+}
 
 
 
 
 const jogo = new Jogo();
 jogo.inicia();
+
 
 
 
