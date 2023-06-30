@@ -132,7 +132,8 @@ main{
   background-position: center;
   overflow: hidden;
   background-size: cover;
-  background-position: center; /* Define a origem da transformação no centro da parte inferior da div */
+   /* Define a origem da transformação no centro da parte inferior da div */
+   transition: margin-left 12s ease;
 
 }
 

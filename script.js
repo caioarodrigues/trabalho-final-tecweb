@@ -130,12 +130,8 @@ class Pista {
         const pistAnima = new PistaAnimacao();
         pistAnima.criarDivs();
         pistAnima.empilhamento(); 
-        //pistAnima.moveDivsToLeft(100);
-        //pistAnima.moveDivsToRight(200);
-        
-
-
-        
+        pistAnima.moveDivsToLeft();
+        //pistAnima.moveDivsToRight();   
         
     }
 
@@ -189,31 +185,46 @@ class PistaAnimacao {
       }
     }
     
-    moveDivsToLeft(pixels) {
-      const divLayers = document.querySelectorAll('.container .div-layer');
-      
-      for (var i = 0; i < 10; i++) {
+    moveDivsToRight() {
+      const divLayers = document.querySelectorAll('.container .div-layer'); 
+      const montanha = document.querySelector('.montanha');
+     
+      for (var i = 0; i < 70; i++) {
         var div = divLayers[i];
         var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
-        var newMargin = currentMargin - pixels; // Mover 'pixels' pixels para a esquerda
-      
+        var newMargin = currentMargin + Math.exp((50-i/2)/8);      
         div.style.marginLeft = newMargin + 'px';
+        div.style.transition = 'margin-left 3s ease';
       }
+      montanha.style.marginRight = 200 + 'px';
+      montanha.style.transition = 'margin-right 10s ease';
+
+
+
+
+
+
+
+      
+    }
+    
+    
+    moveDivsToLeft() {
+      const divLayers = document.querySelectorAll('.container .div-layer'); 
+      const montanha = document.querySelector('.montanha');
+     
+      for (var i = 0; i < 70; i++) {
+        var div = divLayers[i];
+        var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
+        var newMargin = currentMargin + Math.exp((50-i/2)/8);      
+        div.style.marginRight = newMargin + 'px';
+        div.style.transition = 'margin-right 3s ease';
+      }
+      montanha.style.marginLeft = 200 + 'px';
+      montanha.style.transition = 'margin-left 10s ease';
     }
 
-    moveDivsToRight(pixels) {
-      const divLayers = document.querySelectorAll('.container .div-layer');
-    
-      for (var i = 10; i < 30; i++) {
-        var div = divLayers[i];
-        var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
-        var newMargin = currentMargin + pixels; // Mover 'pixels' pixels para a direita
-    
-        div.style.marginLeft = newMargin + 'px';
-      }
-    }
-    
-    
+
   }
 
   
@@ -422,13 +433,11 @@ class Jogo {
         const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
         manager.distributeImage();
         
+        
     }
 }
 
 
-
-
-// Exemplo de uso
 
 
 
