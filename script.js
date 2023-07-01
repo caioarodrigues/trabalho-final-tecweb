@@ -17,6 +17,15 @@ function novoElemento(tagName, className) {
     
     return elemento;
 }
+/*//////////////adição CAIOÃ //////////////////*/
+function geraDelayAleatorio(){
+  const inteiro = Math.floor(Math.random() * 5)
+  const delay = Math.random() * 10;
+  const resultado = inteiro + delay;
+
+  return resultado;
+}
+/*//////////////adição CAIOÃ //////////////////*/
 
 class Timer{
     constructor(){
@@ -58,7 +67,6 @@ class velController {
         
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
-            curvasAnimacao(velocidadeFinal);
 
         if(velocidadeFinal===0){
             const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
@@ -149,9 +157,69 @@ class Pista {
     }
 }
 
+/*//////////////adição CAIOÃ //////////////////*/
+class ObstaculoController{
+  getY(className){
+      const el = document.querySelector(`.${className}`);
+      const pos = parseInt(el.style.top) || 0;
+      
+      return pos;
+  }
+  setY(className, posAtual = 0){
+      const velocidade = 10;
+      const obstaculo = document.querySelector(`.${className}`);
 
+      if(posAtual === 0 || posAtual > 0) obstaculo.style.top = `${posAtual + velocidade}px`;
+      if (posAtual > 440) obstaculo.style.top = `0px`;
+  }
+  setPosicaoInicial(className){
+      this.setY(className);
+  }
+  acelera(className){
+      const velocidade = 10;
+      const pos = this.getY(className); 
+      const obstaculo = document.querySelector(`.${className}`);
 
+      this.setY(className, pos);
+  }
+}
+class Obstaculo {
+  constructor(id){
+      this.id = id;
+      this.elemento = novoElemento('span', `obstaculo obs-${id}`);
+      this.velocidade = 10;
+      this.obstaculoController = new ObstaculoController();
+  }
+  getObstaculo(qtde = 0){
+      if(qtde > 0){
+          const obstaculos = [];
 
+          for(let i = 0; i < qtde; i++)
+              obstaculos.push(new Obstaculo(i));
+
+          return obstaculos; 
+      }
+
+      return this.elemento;
+  }
+  anima(){
+      setTimeout(() => {
+          this.movimentaY();
+      }, 100);
+      this.anima();
+  }
+}
+
+class FabricaDeObstaculo {
+  constructor(limite = 8){
+      this.obstaculo = new Obstaculo();
+      this.obstaculos = this.obstaculo.getObstaculo(limite);
+  }
+  getObstaculos(){
+      return this.obstaculos.map(({ elemento }) => elemento);
+  }
+}
+/*//////////////adição CAIOÃ //////////////////*/
 
 
 
@@ -414,7 +482,8 @@ class Jogo {
         this.timer = new Timer();
         this.pista = new Pista();
         this.timer.inicia();
-        
+        this.fabricaDeObstaculo = new FabricaDeObstaculo();  //CAIOÃ
+        this.obstaculoController = new ObstaculoController();//CAIOÃ
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -440,16 +509,42 @@ class Jogo {
             espacoJogador.appendChild(el);
         });
     }
+
+
+    insereObstaculo(...obstaculos){
+      const divObstaculos = document.querySelector(".obstaculos");
+
+      obstaculos.forEach(obs => divObstaculos.appendChild(obs));
+  }
+  movimentaObstaculos(indice = 0, ...obstaculos){
+      const delay = geraDelayAleatorio();
+      const obstaculo = obstaculos[indice];
+      const className = obstaculo.classList.value.split(' ')[1];
+      
+      console.log(`indice = ${indice}`)
+      this.obstaculoController.acelera(className);
+
+      
+      setTimeout(() => {
+          if(indice === obstaculos.length - 1) indice = -1;
+
+          this.movimentaObstaculos(++indice, ...obstaculos);
+      }, delay);
+  }
     inicia(){
        
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
+        const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
         this.timer.inicia();
 
         this.insereNoPlayground(...elementos);
+        this.insereObstaculo(...obstaculosSpan); //CAIOÃ
         const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
         manager.distributeImage(); 
+        this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
+        curvasAnimacao();
         
     }
 }
@@ -466,31 +561,31 @@ function curvasAnimacao(velocidade) {
     
   
     // Verifique o valor do elapsedTime e ative o método da outra classe, se necessário
-    if (elapsedTime > 500 && elapsedTime < 1500 && velocidade>0) {
+    if (elapsedTime > 500 && elapsedTime < 1500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 29500 && elapsedTime < 30500 && velocidade>0) {
+    } else if (elapsedTime > 29500 && elapsedTime < 30500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 31500 && elapsedTime < 32500 && velocidade>0) {
+    } else if (elapsedTime > 31500 && elapsedTime < 32500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(10);
       
-    } else if (elapsedTime > 43500 && elapsedTime < 44500 && velocidade>0) {
+    } else if (elapsedTime > 43500 && elapsedTime < 44500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(10);
       
-    } else if (elapsedTime > 62500 && elapsedTime < 63500 && velocidade>0) {
+    } else if (elapsedTime > 62500 && elapsedTime < 63500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 73500 && elapsedTime < 74500 && velocidade>0) {
+    } else if (elapsedTime > 73500 && elapsedTime < 74500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 75500 && elapsedTime < 76500 && velocidade>0) {
+    } else if (elapsedTime > 75500 && elapsedTime < 76500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(10);
       
-    } else if (elapsedTime > 95500 && elapsedTime < 96500 && velocidade>0) {
+    } else if (elapsedTime > 95500 && elapsedTime < 96500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(10);
       
-    }else if(elapsedTime > 107500 && velocidade>0) {
+    }else if(elapsedTime > 107500 /*&& velocidade>0*/) {
       // Reinicie o elapsedTime com um novo startTime e currentTime
       startTime = Date.now();
       elapsedTime = 0;
