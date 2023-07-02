@@ -168,7 +168,7 @@ main{
 
   }
   
-
+/*
   .obstaculos{
     position: relative;
     height: 100%;
@@ -183,3 +183,21 @@ main{
     display: inline-block;
     position: relative;
 }
+*/
+
+.container {
+  position: relative;
+
+}
+
+.car-enemy {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  opacity: 0.2; /* Inicialmente, a div é transparente 
+  */
+  z-index: 3;
+}
+
+

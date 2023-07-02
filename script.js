@@ -481,7 +481,6 @@ class Jogo {
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
-        this.timer.inicia();
         this.fabricaDeObstaculo = new FabricaDeObstaculo();  //CAIOÃ
         this.obstaculoController = new ObstaculoController();//CAIOÃ
 
@@ -598,6 +597,11 @@ function curvasAnimacao(velocidade) {
   // Inicie o timer pela primeira vez
   atualizarTimer();
 }
+
+
+
+
+
 
 
 
