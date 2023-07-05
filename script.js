@@ -285,19 +285,18 @@ class Jogo {
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
         
-        entidades.forEach(entidade => {
-            const className = entidade.classList.value.split(' ')[0];
-            
-            return setTimeout(() => {
-                //this.obstaculoController.acelera(className);
-                this.entidadeController.acelera(className);
-                
+        setTimeout(() => {
+            entidades.forEach(entidade => {
+                const className = entidade.classList.value.split(' ')[0];
+
                 if(entidade.style.top > '600px')
                     this.obstaculoController.setX(entidade);
-                    
-                this.movimentaEntidade(...entidades);
-            }, delay);
-        })
+
+                this.entidadeController.acelera(className);
+            });
+
+            this.movimentaEntidade(...entidades);
+        }, delay);
     }
     inicia(){
         const pista = this.pista.getPista();
