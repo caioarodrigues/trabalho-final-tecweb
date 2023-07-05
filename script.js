@@ -249,6 +249,7 @@ class Jogo {
         this.fabricaDeObstaculo = new FabricaDeObstaculo();
         this.obstaculoController = new ObstaculoController();
         this.distanciaController = new DistanciaController();
+        this.entidadeController = new EntidadeController();
         this.ponto = new Ponto();
 
         document.addEventListener('keydown', (event) => {
@@ -274,35 +275,42 @@ class Jogo {
             espacoJogador.appendChild(el);
         });
     }
-    insereObstaculo(obstaculo){
-        const divObstaculos = document.querySelector(".obstaculos");
+    insereEntidade(...entidades){
+        const divEntidades = document.querySelector(".entidades");
 
-        divObstaculos.appendChild(obstaculo);
+        entidades.forEach(entidade => {
+            divEntidades.appendChild(entidade);
+        });
     }
-    movimentaObstaculo(obstaculo){
+    movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
-        const className = obstaculo.classList.value.split(' ')[1];
         
-        return setTimeout(() => {
-            this.obstaculoController.acelera(className);
+        entidades.forEach(entidade => {
+            const className = entidade.classList.value.split(' ')[0];
             
-            if(obstaculo.style.top > '600px')
-                this.obstaculoController.setX(obstaculo);
+            return setTimeout(() => {
+                //this.obstaculoController.acelera(className);
+                this.entidadeController.acelera(className);
                 
-            return this.movimentaObstaculo(obstaculo);
-        }, delay);
+                if(entidade.style.top > '600px')
+                    this.obstaculoController.setX(entidade);
+                    
+                this.movimentaEntidade(...entidades);
+            }, delay);
+        })
     }
     inicia(){
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const pontoSpan = this.ponto.getPonto();
         const [obstaculoSpan] = this.fabricaDeObstaculo.getObstaculos();
-        const elementos = [jogador, pontoSpan];
+        const elementos = [jogador];
+        const entidades = [obstaculoSpan, pontoSpan];
 
         this.insereNoPlayground(...elementos);
-        this.insereObstaculo(obstaculoSpan);
+        this.insereEntidade(...entidades);
         this.timer.inicia();
-        this.movimentaObstaculo(obstaculoSpan);
+        this.movimentaEntidade(...entidades);
         this.distanciaController.atualizaDistancia();
     }
 }
