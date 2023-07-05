@@ -113,6 +113,12 @@ class ObstaculoController{
         if(posAtual === 0 || posAtual > 0) obstaculo.style.top = `${posAtual + velocidade}px`;
         if (posAtual > 440) obstaculo.style.top = `0px`;
     }
+    setX(obstaculo){
+        const limite = 800;
+        const yAleatorio = Math.random() * limite;
+
+        obstaculo.style.left = `${yAleatorio}px`;
+    }
     setPosicaoInicial(className){
         this.setY(className);
     }
@@ -152,7 +158,7 @@ class Obstaculo {
 }
 
 class FabricaDeObstaculo {
-    constructor(limite = 8){
+    constructor(limite = 1){
         this.obstaculo = new Obstaculo();
         this.obstaculos = this.obstaculo.getObstaculo(limite);
     }
@@ -241,11 +247,14 @@ class Jogo {
         const delay = geraDelayAleatorio();
         const obstaculo = obstaculos[indice];
         const className = obstaculo.classList.value.split(' ')[1];
-        
+
         console.log(`indice = ${indice}`)
         this.obstaculoController.acelera(className);
 
-        
+        if(obstaculo.style.top > '600px'){
+            this.obstaculoController.setX(obstaculo);
+        }
+
         setTimeout(() => {
             if(indice === obstaculos.length - 1) indice = -1;
 
@@ -265,5 +274,4 @@ class Jogo {
     }
 }
 
-const jogo = new Jogo();
-jogo.inicia();
+new Jogo().inicia();
