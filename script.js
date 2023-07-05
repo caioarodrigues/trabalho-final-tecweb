@@ -23,20 +23,32 @@ function geraDelayAleatorio(){
 
     return resultado;
 }
+class Ponto {
+    constructor(){
+        this.elemento = novoElemento('span', 'ponto');
+        this.pontoController = new PontoController();
+    }
+
+    getPonto(){
+        return this.elemento;
+    }
+}
+class ScoreController {
+
+}
 class DistanciaController{
     constructor(){
         this.distInicial = 0;
         this.velController = new VelController();
     }
     atualizaDistancia(){
-        const delay = 100;
+        const delay = 1000;
         const velAtual = this.velController.getVelocidadeAtual();
         const distancia = document.querySelector(".distancia");
         const distAtual = parseInt(distancia.innerHTML);
 
         distancia.innerHTML = `${(distAtual + velAtual/60).toFixed(2)} km`;
         
-        console.log(velAtual, distAtual)
         setTimeout(() => {
             this.atualizaDistancia();
         }, delay);
@@ -117,7 +129,7 @@ class Pista {
         return this.elemento;
     }
 }
-class ObstaculoController{
+class EntidadeController{
     getY(className){
         const el = document.querySelector(`.${className}`);
         const pos = parseInt(el.style.top) || 0;
@@ -133,9 +145,9 @@ class ObstaculoController{
     }
     setX(obstaculo){
         const limite = 800;
-        const yAleatorio = Math.random() * limite;
+        const xAleatorio = Math.random() * limite;
 
-        obstaculo.style.left = `${yAleatorio}px`;
+        obstaculo.style.left = `${xAleatorio}px`;
     }
     setPosicaoInicial(className){
         this.setY(className);
@@ -146,6 +158,8 @@ class ObstaculoController{
         this.setY(className, pos);
     }
 }
+class ObstaculoController extends EntidadeController {}
+class PontoController extends EntidadeController {}
 class Obstaculo {
     constructor(id){
         this.id = id;
@@ -164,12 +178,6 @@ class Obstaculo {
         }
 
         return this.elemento;
-    }
-    anima(){
-        setTimeout(() => {
-            this.movimentaY();
-        }, 100);
-        this.anima();
     }
 }
 
@@ -231,6 +239,7 @@ class Jogo {
         this.fabricaDeObstaculo = new FabricaDeObstaculo();
         this.obstaculoController = new ObstaculoController();
         this.distanciaController = new DistanciaController();
+        this.ponto = new Ponto();
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -269,15 +278,16 @@ class Jogo {
             
             if(obstaculo.style.top > '600px')
                 this.obstaculoController.setX(obstaculo);
-            
+                
             return this.movimentaObstaculo(obstaculo);
         }, delay);
     }
     inicia(){
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
+        const pontoSpan = this.ponto.getPonto();
         const [obstaculoSpan] = this.fabricaDeObstaculo.getObstaculos();
-        const elementos = [jogador];
+        const elementos = [jogador, pontoSpan];
 
         this.insereNoPlayground(...elementos);
         this.insereObstaculo(obstaculoSpan);
