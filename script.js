@@ -23,6 +23,16 @@ function geraDelayAleatorio(){
 
     return resultado;
 }
+
+async function esperaUmSeg(){
+    return new Promise(async (resolve, reject) => {
+        const umSeg = 1000;
+        
+        setTimeout(async () => {
+            resolve();
+        }, umSeg);
+    })
+}
 class Ponto {
     constructor(){
         this.elemento = novoElemento('span', 'ponto');
