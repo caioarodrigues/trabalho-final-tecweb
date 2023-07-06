@@ -9,6 +9,7 @@ const larguraPlayer = 50;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 const divGameOver = document.querySelector(".game-over");
+let isFimDeJogo = false;
 let toggleYPonto = false;
 let bufferVelocidadeAcionado = false;
 
@@ -177,6 +178,7 @@ class EntidadeController{
         if(posAtual > 400 && className === "obstaculo" && 
             (Math.abs(playerLeft - entidadeLeft) <= 20)){
                 divGameOver.style.display = "flex";
+                isFimDeJogo = true;
         }
     }
     setX(obstaculo){
@@ -197,30 +199,20 @@ class EntidadeController{
 class ObstaculoController extends EntidadeController {}
 class PontoController extends EntidadeController {}
 class Obstaculo {
-    constructor(id){
-        this.id = id;
-        this.elemento = novoElemento('span', `obstaculo obs-${id}`);
+    constructor(){
+        this.elemento = novoElemento('span', `obstaculo obs`);
         this.velocidade = 10;
         this.obstaculoController = new ObstaculoController();
     }
-    getObstaculo(qtde = 0){
-        if(qtde > 0){
-            const obstaculos = [];
-
-            for(let i = 0; i < qtde; i++)
-                obstaculos.push(new Obstaculo(i));
-
-            return obstaculos; 
-        }
-
-        return this.elemento;
+    getObstaculo(){
+        return [new Obstaculo()];
     }
 }
 
 class FabricaDeObstaculo {
-    constructor(limite = 1){
+    constructor(){
         this.obstaculo = new Obstaculo();
-        this.obstaculos = this.obstaculo.getObstaculo(limite);
+        this.obstaculos = this.obstaculo.getObstaculo();
     }
     getObstaculos(){
         return this.obstaculos.map(({ elemento }) => elemento);
@@ -277,6 +269,7 @@ class Jogo {
         this.distanciaController = new DistanciaController();
         this.entidadeController = new EntidadeController();
         this.ponto = new Ponto();
+        this.velController = new VelController();
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
@@ -308,6 +301,8 @@ class Jogo {
         const divEntidades = document.querySelector(".entidades");
 
         entidades.forEach(entidade => {
+            entidade.style.display = "none";
+
             divEntidades.appendChild(entidade);
         });
     }
@@ -318,8 +313,14 @@ class Jogo {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
 
+                if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
+                    return;
+
                 if(entidade.style.top > '600px')
                     this.obstaculoController.setX(entidade);
+
+                if(entidade.style.display === "none")
+                    entidade.style.display = "inline-block";
 
                 this.entidadeController.acelera(className);
             });
