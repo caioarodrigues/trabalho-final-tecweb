@@ -8,6 +8,7 @@ const larguraMargem = (larguraTela - larguraPlayground) / 2
 const larguraPlayer = 50;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
+let toggleYPonto = false;
 let bufferVelocidadeAcionado = false;
 
 function novoElemento(tagName, className) {
@@ -43,8 +44,15 @@ class Ponto {
         return this.elemento;
     }
 }
-class ScoreController {
-
+class EscoreController {
+    constructor(){
+        this.escore = document.querySelector(".pontos");
+        this.escoreAtual = parseInt(this.escore.innerHTML);
+    }
+    edita(quantidade){
+        this.escoreAtual += quantidade;
+        this.escore.innerHTML = this.escoreAtual;
+    }
 }
 class DistanciaController{
     constructor(){
@@ -148,10 +156,23 @@ class EntidadeController{
     }
     setY(className, posAtual = 0){
         const velocidade = 10;
-        const obstaculo = document.querySelector(`.${className}`);
+        const entidade = document.querySelector(`.${className}`);
+        const entidadeLeft = entidade.style.left.split("px")[0];
+        const playerLeft = document.querySelector(".player").style.left.split("px")[0];
 
-        if(posAtual === 0 || posAtual > 0) obstaculo.style.top = `${posAtual + velocidade}px`;
-        if (posAtual > 440) obstaculo.style.top = `0px`;
+        if(posAtual === 0 || posAtual > 0){
+            entidade.style.top = `${posAtual + velocidade}px`;
+            toggleYPonto = true;
+        }
+        if (posAtual > 440) {
+            entidade.style.top = `0px`;
+            toggleYPonto = false;
+        }
+        if(posAtual > 400 && className === "ponto" && 
+            (Math.abs(playerLeft - entidadeLeft) <= 20) && !toggleYPonto){
+            const _ = new EscoreController();
+            _.edita(1);
+        }
     }
     setX(obstaculo){
         const limite = 800;
@@ -256,10 +277,10 @@ class Jogo {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
             if (teclaPressionada.toLowerCase() === 'd') {
-                this.carro.movimentaHorinzotal(10);
+                this.carro.movimentaHorinzotal(20);
             }
             else if (teclaPressionada.toLowerCase() === 'a') {
-                this.carro.movimentaHorinzotal(-10);
+                this.carro.movimentaHorinzotal(-20);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(10);
@@ -284,7 +305,7 @@ class Jogo {
     }
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
-        
+
         setTimeout(() => {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
