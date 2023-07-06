@@ -8,6 +8,7 @@ const larguraMargem = (larguraTela - larguraPlayground) / 2
 const larguraPlayer = 50;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
+const divGameOver = document.querySelector(".game-over");
 let toggleYPonto = false;
 let bufferVelocidadeAcionado = false;
 
@@ -173,6 +174,10 @@ class EntidadeController{
             const _ = new EscoreController();
             _.edita(1);
         }
+        if(posAtual > 400 && className === "obstaculo" && 
+            (Math.abs(playerLeft - entidadeLeft) <= 20)){
+                divGameOver.style.display = "flex";
+        }
     }
     setX(obstaculo){
         const limite = 800;
@@ -288,6 +293,9 @@ class Jogo {
             }
             else if (teclaPressionada.toLowerCase() === 's') {
                 this.carro.movientaVertical(-10);
+            }
+            else if (teclaPressionada.toLowerCase() === 'r') {
+                location.reload();
             }
         });
     }
