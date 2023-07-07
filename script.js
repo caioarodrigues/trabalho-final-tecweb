@@ -92,6 +92,11 @@ class Timer{
 class VelController {
     constructor(){
         this.docVel = document.querySelector('.velocidade-span');
+        // Seleciona a div com a classe "playground"
+         
+
+
+
     }
     getVelocidadeAtual(){
         return parseInt(this.docVel.innerHTML);
@@ -99,9 +104,30 @@ class VelController {
     acelera(valor){
         const velocidadeAtual = this.getVelocidadeAtual();
         const velocidadeFinal = velocidadeAtual + valor;
+        const playgroundDiv = document.querySelector('.playground');
 
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
+
+
+            if(velocidadeFinal===0){
+                playgroundDiv.style.backgroundImage = `url('/cenario/pistaParada.png')`;}
+            if(velocidadeFinal>0 && velocidadeFinal<40){
+                playgroundDiv.style.backgroundImage = `url('/cenario/pistaLenta.gif')`;}
+            if(velocidadeFinal> 40 && velocidadeFinal<80){
+                playgroundDiv.style.backgroundImage = `url('/cenario/pistaMedia.gif')`;}
+            if(velocidadeFinal>80 && velocidadeFinal<120){
+                playgroundDiv.style.backgroundImage = `url('/cenario/pistaRapida.gif')`;}
+          
+
+
+    /*////////////atualização do som do carro de acordo com a velocidade//////////*/
+    playgroundAudio.play();
+    playgroundAudio.playMusic();
+    
+
+    playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
+/*////////////atualização do som do carro de acordo com a velocidade//////////*/
     }
     bufferizaVelocidade(contRepeticoes = 0){
         const limiteRepeticoes = 2;
@@ -171,14 +197,16 @@ class EntidadeController{
             toggleYPonto = false;
         }
         if(posAtual > 400 && className === "ponto" && 
-            (Math.abs(playerLeft - entidadeLeft) <= 20) && !toggleYPonto){
+            (Math.abs(playerLeft - entidadeLeft) <= 60) && !toggleYPonto){
             const _ = new EscoreController();
             _.edita(1);
         }
         if(posAtual > 400 && className === "obstaculo" && 
-            (Math.abs(playerLeft - entidadeLeft) <= 20)){
+            (Math.abs(playerLeft - entidadeLeft) <= 60)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
+                playgroundAudio.stopMusic();
+                playgroundAudio.stopOscillator();
         }
     }
     setX(obstaculo){
@@ -203,6 +231,10 @@ class Obstaculo {
         this.elemento = novoElemento('span', `obstaculo obs`);
         this.velocidade = 10;
         this.obstaculoController = new ObstaculoController();
+        const randomColor = Math.random()*360;
+        const randomLight = 2.5 + (Math.random() * 2);
+        this.elemento.style['filter'] = 'hue-rotate('+randomColor+'deg) brightness('+randomLight+')';
+            
     }
     getObstaculo(){
         return [new Obstaculo()];
@@ -213,7 +245,11 @@ class FabricaDeObstaculo {
     constructor(){
         this.obstaculo = new Obstaculo();
         this.obstaculos = this.obstaculo.getObstaculo();
+       
+        
     }
+
+
     getObstaculos(){
         return this.obstaculos.map(({ elemento }) => elemento);
     }
@@ -245,13 +281,21 @@ class Carro {
         const bgColor = this.elemento.style.backgroundColor;
         
         if(soma < ptoFinalPlayground && soma > 0){
-            if(bgColor === "red")
-                this.elemento.style.backgroundColor = "yellow";
+            if (bgColor === "red") 
+
+            /*Parte modificada para dano no carro após deixar os limites da estrada, desativa o filtro de dano*/ 
+                this.elemento.style.backgroundColor = "transparent";
+                this.elemento.style['filter'] = 'none';
+            /*Parte modificada para dano no carro após deixar os limites, desativa o filtro de dano*/  
             
             this.setX(soma);
         }
         else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
-            this.elemento.style.backgroundColor = "red";
+
+        /*Parte modificada para dano no carro após bater nos limites da estrada, ativa o filtro de dano*/ 
+        this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
+
+            
     }
 }
 
@@ -344,4 +388,97 @@ class Jogo {
     }
 }
 
+document.addEventListener('keydown', (event) => {
+    const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
+    const player = document.querySelector('.player');
+    if (teclaPressionada === 'w') { 
+      player.classList.add('w');
+      player.classList.remove('a', 'd', 's');
+    } else if (teclaPressionada === 'a') {
+      player.classList.add('a');
+      player.classList.remove('w', 'd', 's');
+    } else if (teclaPressionada === 'd') {
+      player.classList.add('d');
+      player.classList.remove('w', 'a', 's');
+    } else if (teclaPressionada === 's') {
+      player.classList.add('s');
+      player.classList.remove('w', 'a', 'd');   
+    }
+    
+    // Define um temporizador para remover gradualmente a classe de direção após soltar a tecla
+    clearTimeout(player.timer);
+    player.timer = setTimeout(() => {
+      player.classList.remove('w', 'a', 'd', 's');
+    }, 500); // Tempo em milissegundos para remover a classe
+  });
+  
+
+
+
+
+/*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
+
+class PlaygroundAudio {
+    constructor() {
+      this.context = new AudioContext();
+      this.volume = this.context.createGain();   
+      this.volume.connect(this.context.destination);
+      this.oscillator = null;
+      this.audio = new Audio('/music/musicCar.mp3');
+      this.audio.loop = true;
+      this.volumeFixo = 0.2; // Valor fixo para o volume (por exemplo, 0.5)
+      this.volume.gain.value = this.volumeFixo;
+    }
+  
+    play() {
+      if (this.oscillator) {
+        this.oscillator.stop(this.context.currentTime);
+        this.oscillator.disconnect(this.volume);
+        this.oscillator = null;
+      }
+  
+      this.oscillator = this.context.createOscillator();
+      this.oscillator.frequency.value = 0;
+      this.oscillator.detune.value = 0;
+      this.oscillator.type = 'sawtooth';
+      this.oscillator.connect(this.volume);
+      this.oscillator.start(0);
+    }
+  
+    atualizaFrequenciaOscilador(velocidadeFinal) {
+      const frequenciaMinima = 20;
+      const frequenciaMaxima = 120;
+      const proporcao = (velocidadeFinal - 0) / (120 - 0);
+      const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
+      this.oscillator.frequency.value = frequencia;
+    }
+  
+    playMusic() {
+      this.audio.play();
+    }
+  
+    stopMusic() {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+  
+    stopOscillator() {
+      if (this.oscillator) {
+        this.oscillator.stop(this.context.currentTime);
+        this.oscillator.disconnect(this.volume);
+        this.oscillator = null;
+      }
+    }
+  }
+
+
+
+
+  
+  
+
+/*Expressão necessária para instanciar a classe audio*/ 
+const playgroundAudio = new PlaygroundAudio();
+
+/*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
 new Jogo().inicia();

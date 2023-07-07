@@ -45,6 +45,8 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-image: url('cenario/pistaParada.png');
+    background-size: 100% 100%;
 }
 
 .espaco-jogador{
@@ -52,6 +54,7 @@ main{
     height: 100%;
     display: flex;
     align-items: flex-end;
+   
 }
 
 .entidades{
@@ -62,11 +65,13 @@ main{
 }
 
 .player {
-    height: 50px;
-    width: 50px;
-    background-color: yellow;
+    height: 94px;
+    width: 64px;
+
     position: relative;
     left: 375px;
+    background-image: url('Sprites/car.png');
+    background-size: 100% 100%;
 }
 
 .display{
@@ -97,16 +102,88 @@ main{
 }
 
 .obstaculo, .ponto{
-    width: 50px;
-    height: 50px;
+   
     display: inline-block;
     position: absolute;
 }
 
 .ponto {
-    background-color: blue;
+    width: 50px;
+    height: 50px;
+    background-image: url('/cenario/nitro.png');
+    background-size: 100% 100%;
 }
 
 .obstaculo{
-    background-color: green;
+    background-image: url('/cenario/inimigos.png');
+    background-size: 100% 100%;
+    height: 94px;
+    width: 64px;
 }
+
+
+.player.w {
+    background-image: url('/Sprites/car.png');
+    animation: vibration 0.1s infinite linear;
+  }
+  
+  .player.a {
+    background-image: url('/Sprites/car.png');
+    animation: esq 0.1s infinite linear;
+  }
+  
+  .player.d {
+    background-image: url('/Sprites/car.png');
+    animation: dir 0.1s infinite linear;
+  }
+  
+  .player.s {
+    background-image: url('/Sprites/car.png');
+    animation: vibration 0.1s infinite linear;
+  }
+
+
+
+  .player {
+    position: relative;
+  }
+  
+  .player {
+    animation: vibration 0.1s infinite linear;
+  }
+  
+  @keyframes vibration {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-1px) rotate(-1deg); }
+    50% { transform: translateX(1px) rotate(-1deg); }
+    75% { transform: translateX(-1px) rotate(-1deg);  }
+    100% { transform: translateX(0); }
+  }
+ 
+
+
+  .player {
+    /* Estilos iniciais */
+    /* ... */
+  
+    /* Transição suave */
+    transition: transform 0.5s ease;
+  }
+  
+  .player.w {
+    transform: rotate(0deg);
+  }
+  
+  .player.a {
+    transform: rotate(-20deg);
+  }
+  
+  .player.d {
+    transform: rotate(20deg);
+  }
+  
+  .player.s {
+    transform: rotate(0deg);
+  }
+  
+  
