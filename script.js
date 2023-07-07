@@ -156,11 +156,23 @@ class EntidadeController{
         
         return pos;
     }
-    setY(className, posAtual = 0){
-        const velocidade = 10;
+    setY(className, posAtual = 0, velocidade = 10){
         const entidade = document.querySelector(`.${className}`);
         const entidadeLeft = entidade.style.left.split("px")[0];
         const playerLeft = document.querySelector(".player").style.left.split("px")[0];
+
+        if(className === "ponto"){
+            const chances = Math.floor(Math.random() * 10_000);
+            velocidade = 15;
+            
+            if(chances > 100 && posAtual === 0){
+                entidade.style.display = "none";
+
+                return;
+            }
+
+            entidade.style.display = "inline-block";
+        }
 
         if(posAtual === 0 || posAtual > 0){
             entidade.style.top = `${posAtual + velocidade}px`;
@@ -172,8 +184,10 @@ class EntidadeController{
         }
         if(posAtual > 400 && className === "ponto" && 
             (Math.abs(playerLeft - entidadeLeft) <= 20) && !toggleYPonto){
-            const _ = new EscoreController();
-            _.edita(1);
+            const pontuacao = new EscoreController();
+            
+            pontuacao.edita(1);
+            this.setY(className);
         }
         if(posAtual > 400 && className === "obstaculo" && 
             (Math.abs(playerLeft - entidadeLeft) <= 20)){
@@ -239,7 +253,7 @@ class Carro {
     movientaVertical(valor){
         this.velController.acelera(valor);
     }
-    movimentaHorinzotal(x){
+    movimentaHorizotal(x){
         const coordX = this.getX();
         const soma = x + coordX;
         const bgColor = this.elemento.style.backgroundColor;
@@ -275,10 +289,10 @@ class Jogo {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
             if (teclaPressionada.toLowerCase() === 'd') {
-                this.carro.movimentaHorinzotal(20);
+                this.carro.movimentaHorizotal(20);
             }
             else if (teclaPressionada.toLowerCase() === 'a') {
-                this.carro.movimentaHorinzotal(-20);
+                this.carro.movimentaHorizotal(-20);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(10);
