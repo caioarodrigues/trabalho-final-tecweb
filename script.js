@@ -183,17 +183,34 @@ class EntidadeController{
             pontuacao.edita(1);
             this.setY(className);
         }
-        if(posAtual > 400 && className === "obstaculo" && 
+        if(posAtual > 400 && className.includes("obstaculo") && 
             (Math.abs(playerLeft - entidadeLeft) <= 20)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
         }
     }
-    setX(obstaculo){
+    setX(obstaculo, x = 0){
         const limite = 750;
         const xAleatorio = Math.random() * limite;
+        const indexObsAtual = obstaculo.className.split('-')[1];
+        let suplemento = 0;
 
-        obstaculo.style.left = `${xAleatorio}px`;
+        if(x){
+            obstaculo.style.left = `${x}px`;
+            
+            return;
+        }
+
+        if(indexObsAtual > 0 && indexObsAtual < 2){
+            const posProxObstaculo = indexObsAtual++;
+            const posProxElem = document.querySelector(`.obstaculo-${posProxObstaculo}`).style.left;
+
+            if(xAleatorio - posProxElem < 50)
+                suplemento = 50;
+            else if (xAleatorio - posProxElem > 50)
+                suplemento = -50;
+        }
+        obstaculo.style.left = `${xAleatorio + suplemento}px`;
     }
     setPosicaoInicial(className){
         this.setY(className);
@@ -207,13 +224,18 @@ class EntidadeController{
 class ObstaculoController extends EntidadeController {}
 class PontoController extends EntidadeController {}
 class Obstaculo {
-    constructor(){
-        this.elemento = novoElemento('span', `obstaculo obs`);
+    constructor(index = 0){
+        this.elemento = novoElemento('span', `obstaculo-${index} obs`);
         this.velocidade = 10;
         this.obstaculoController = new ObstaculoController();
     }
     getObstaculo(){
-        return [new Obstaculo()];
+        const obstaculos = [];
+
+        for(let i = 0; i < 3; i++)
+            obstaculos.push(new Obstaculo(i));
+
+        return obstaculos;
     }
 }
 class Posto {
@@ -232,7 +254,11 @@ class FabricaDeObstaculo {
         this.obstaculos = this.obstaculo.getObstaculo();
     }
     getObstaculos(){
-        return this.obstaculos.map(({ elemento }) => elemento);
+        return this.obstaculos.map(({ elemento }) => {
+            console.log(`elemento = ${elemento.outerHTML}`)
+            
+            return elemento;
+        });
     }
 }
 class Carro {
@@ -345,8 +371,11 @@ class Jogo {
                 if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
                     return;
 
-                if(top > 0 && top < 16){
+                if(top > 0 && top < 16 && className !== "gasolina"){
                     this.obstaculoController.setX(entidade);
+                }
+                else if (top > 0 && top < 16 && className === "gasolina"){
+                    this.obstaculoController.setX(entidade, 750)
                 }
 
                 if(entidade.style.display === "none")
@@ -363,9 +392,9 @@ class Jogo {
         const jogador = this.carro.getCarro();
         const pontoSpan = this.ponto.getPonto();
         const posto = this.posto.getPosto();
-        const [obstaculoSpan] = this.fabricaDeObstaculo.getObstaculos();
+        const obstaculoSpan = this.fabricaDeObstaculo.getObstaculos();
         const elementos = [jogador];
-        const entidades = [obstaculoSpan, pontoSpan, posto];
+        const entidades = [...obstaculoSpan, pontoSpan, posto];
 
         this.insereNoPlayground(...elementos);
         this.insereEntidade(...entidades);
