@@ -479,8 +479,9 @@ class PlaygroundAudio {
       this.playground = document.querySelector('.playground');
       this.filters = [
         'brightness(120%) contrast(100%) saturate(120%)',  // DIA
-        'brightness(180%) contrast(100%) saturate(10%)',   // NEVE
         'brightness(15%) contrast(100%) saturate(1500%)',    // NOITE
+        'brightness(180%) contrast(100%) saturate(10%)',   // NEVE
+        
         'brightness(20%) contrast(50%) saturate(200%) blur(1px)' // CERRADO
       ];
       this.currentIndex = 0;
