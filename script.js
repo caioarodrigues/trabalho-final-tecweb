@@ -103,24 +103,18 @@ class VelController {
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
     }
-    bufferizaVelocidade(contRepeticoes = 0){
-        const limiteRepeticoes = 2;
-        bufferVelocidadeAcionado = true;
-
-        if(contRepeticoes === limiteRepeticoes){
-            bufferVelocidadeAcionado = false;
-
+    async bufferizaVelocidade(){
+        if(bufferVelocidadeAcionado)
             return;
-        }
 
-        setTimeout(() => {
+        setTimeout(async () => {
             const velocidadeAtual = this.getVelocidadeAtual();
             const velocidadeFinal = velocidadeAtual - 1;
 
             if(velocidadeFinal > 0)
                 this.docVel.innerHTML = velocidadeFinal;
             
-            this.bufferizaVelocidade(++contRepeticoes);
+            return await this.bufferizaVelocidade();
         }, 300);
     }
 }
@@ -285,7 +279,14 @@ class Jogo {
         this.ponto = new Ponto();
         this.velController = new VelController();
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keyup', event => {
+            const teclaSolta = event.key;
+
+            if(teclaSolta.toLocaleLowerCase() === 'w'){
+                bufferVelocidadeAcionado = true;
+            }
+        })
+        document.addEventListener('keydown', async (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
             if (teclaPressionada.toLowerCase() === 'd') {
@@ -296,7 +297,9 @@ class Jogo {
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(10);
-                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
+                await this.carro.velController.bufferizaVelocidade();
+                
+                bufferVelocidadeAcionado = false;
             }
             else if (teclaPressionada.toLowerCase() === 's') {
                 this.carro.movientaVertical(-10);
