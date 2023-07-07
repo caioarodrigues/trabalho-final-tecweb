@@ -216,7 +216,16 @@ class Obstaculo {
         return [new Obstaculo()];
     }
 }
+class Posto {
+    constructor(){
+        this.elemento = novoElemento('span', 'gasolina');
+        this.velocidade = 10;
+    }
 
+    getPosto(){
+        return this.elemento;
+    }
+}
 class FabricaDeObstaculo {
     constructor(){
         this.obstaculo = new Obstaculo();
@@ -278,6 +287,7 @@ class Jogo {
         this.entidadeController = new EntidadeController();
         this.ponto = new Ponto();
         this.velController = new VelController();
+        this.posto = new Posto();
 
         document.addEventListener('keyup', event => {
             const teclaSolta = event.key;
@@ -352,9 +362,10 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const pontoSpan = this.ponto.getPonto();
+        const posto = this.posto.getPosto();
         const [obstaculoSpan] = this.fabricaDeObstaculo.getObstaculos();
         const elementos = [jogador];
-        const entidades = [obstaculoSpan, pontoSpan];
+        const entidades = [obstaculoSpan, pontoSpan, posto];
 
         this.insereNoPlayground(...elementos);
         this.insereEntidade(...entidades);
