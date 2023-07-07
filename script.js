@@ -92,11 +92,7 @@ class Timer{
 class VelController {
     constructor(){
         this.docVel = document.querySelector('.velocidade-span');
-        // Seleciona a div com a classe "playground"
-         
-
-
-
+        
     }
     getVelocidadeAtual(){
         return parseInt(this.docVel.innerHTML);
@@ -104,7 +100,7 @@ class VelController {
     acelera(valor){
         const velocidadeAtual = this.getVelocidadeAtual();
         const velocidadeFinal = velocidadeAtual + valor;
-        const playgroundDiv = document.querySelector('.playground');
+       const playgroundDiv = document.querySelector('.playground');
 
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
@@ -129,24 +125,18 @@ class VelController {
     playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
 /*////////////atualização do som do carro de acordo com a velocidade//////////*/
     }
-    bufferizaVelocidade(contRepeticoes = 0){
-        const limiteRepeticoes = 2;
-        bufferVelocidadeAcionado = true;
+    async bufferizaVelocidade(){
+        if(bufferVelocidadeAcionado) 
+        return;
 
-        if(contRepeticoes === limiteRepeticoes){
-            bufferVelocidadeAcionado = false;
-
-            return;
-        }
-
-        setTimeout(() => {
+        setTimeout(async() => {
             const velocidadeAtual = this.getVelocidadeAtual();
             const velocidadeFinal = velocidadeAtual - 1;
 
             if(velocidadeFinal > 0)
                 this.docVel.innerHTML = velocidadeFinal;
             
-            this.bufferizaVelocidade(++contRepeticoes);
+                return await this.bufferizaVelocidade();
         }, 300);
     }
 }
@@ -181,12 +171,24 @@ class EntidadeController{
         const pos = parseInt(el.style.top) || 0;
         
         return pos;
-    }
-    setY(className, posAtual = 0){
-        const velocidade = 10;
+    }///////////
+    setY(className, posAtual = 0, velocidade = 10){
         const entidade = document.querySelector(`.${className}`);
         const entidadeLeft = entidade.style.left.split("px")[0];
         const playerLeft = document.querySelector(".player").style.left.split("px")[0];
+
+        if(className === "ponto"){
+            const chances = Math.floor(Math.random() * 10_000);
+            velocidade = 15;
+            
+            if(chances > 100 && posAtual === 0){
+                entidade.style.display = "none";
+
+                return;
+            }
+
+            entidade.style.display = "inline-block";
+        }
 
         if(posAtual === 0 || posAtual > 0){
             entidade.style.top = `${posAtual + velocidade}px`;
@@ -198,10 +200,12 @@ class EntidadeController{
         }
         if(posAtual > 400 && className === "ponto" && 
             (Math.abs(playerLeft - entidadeLeft) <= 60) && !toggleYPonto){
-            const _ = new EscoreController();
-            _.edita(1);
+            const pontuacao= new EscoreController();
+
+            pontuacao.edita(1);
+            this.setY(className);
         }
-        if(posAtual > 400 && className === "obstaculo" && 
+        if(posAtual > 400 && className.includes("obstaculo") && 
             (Math.abs(playerLeft - entidadeLeft) <= 60)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
@@ -209,12 +213,28 @@ class EntidadeController{
                 playgroundAudio.stopOscillator();
         }
     }
-    setX(obstaculo){
-        const limite = 800;
+    setX(obstaculo, x = 0){
+        const limite = 750;
         const xAleatorio = Math.random() * limite;
+        const indexObsAtual = obstaculo.className.split('-')[1];
+        let suplemento = 0;
 
-        obstaculo.style.left = `${xAleatorio}px`;
-    }
+        if(x){
+            obstaculo.style.left = `${x}px`;
+
+            return;
+        }
+          if(indexObsAtual > 0 && indexObsAtual < 2){
+            const posProxObstaculo = indexObsAtual++;
+            const posProxElem = document.querySelector(`.obstaculo-${posProxObstaculo}`).style.left;
+
+            if(xAleatorio - posProxElem < 50)
+                suplemento = 50;
+            else if (xAleatorio - posProxElem > 50)
+                suplemento = -50;
+        }
+        obstaculo.style.left = `${xAleatorio + suplemento}px`;
+    }   
     setPosicaoInicial(className){
         this.setY(className);
     }
@@ -227,17 +247,32 @@ class EntidadeController{
 class ObstaculoController extends EntidadeController {}
 class PontoController extends EntidadeController {}
 class Obstaculo {
-    constructor(){
-        this.elemento = novoElemento('span', `obstaculo obs`);
+    constructor(index = 0){
+        this.elemento = novoElemento('span', `obstaculo-${index} obs`);
         this.velocidade = 10;
         this.obstaculoController = new ObstaculoController();
-        const randomColor = Math.random()*360;
-        const randomLight = 2.5 + (Math.random() * 2);
-        this.elemento.style['filter'] = 'hue-rotate('+randomColor+'deg) brightness('+randomLight+')';
+       // const randomColor = Math.random()*360;
+      //  const randomLight = 2.5 + (Math.random() * 2);
+      //  this.elemento.style['filter'] = 'hue-rotate('+randomColor+'deg) brightness('+randomLight+')';
             
     }
     getObstaculo(){
-        return [new Obstaculo()];
+        const obstaculos = [];
+
+        for(let i = 0; i < 3; i++)
+            obstaculos.push(new Obstaculo(i));
+
+        return obstaculos;
+    }
+}/////////
+class Posto {
+    constructor(){
+        this.elemento = novoElemento('span', 'gasolina');
+        this.velocidade = 10;
+    }
+
+    getPosto(){
+        return this.elemento;
     }
 }
 
@@ -245,15 +280,15 @@ class FabricaDeObstaculo {
     constructor(){
         this.obstaculo = new Obstaculo();
         this.obstaculos = this.obstaculo.getObstaculo();
-       
-        
     }
-
-
     getObstaculos(){
-        return this.obstaculos.map(({ elemento }) => elemento);
+        return this.obstaculos.map(({ elemento }) => {
+            console.log(`elemento = ${elemento.outerHTML}`)
+            
+            return elemento;
+        });
     }
-}
+} 
 class Carro {
     constructor(largura) {
         this.elemento = novoElemento('span', 'player');
@@ -281,7 +316,6 @@ class Carro {
         const bgColor = this.elemento.style.backgroundColor;
         
         if(soma < ptoFinalPlayground && soma > 0){
-            if (bgColor === "red") 
 
             /*Parte modificada para dano no carro após deixar os limites da estrada, desativa o filtro de dano*/ 
                 this.elemento.style.backgroundColor = "transparent";
@@ -314,8 +348,16 @@ class Jogo {
         this.entidadeController = new EntidadeController();
         this.ponto = new Ponto();
         this.velController = new VelController();
+        this.posto = new Posto();
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keyup', event => {
+            const teclaSolta = event.key;
+
+            if(teclaSolta.toLocaleLowerCase() === 'w'){
+                bufferVelocidadeAcionado = true;
+            }
+        })
+        document.addEventListener('keydown', async (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
             if (teclaPressionada.toLowerCase() === 'd') {
@@ -326,7 +368,9 @@ class Jogo {
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(10);
-                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
+                await this.carro.velController.bufferizaVelocidade();
+
+                bufferVelocidadeAcionado = false;
             }
             else if (teclaPressionada.toLowerCase() === 's') {
                 this.carro.movientaVertical(-10);
@@ -352,16 +396,22 @@ class Jogo {
     }
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
+        let travaEntidade = false;
 
         setTimeout(() => {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
+                const top = entidade.style.top.split('px')[0];
 
                 if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
                     return;
 
-                if(entidade.style.top > '600px')
+                if(top > 0 && top < 16 && className !== "gasolina"){
                     this.obstaculoController.setX(entidade);
+                }
+                else if (top > 0 && top < 16 && className === "gasolina"){
+                    this.obstaculoController.setX(entidade, 750)
+                }
 
                 if(entidade.style.display === "none")
                     entidade.style.display = "inline-block";
@@ -376,9 +426,10 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const pontoSpan = this.ponto.getPonto();
-        const [obstaculoSpan] = this.fabricaDeObstaculo.getObstaculos();
+        const posto = this.posto.getPosto();
+        const obstaculoSpan = this.fabricaDeObstaculo.getObstaculos();
         const elementos = [jogador];
-        const entidades = [obstaculoSpan, pontoSpan];
+        const entidades = [...obstaculoSpan, pontoSpan, posto];
 
         this.insereNoPlayground(...elementos);
         this.insereEntidade(...entidades);

@@ -46,19 +46,13 @@ main{
     flex-direction: column;
     justify-content: space-between;
     background-image: url('cenario/pistaParada.png');
-    background-size: 100% 100%;
-   
-   
-    
-     
-    
+    background-size: 100% 100%;   
 }
-
-
-
-.playground .metricas{
-  filter: none;
-
+.entidades{
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 
@@ -70,26 +64,19 @@ main{
    
 }
 
-.entidades{
-    position: relative;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-}
+
 
 .player {
     height: 94px;
     width: 64px;
-
     position: relative;
     left: 375px;
     background-image: url('Sprites/car.png');
     background-size: 100% 100%;
-    filter: brightness(120%) contrast(100%) saturate(100%);
 }
 
 .display{
-    background-color: rgb(252, 255, 254);
+    background-color: rgb(227, 215, 215);
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -101,7 +88,6 @@ main{
     display: flex;
     justify-content: center;
     background-color: darkred;
-    filter:none;
 }
 
 .borda-da-pista{
@@ -116,8 +102,7 @@ main{
     width: 100px;
 }
 
-.obstaculo, .ponto{
-   
+.obs, .ponto, .gasolina{ 
     display: inline-block;
     position: absolute;
 }
@@ -129,13 +114,20 @@ main{
     background-size: 100% 100%;
 }
 
-.obstaculo{
+.obs{
     background-image: url('/cenario/inimigos.png');
     background-size: 100% 100%;
     height: 94px;
     width: 64px;
 }
 
+.gasolina{
+  width: 50px;
+  height: 50px;
+  background-image: url('cenario/posto.png');
+  background-size: 100% 100%;
+
+}
 
 .player.w {
     background-image: url('/Sprites/car.png');
@@ -200,5 +192,6 @@ main{
   .player.s {
     transform: rotate(0deg);
   }
+
   
   
