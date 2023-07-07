@@ -196,7 +196,7 @@ class EntidadeController{
         }
     }
     setX(obstaculo){
-        const limite = 800;
+        const limite = 750;
         const xAleatorio = Math.random() * limite;
 
         obstaculo.style.left = `${xAleatorio}px`;
@@ -322,16 +322,19 @@ class Jogo {
     }
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
+        let travaEntidade = false;
 
         setTimeout(() => {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
+                const top = entidade.style.top.split('px')[0];
 
                 if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
                     return;
 
-                if(entidade.style.top > '600px')
+                if(top > 0 && top < 16){
                     this.obstaculoController.setX(entidade);
+                }
 
                 if(entidade.style.display === "none")
                     entidade.style.display = "inline-block";

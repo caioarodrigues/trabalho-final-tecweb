@@ -59,6 +59,7 @@ main{
     height: 100%;
     display: flex;
     justify-content: space-between;
+    transition: .5s;
 }
 
 .player {
@@ -67,6 +68,7 @@ main{
     background-color: yellow;
     position: relative;
     left: 375px;
+    transition: .3s;
 }
 
 .display{
