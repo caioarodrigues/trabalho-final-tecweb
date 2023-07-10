@@ -219,8 +219,14 @@ class EntidadeController{
             (Math.abs(playerLeft - entidadeLeft) <= 60)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
-                playgroundAudio.stopMusic();w
+                playgroundAudio.stopMusic();
                 playgroundAudio.stopOscillator();
+        }
+        else if(posAtual > 440 && className.includes("obstaculo")){
+            const carrosUltrapassados = document.querySelector(".carros-ultrapassados");
+            const qtdeCarrosUltrapassados = parseInt(carrosUltrapassados.innerText);
+            
+            carrosUltrapassados.innerText = qtdeCarrosUltrapassados + 1;
         }
     }
     setX(obstaculo, x = 0){
