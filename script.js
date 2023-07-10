@@ -9,6 +9,7 @@ const larguraPlayer = 50;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 const divGameOver = document.querySelector(".game-over");
+let isJogoIniciado = false;
 let isFimDeJogo = false;
 let toggleYPonto = false;
 let bufferVelocidadeAcionado = false;
@@ -83,6 +84,9 @@ class Timer{
         
         setTimeout(() => {
             const fracSegundo = 0.001;
+
+            if(!isJogoIniciado)
+                return this.inicia(contador);
 
             this.inicia(contador + fracSegundo);
         }, 1);
@@ -176,6 +180,7 @@ class EntidadeController{
         const entidade = document.querySelector(`.${className}`);
         const entidadeLeft = entidade.style.left.split("px")[0];
         const playerLeft = document.querySelector(".player").style.left.split("px")[0];
+        const topEntidade = entidade.style.top.split("px")[0];
 
         if(className === "ponto"){
             const chances = Math.floor(Math.random() * 10_000);
@@ -205,11 +210,16 @@ class EntidadeController{
             pontuacao.edita(1);
             this.setY(className);
         }
+        if(Math.abs(playerLeft - entidadeLeft) < 40 && posAtual === 440
+        && className === "gasolina"){
+            new GasolinaController().adicionaPontuacao();
+            this.setY(className);
+        }
         if(posAtual > 400 && className.includes("obstaculo") && 
             (Math.abs(playerLeft - entidadeLeft) <= 60)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
-                playgroundAudio.stopMusic();
+                playgroundAudio.stopMusic();w
                 playgroundAudio.stopOscillator();
         }
     }
@@ -265,13 +275,36 @@ class Obstaculo {
         return obstaculos;
     }
 }/////////
-class Posto {
+
+class GasolinaController {
+    constructor(){
+        this.qtdeGasolinas = document.querySelector(".gasolina-span");
+    }
+    
+    getPontuacao(){
+        return parseInt(this.qtdeGasolinas.textContent);
+    }
+
+    adicionaPontuacao(){
+        const pontos = this.getPontuacao();
+    
+        this.qtdeGasolinas.innerHTML = pontos + 1;
+    }
+
+    subtraiPontuacao(){
+        const pontos = this.getPontuacao();
+
+        if(pontos > 0) this.qtdeGasolinas.innerHTML = pontos - 1;
+    }
+}
+class Gasolina {
     constructor(){
         this.elemento = novoElemento('span', 'gasolina');
         this.velocidade = 10;
+        this.gasolinaController = new GasolinaController();
     }
 
-    getPosto(){
+    getGasolina(){
         return this.elemento;
     }
 }
@@ -348,7 +381,7 @@ class Jogo {
         this.entidadeController = new EntidadeController();
         this.ponto = new Ponto();
         this.velController = new VelController();
-        this.posto = new Posto();
+        this.posto = new Gasolina();
 
         document.addEventListener('keyup', event => {
             const teclaSolta = event.key;
@@ -370,6 +403,13 @@ class Jogo {
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(uDeslocamento);
                 await this.carro.velController.bufferizaVelocidade();
+
+                if(!isJogoIniciado){
+                    const telaStart = document.querySelector(".tela-start");
+                    
+                    isJogoIniciado = true;
+                    telaStart.style.display = "none";
+                }
 
                 bufferVelocidadeAcionado = false;
             }
@@ -397,17 +437,17 @@ class Jogo {
     }
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
-        let travaEntidade = false;
+        let [ant, prox] = [0, 0]
 
         setTimeout(() => {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
                 const top = entidade.style.top.split('px')[0];
-                const time = this.timer.docTimer.innerHTML.split(".")[0];
+                const time = parseInt(this.timer.docTimer.innerHTML.split(".")[0]);
 
-                if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
+                if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo){
                     return;
-
+                }
                 if(top > 0 && top < 16 && className !== "gasolina"){
                     this.obstaculoController.setX(entidade);
                 }
@@ -416,12 +456,22 @@ class Jogo {
 
                     this.obstaculoController.setX(entidade, posicao);
                 }
-                if(className === "gasolina" && time < 10){
+                else if(className === "gasolina" && time < 1){
                     return;
                 }
-
-                if(entidade.style.display === "none")
+                if(time > 0 && time % 2 === 0){
+                    if(ant !== prox){
+                        prox = time;
+                        
+                        this.posto.gasolinaController.subtraiPontuacao();
+                    }
+                    else{
+                        ant = time;
+                    }
+                }
+                if(entidade.style.display === "none"){
                     entidade.style.display = "inline-block";
+                }
 
                 this.entidadeController.acelera(className);
             });
@@ -433,7 +483,7 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const pontoSpan = this.ponto.getPonto();
-        const posto = this.posto.getPosto();
+        const posto = this.posto.getGasolina();
         const obstaculoSpan = this.fabricaDeObstaculo.getObstaculos();
         const elementos = [jogador];
         const entidades = [...obstaculoSpan, pontoSpan, posto];
@@ -445,7 +495,6 @@ class Jogo {
         this.distanciaController.atualizaDistancia();
         const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
-        
     }
 }
 
