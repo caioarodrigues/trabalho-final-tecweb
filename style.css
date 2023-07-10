@@ -193,7 +193,7 @@ main{
     transform: rotate(0deg);
   }
 
-.tela-start{
+.tela-start, .tela-win{
   text-align: center;
   position: absolute;
   height: 100%;
@@ -205,11 +205,15 @@ main{
   justify-content: center;
 }
 
-.tela-start h1 {
+.tela-start h1, .tela-win h1 {
   background-color: aliceblue;
   width: fit-content;
   align-self: center;
   border-radius: 5px;
   padding: 5px;
   border: solid 2px black;
+}
+
+.tela-win{
+  display: none;
 }

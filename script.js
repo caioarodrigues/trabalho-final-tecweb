@@ -449,8 +449,16 @@ class Jogo {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
                 const top = entidade.style.top.split('px')[0];
-                const time = parseInt(this.timer.docTimer.innerHTML.split(".")[0]);
+                const time = parseInt(this.timer.docTimer.innerHTML.split("px")[0]);
 
+                if(time === 30){
+                    const telaWin = document.querySelector(".tela-win");
+
+                    telaWin.style.display = "flex";
+                    telaWin.style.width = "100%";
+                    telaWin.style.height = "100%";
+                    isFimDeJogo = true;
+                }
                 if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo){
                     return;
                 }
