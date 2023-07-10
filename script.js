@@ -208,18 +208,18 @@ class EntidadeController{
             entidade.style.top = `${posAtual + velocidade}px`;
             toggleYPonto = true;
         }
-        if (posAtual > 440) {
+        if (posAtual > 350) {
             entidade.style.top = `0px`;
             toggleYPonto = false;
         }
-        if(posAtual > 400 && className === "ponto" && 
+        if(posAtual > 350 && className === "ponto" && 
             (Math.abs(playerLeft - entidadeLeft) <= 60) && !toggleYPonto){
             const pontuacao= new EscoreController();
 
             pontuacao.edita(1);
             this.setY(className);
         }
-        if(Math.abs(playerLeft - entidadeLeft) < 40 && posAtual === 440
+        if(Math.abs(playerLeft - entidadeLeft) < 40 && posAtual > 350
         && className === "gasolina"){
             new GasolinaController().adicionaPontuacao();
             this.setY(className);
@@ -231,7 +231,7 @@ class EntidadeController{
                 playgroundAudio.stopMusic();
                 playgroundAudio.stopOscillator();
         }
-        else if(posAtual > 440 && className.includes("obstaculo")){
+        else if(posAtual > 350 && className.includes("obstaculo")){
             const carrosUltrapassados = document.querySelector(".carros-ultrapassados");
             const qtdeCarrosUltrapassados = parseInt(carrosUltrapassados.innerText);
             
