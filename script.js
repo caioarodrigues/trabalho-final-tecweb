@@ -359,21 +359,22 @@ class Jogo {
         })
         document.addEventListener('keydown', async (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
+            const uDeslocamento = 20;
 
             if (teclaPressionada.toLowerCase() === 'd') {
-                this.carro.movimentaHorinzotal(20);
+                this.carro.movimentaHorinzotal(uDeslocamento);
             }
             else if (teclaPressionada.toLowerCase() === 'a') {
-                this.carro.movimentaHorinzotal(-20);
+                this.carro.movimentaHorinzotal(-uDeslocamento);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
-                this.carro.movientaVertical(10);
+                this.carro.movientaVertical(uDeslocamento);
                 await this.carro.velController.bufferizaVelocidade();
 
                 bufferVelocidadeAcionado = false;
             }
             else if (teclaPressionada.toLowerCase() === 's') {
-                this.carro.movientaVertical(-10);
+                this.carro.movientaVertical(-uDeslocamento);
             }
             else if (teclaPressionada.toLowerCase() === 'r') {
                 location.reload();
@@ -402,6 +403,7 @@ class Jogo {
             entidades.forEach(entidade => {
                 const className = entidade.classList.value.split(' ')[0];
                 const top = entidade.style.top.split('px')[0];
+                const time = this.timer.docTimer.innerHTML.split(".")[0];
 
                 if(this.velController.getVelocidadeAtual() === 0 || isFimDeJogo)
                     return;
@@ -410,7 +412,12 @@ class Jogo {
                     this.obstaculoController.setX(entidade);
                 }
                 else if (top > 0 && top < 16 && className === "gasolina"){
-                    this.obstaculoController.setX(entidade, 750)
+                    const posicao = Math.floor(Math.random() * 10) < 5 ? 10 : 760;
+
+                    this.obstaculoController.setX(entidade, posicao);
+                }
+                if(className === "gasolina" && time < 10){
+                    return;
                 }
 
                 if(entidade.style.display === "none")
