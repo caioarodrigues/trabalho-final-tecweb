@@ -13,6 +13,8 @@ let isJogoIniciado = false;
 let isFimDeJogo = false;
 let toggleYPonto = false;
 let bufferVelocidadeAcionado = false;
+let travaGasolina = false;
+let indexDelayAleatorio = -1;
 
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
@@ -21,9 +23,16 @@ function novoElemento(tagName, className) {
     return elemento;
 }
 function geraDelayAleatorio(){
+    const s = 50;
+    const s2 = 20;
+    const rs = Math.random() * 10 <= 8;
+    const rs2 = Math.random() * 10 < 5;
     const inteiro = Math.floor(Math.random() * 50)
-    const delay = Math.random() * 10;
-    const resultado = inteiro + delay;
+    const delay = 10;
+    let resultado = inteiro + delay;
+
+    if(rs && !rs2) resultado += s;
+    else if(rs && rs2) resultado += s + s2;
 
     return resultado;
 }
@@ -215,7 +224,7 @@ class EntidadeController{
             new GasolinaController().adicionaPontuacao();
             this.setY(className);
         }
-        if(posAtual > 400 && className.includes("obstaculo") && 
+        if(posAtual > 300 && className.includes("obstaculo") && 
             (Math.abs(playerLeft - entidadeLeft) <= 60)){
                 divGameOver.style.display = "flex";
                 isFimDeJogo = true;
@@ -240,14 +249,21 @@ class EntidadeController{
 
             return;
         }
-          if(indexObsAtual > 0 && indexObsAtual < 2){
+        if(indexObsAtual > 0 && indexObsAtual < 2){
             const posProxObstaculo = indexObsAtual++;
             const posProxElem = document.querySelector(`.obstaculo-${posProxObstaculo}`).style.left;
 
-            if(xAleatorio - posProxElem < 50)
-                suplemento = 50;
+            if(xAleatorio - posProxElem <= 50)
+                suplemento = 150;
             else if (xAleatorio - posProxElem > 50)
-                suplemento = -50;
+                suplemento = -150;
+        }
+        else if(indexObsAtual === 3){
+            const posPenultimoElemento = document.querySelector(".obstaculo-2").style.left;
+            const posElementoAtual = document.querySelector(".obstaculo-3").style.left
+
+            if(xAleatorio - posPenultimoElemento < 50) suplemento = 50;
+            else suplemento = -50;
         }
         obstaculo.style.left = `${xAleatorio + suplemento}px`;
     }   
@@ -257,6 +273,8 @@ class EntidadeController{
     acelera(className){
         const pos = this.getY(className); 
         
+        if(pos > 360) 
+            return this.setPosicaoInicial(className);
         this.setY(className, pos);
     }
 }
@@ -286,14 +304,14 @@ class GasolinaController {
     constructor(){
         this.qtdeGasolinas = document.querySelector(".gasolina-span");
     }
-    
+
     getPontuacao(){
         return parseInt(this.qtdeGasolinas.textContent);
     }
 
     adicionaPontuacao(){
         const pontos = this.getPontuacao();
-    
+
         this.qtdeGasolinas.innerHTML = pontos + 1;
     }
 
@@ -321,11 +339,7 @@ class FabricaDeObstaculo {
         this.obstaculos = this.obstaculo.getObstaculo();
     }
     getObstaculos(){
-        return this.obstaculos.map(({ elemento }) => {
-            console.log(`elemento = ${elemento.outerHTML}`)
-            
-            return elemento;
-        });
+        return this.obstaculos.map(({ elemento }) => elemento);
     }
 } 
 class Carro {
@@ -349,7 +363,7 @@ class Carro {
     movientaVertical(valor){
         this.velController.acelera(valor);
     }
-    movimentaHorinzotal(x){
+    movimentaHorizontal(x){
         const coordX = this.getX();
         const soma = x + coordX;
         const bgColor = this.elemento.style.backgroundColor;
@@ -363,12 +377,12 @@ class Carro {
             
             this.setX(soma);
         }
-        else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
+        else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground){
+            /*Parte modificada para dano no carro após bater nos limites da estrada, ativa o filtro de dano*/ 
+            this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
 
-        /*Parte modificada para dano no carro após bater nos limites da estrada, ativa o filtro de dano*/ 
-        this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
-
-            
+            new GasolinaController().subtraiPontuacao();
+        }
     }
 }
 
@@ -398,13 +412,13 @@ class Jogo {
         })
         document.addEventListener('keydown', async (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
-            const uDeslocamento = 20;
+            const uDeslocamento = 30;
 
             if (teclaPressionada.toLowerCase() === 'd') {
-                this.carro.movimentaHorinzotal(uDeslocamento);
+                this.carro.movimentaHorizontal(uDeslocamento);
             }
             else if (teclaPressionada.toLowerCase() === 'a') {
-                this.carro.movimentaHorinzotal(-uDeslocamento);
+                this.carro.movimentaHorizontal(-uDeslocamento);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
                 this.carro.movientaVertical(uDeslocamento);
@@ -443,15 +457,17 @@ class Jogo {
     }
     movimentaEntidade(...entidades){
         const delay = geraDelayAleatorio();
-        let [ant, prox] = [0, 0]
+        const timer = parseInt(this.timer.docTimer.innerHTML.split("px")[0]);
 
         setTimeout(() => {
-            entidades.forEach(entidade => {
+            entidades.forEach((entidade, index) => {
                 const className = entidade.classList.value.split(' ')[0];
                 const top = entidade.style.top.split('px')[0];
-                const time = parseInt(this.timer.docTimer.innerHTML.split("px")[0]);
+                const timingGasolina = 2;
+                const timingIntervaloGasolina = 3;
+                const mdc = timingGasolina * timingIntervaloGasolina;
 
-                if(time === 30){
+                if(timer === 30){
                     const telaWin = document.querySelector(".tela-win");
 
                     telaWin.style.display = "flex";
@@ -466,22 +482,21 @@ class Jogo {
                     this.obstaculoController.setX(entidade);
                 }
                 else if (top > 0 && top < 16 && className === "gasolina"){
-                    const posicao = Math.floor(Math.random() * 10) < 5 ? 10 : 760;
+                    const posicao = Math.random() * 10 < 5 ? 10 : 760;
 
                     this.obstaculoController.setX(entidade, posicao);
                 }
-                else if(className === "gasolina" && time < 1){
+                else if(className === "gasolina" && timer < 1){
                     return;
                 }
-                if(time > 0 && time % 2 === 0){
-                    if(ant !== prox){
-                        prox = time;
-                        
-                        this.posto.gasolinaController.subtraiPontuacao();
-                    }
-                    else{
-                        ant = time;
-                    }
+                if((timer > 0 && (timer % 2 === 0 || timer % mdc === 0)) && !travaGasolina){
+                    new GasolinaController().subtraiPontuacao();
+                    travaGasolina = true;
+                    
+                    return;
+                }
+                else if(timer % 3 === 0 && travaGasolina){
+                    travaGasolina = false;
                 }
                 if(entidade.style.display === "none"){
                     entidade.style.display = "inline-block";
@@ -501,13 +516,13 @@ class Jogo {
         const obstaculoSpan = this.fabricaDeObstaculo.getObstaculos();
         const elementos = [jogador];
         const entidades = [...obstaculoSpan, pontoSpan, posto];
+        const periodoDia = new PeriodoDia();
 
         this.insereNoPlayground(...elementos);
         this.insereEntidade(...entidades);
         this.timer.inicia();
         this.movimentaEntidade(...entidades);
         this.distanciaController.atualizaDistancia();
-        const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
     }
 }
