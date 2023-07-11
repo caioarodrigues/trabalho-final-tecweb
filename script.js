@@ -489,11 +489,12 @@ class Jogo {
                 else if(className === "gasolina" && timer < 1){
                     return;
                 }
-                if((timer > 0 && (timer % 2 === 0 || timer % mdc === 0)) && !travaGasolina){
+                if(timer > 0 && timer % mdc === 0 && !travaGasolina){
+                    travaGasolina = true;
+                }
+                if(timer > 0 && (timer % 2 === 0 && !travaGasolina)){
                     new GasolinaController().subtraiPontuacao();
                     travaGasolina = true;
-                    
-                    return;
                 }
                 else if(timer % 3 === 0 && travaGasolina){
                     travaGasolina = false;
