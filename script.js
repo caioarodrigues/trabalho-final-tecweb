@@ -266,6 +266,7 @@ class PistaAnimacao {
     moveDivsToRight(tempoDeTransicao) {
       const divLayers = document.querySelectorAll('.container .div-layer'); 
       const montanha = document.querySelector('.montanha');
+      let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
      
       for (var i = 0; i < 70; i++) {
         var div = divLayers[i];
@@ -274,8 +275,9 @@ class PistaAnimacao {
         div.style.marginLeft = newMargin + 'px';
         div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
       }
-      montanha.style.marginRight = 200 + 'px';
-      montanha.style.transition = `margin-right ${tempoDeTransicao*5}s ease`;
+      
+      montanha.style.marginRight = currentMargin2+200 + 'px';
+      montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
       
     }
     
@@ -283,6 +285,7 @@ class PistaAnimacao {
     moveDivsToLeft(tempoDeTransicao) {
       const divLayers = document.querySelectorAll('.container .div-layer'); 
       const montanha = document.querySelector('.montanha');
+      let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
       
       for (var i = 0; i < 70; i++) {
         var div = divLayers[i];
@@ -292,8 +295,8 @@ class PistaAnimacao {
         div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
       }
       
-      montanha.style.marginLeft = 200 + 'px';
-      montanha.style.transition = `margin-left ${tempoDeTransicao*5}s ease`;
+      montanha.style.marginLeft = currentMargin2+200 + 'px';
+      montanha.style.transition = `margin-left ${tempoDeTransicao*3}s ease`;
     }
    
     
@@ -563,28 +566,28 @@ function curvasAnimacao(velocidade) {
     if (elapsedTime > 500 && elapsedTime < 1500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 29500 && elapsedTime < 30500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 2500 && elapsedTime < 3500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 31500 && elapsedTime < 32500 /*&& velocidade>0*/) {
-      pistaAnimacao.moveDivsToRight(10);
+    } else if (elapsedTime > 5500 && elapsedTime < 6500 /*&& velocidade>0*/) {
+      pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 43500 && elapsedTime < 44500 /*&& velocidade>0*/) {
-      pistaAnimacao.moveDivsToLeft(10);
-      
-    } else if (elapsedTime > 62500 && elapsedTime < 63500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 9500 && elapsedTime < 10500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 73500 && elapsedTime < 74500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 12500 && elapsedTime < 13500 /*&& velocidade>0*/) {
+      pistaAnimacao.moveDivsToLeft(1);
+      
+    } else if (elapsedTime > 17500 && elapsedTime < 18500 /*&& velocidade>0*/) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 75500 && elapsedTime < 76500 /*&& velocidade>0*/) {
-      pistaAnimacao.moveDivsToLeft(10);
+    } else if (elapsedTime > 21500 && elapsedTime < 22500 /*&& velocidade>0*/) {
+      pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 95500 && elapsedTime < 96500 /*&& velocidade>0*/) {
-      pistaAnimacao.moveDivsToRight(10);
+    } else if (elapsedTime > 23500 && elapsedTime < 24500 /*&& velocidade>0*/) {
+      pistaAnimacao.moveDivsToRight(1);
       
-    }else if(elapsedTime > 107500 /*&& velocidade>0*/) {
+    }else if(elapsedTime > 24500 /*&& velocidade>0*/) {
       // Reinicie o elapsedTime com um novo startTime e currentTime
       startTime = Date.now();
       elapsedTime = 0;
