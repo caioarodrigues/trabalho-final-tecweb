@@ -143,7 +143,7 @@ main{
     flex-direction: column;
    background-color: green;
    position: relative;
- 
+  
     
     
 }
@@ -154,16 +154,17 @@ main{
   overflow: hidden;
   background-size: cover;
    /* Define a origem da transformação no centro da parte inferior da div */
-   transition: margin-left 12s ease;
+  /* transition: margin-left 12s ease;*/
 
 }
 
-  .container {
+  #container {
     height: 400px; /* Defina a altura desejada para a pilha de divs */ 
     margin-top: 180px;
     align-items:center;
     display: flex;
     flex-direction: column;
+    
     
   }
 
@@ -177,6 +178,7 @@ main{
     filter: brightness(1) grayscale(1%) sepia(2%);
     display: flex;
     justify-content: center;
+    z-index: 2;
   }
 
   .montanha{
@@ -206,19 +208,19 @@ main{
 }
 */
 
-.container {
-  position: relative;
-
-}
-
-.car-enemy {
+  
+#movingDiv {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  background-color: red;
-  opacity: 0.2; /* Inicialmente, a div é transparente 
-  */
-  z-index: 3;
+  background-image: url('/Sprites/carBack.gif');
+  background-size: 100% 100%;
+ 
+  z-index: 2;
+  bottom: 0;
 }
+
+
+
+
+
 
 

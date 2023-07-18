@@ -69,22 +69,18 @@ class velController {
             this.docVel.innerHTML = velocidadeFinal;
 
         if(velocidadeFinal===0){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
+            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
             manager.distributeImage();}
-        if(velocidadeFinal>0 && velocidadeFinal<30){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/devagar.gif');
+        if(velocidadeFinal>0 && velocidadeFinal<40){
+            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
             manager.distributeImage();
             }
-        if(velocidadeFinal>30 && velocidadeFinal<60){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/medio.gif');
+        if(velocidadeFinal>40 && velocidadeFinal<80){
+            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
             manager.distributeImage();
             }
-        if(velocidadeFinal>60 && velocidadeFinal<90){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/rapido.gif');
-            manager.distributeImage();
-            }
-        if(velocidadeFinal>90&&velocidadeFinal<120){
-            const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/muito_rapido.gif');
+        if(velocidadeFinal>80 && velocidadeFinal<120){
+            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
             manager.distributeImage();
             }
 
@@ -226,10 +222,14 @@ class FabricaDeObstaculo {
 /*////////////////////////////////criação da pista //////////////////////////////////////////*/
 class PistaAnimacao {
     constructor() {
-      this.container = document.querySelector('.container');
+      this.container = document.querySelector('#container');
+      this.inimigos = document.querySelector('#movingDiv');
+      
       
     }
-  
+
+    
+    
     novoElemento(tagName, className) {
       const elemento = document.createElement(tagName);
       elemento.className = className;
@@ -242,6 +242,7 @@ class PistaAnimacao {
           const primeiraDiv = this.container.firstChild;
           if (primeiraDiv) {
             this.container.insertBefore(div, primeiraDiv);
+           // this.inimigos.style.marginLeft='1px';
           } else {
             this.container.appendChild(div);
           }
@@ -250,7 +251,7 @@ class PistaAnimacao {
       
   
     empilhamento() {
-      const divLayers = document.querySelectorAll('.container .div-layer');
+      const divLayers = document.querySelectorAll('#container .div-layer');
       
       for (let i = 0; i < divLayers.length; i++) {
         const widthPercentage =(i * 1);
@@ -264,7 +265,7 @@ class PistaAnimacao {
     }
     
     moveDivsToRight(tempoDeTransicao) {
-      const divLayers = document.querySelectorAll('.container .div-layer'); 
+      const divLayers = document.querySelectorAll('#container .div-layer'); 
       const montanha = document.querySelector('.montanha');
       let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
      
@@ -283,7 +284,7 @@ class PistaAnimacao {
     
     
     moveDivsToLeft(tempoDeTransicao) {
-      const divLayers = document.querySelectorAll('.container .div-layer'); 
+      const divLayers = document.querySelectorAll('#container .div-layer'); 
       const montanha = document.querySelector('.montanha');
       let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
       
@@ -543,7 +544,7 @@ class Jogo {
 
         this.insereNoPlayground(...elementos);
         this.insereObstaculo(...obstaculosSpan); //CAIOÃ
-        const manager = new ImageDivManager('.container', '.div-layer', 6, 517, '/cenarios/pista/frame1.png');
+        const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
         this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
         curvasAnimacao();
@@ -553,8 +554,9 @@ class Jogo {
 
 
 
-function curvasAnimacao(velocidade) {
+function curvasAnimacao() {
   var startTime = Date.now();
+  
 
   function atualizarTimer() {
     var currentTime = Date.now();
@@ -563,31 +565,31 @@ function curvasAnimacao(velocidade) {
     
   
     // Verifique o valor do elapsedTime e ative o método da outra classe, se necessário
-    if (elapsedTime > 500 && elapsedTime < 1500 /*&& velocidade>0*/) {
+    if (elapsedTime > 500 && elapsedTime < 1500 ) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 2500 && elapsedTime < 3500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 2500 && elapsedTime < 3500 ) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 5500 && elapsedTime < 6500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 5500 && elapsedTime < 6500 ) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 9500 && elapsedTime < 10500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 9500 && elapsedTime < 10500 ) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 12500 && elapsedTime < 13500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 12500 && elapsedTime < 13500 ) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 17500 && elapsedTime < 18500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 17500 && elapsedTime < 18500 ) {
       pistaAnimacao.moveDivsToRight(1);
       
-    } else if (elapsedTime > 21500 && elapsedTime < 22500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 21500 && elapsedTime < 22500 ) {
       pistaAnimacao.moveDivsToLeft(1);
       
-    } else if (elapsedTime > 23500 && elapsedTime < 24500 /*&& velocidade>0*/) {
+    } else if (elapsedTime > 23500 && elapsedTime < 24500 ) {
       pistaAnimacao.moveDivsToRight(1);
       
-    }else if(elapsedTime > 24500 /*&& velocidade>0*/) {
+    }else if(elapsedTime > 24500 ) {
       // Reinicie o elapsedTime com um novo startTime e currentTime
       startTime = Date.now();
       elapsedTime = 0;
@@ -600,15 +602,120 @@ function curvasAnimacao(velocidade) {
   // Inicie o timer pela primeira vez
   atualizarTimer();
 }
+/////////////////////////////////////////////////////////
+class MovingDiv {
+  constructor(containerId) {
+    this.speed = 1; // Velocidade inicial
+    this.maxSpeed = 5; // Velocidade máxima
+    this.minSpeed = -5; // Velocidade mínima
+    this.interval = null;
+    this.isPageVisible = true;
+    this.container = document.getElementById(containerId);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "w") {
+        this.speed += 0.2; // Aumenta a velocidade ao pressionar 'w'
+        if (this.speed > this.maxSpeed) {
+          this.speed = this.maxSpeed; // Define a velocidade máxima
+        }
+      } else if (event.key === "s") {
+        this.speed -= 0.2; // Diminui a velocidade ao pressionar 's'
+        if (this.speed < this.minSpeed) {
+          this.speed = this.minSpeed; // Define a velocidade mínima
+        }
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        this.isPageVisible = true; // A página está visível, retome o setInterval
+      } else {
+        this.isPageVisible = false; // A página não está visível, pare o setInterval
+      }
+    });
+  }
+
+  start() {
+    this.interval = setInterval(() => {
+      this.moveDiv();
+    }, 1000); // Cria uma nova div a cada 1 segundo
+  }
+
+  stop() {
+    clearInterval(this.interval);
+  }
+
+  moveDiv() {
+    if (this.speed > 0.5 && this.isPageVisible) {
+      var divInimigo = document.createElement("div");
+      divInimigo.id = "movingDiv";
+
+      let numeroAleatorio = Math.floor(Math.random() * 101) - 50; // Gera um número aleatório entre -20 e 20
+      divInimigo.style.left = numeroAleatorio + 'px';
+
+
+
+      let containerWidth = this.container.offsetWidth;
+      let containerHeight = this.container.offsetHeight;
+      
+      let containerLeft = this.container.offsetLeft;
+      
+      let varMarginInitial =containerLeft + (containerWidth/2) ;
+
+      let randomMarginLeft = Math.floor(
+        Math.random() * (containerWidth - 100)
+      ); // Ajuste o valor "100" de acordo com a largura desejada para as divs
+
+      let horizontal = Math.floor(varMarginInitial - randomMarginLeft);
+      let taxaHorPorVert = horizontal / containerHeight;
+
+      divInimigo.style.marginLeft = varMarginInitial + "px";
+
+      // Generate a random filter color
+      const randomColor = this.generateRandomColor();
+      divInimigo.style.filter = `hue-rotate(${randomColor})`;
+
+      this.container.appendChild(divInimigo);
+
+      let currentPos = 0;
+      let frameInterval = setInterval(() => {
+      
+
+        if (currentPos >= containerHeight) {
+          clearInterval(frameInterval);
+          this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
+        } else {
+          currentPos += this.speed;
+          divInimigo.style.bottom = containerHeight - currentPos + "px";
+          if (taxaHorPorVert >= 0) {
+            divInimigo.style.marginLeft =
+              varMarginInitial - (currentPos) * taxaHorPorVert + "px";
+          } else {
+            divInimigo.style.marginLeft =
+              varMarginInitial - (currentPos) * taxaHorPorVert + "px";
+          }
+
+          divInimigo.style.width = 14+currentPos / 3 + "px";
+          divInimigo.style.height =8+ currentPos / 4 + "px";
+          divInimigo.style.opacity = 5*currentPos / containerHeight;
+        }
+      }, this.speed);
+    }
+  }
+
+  generateRandomColor() {
+    const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
+    return `${hue}deg`;
+  }
+}
+
+const movingDivInstance = new MovingDiv("container");
+movingDivInstance.start();
 
 
 
 
-
-
-
-
-
+////////////////////////////////////////////////////////////////
 const jogo = new Jogo();
 jogo.inicia();
 
