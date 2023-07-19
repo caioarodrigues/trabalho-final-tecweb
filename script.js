@@ -142,7 +142,7 @@ class Pista {
 
         this.elemento.appendChild(this.bordaEsquerda);
         this.elemento.appendChild(this.bordaDireita);
-        const pistAnima = new PistaAnimacao();
+        const pistAnima = new MovingDiv();
         pistAnima.criarDivs();
         pistAnima.empilhamento();
         
@@ -216,104 +216,6 @@ class FabricaDeObstaculo {
   }
 }
 /*//////////////adição CAIOÃ //////////////////*/
-
-
-
-/*////////////////////////////////criação da pista //////////////////////////////////////////*/
-class PistaAnimacao {
-    constructor() {
-      this.container = document.querySelector('#container');
-      this.inimigos = document.querySelector('#movingDiv');
-      
-      
-    }
-
-    
-    
-    novoElemento(tagName, className) {
-      const elemento = document.createElement(tagName);
-      elemento.className = className;
-      return elemento;
-    }
-  
-    criarDivs() {
-        for (let i = 0; i < 100; i++) {
-          const div = this.novoElemento('div', 'div-layer');
-          const primeiraDiv = this.container.firstChild;
-          if (primeiraDiv) {
-            this.container.insertBefore(div, primeiraDiv);
-           // this.inimigos.style.marginLeft='1px';
-          } else {
-            this.container.appendChild(div);
-          }
-        }
-      }
-      
-  
-    empilhamento() {
-      const divLayers = document.querySelectorAll('#container .div-layer');
-      
-      for (let i = 0; i < divLayers.length; i++) {
-        const widthPercentage =(i * 1);
-  
-        divLayers[i].style.width = widthPercentage + '%';   
-        
-        if (i >= 0 && i < 30) {
-            divLayers[i].remove();
-          }
-      }
-    }
-    
-    moveDivsToRight(tempoDeTransicao) {
-      const divLayers = document.querySelectorAll('#container .div-layer'); 
-      const montanha = document.querySelector('.montanha');
-      let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
-     
-      for (var i = 0; i < 70; i++) {
-        var div = divLayers[i];
-        var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
-        var newMargin = currentMargin + Math.exp((50 - i/2) / 8);      
-        div.style.marginLeft = newMargin + 'px';
-        div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
-      }
-      
-      montanha.style.marginRight = currentMargin2+200 + 'px';
-      montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
-      
-    }
-    
-    
-    moveDivsToLeft(tempoDeTransicao) {
-      const divLayers = document.querySelectorAll('#container .div-layer'); 
-      const montanha = document.querySelector('.montanha');
-      let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
-      
-      for (var i = 0; i < 70; i++) {
-        var div = divLayers[i];
-        var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
-        var newMargin = currentMargin + Math.exp((50 - i / 2) / 8);      
-        div.style.marginRight = newMargin + 'px';
-        div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
-      }
-      
-      montanha.style.marginLeft = currentMargin2+200 + 'px';
-      montanha.style.transition = `margin-left ${tempoDeTransicao*3}s ease`;
-    }
-   
-    
-
-
-  }
-
-  
-/*////////////////////////////////criação da pista //////////////////////////////////////////*/
-
-
-
-
-
-
-
 
 /*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
 
@@ -449,12 +351,12 @@ const playgroundAudio = new PlaygroundAudio();
 
 
 
-/*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/
+/*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////
   
 document.addEventListener('keydown', (event) => {
     const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
     const player = document.querySelector('.player');
-    const pistAnima2 = new PistaAnimacao();
+   
     if (teclaPressionada === 'w') { 
         
        // pistAnima2.moveDivsToRight(3);
@@ -470,7 +372,7 @@ document.addEventListener('keydown', (event) => {
       player.classList.add('s');
       player.classList.remove('w', 'a', 'd');
      
-     // pistAnima2.moveDivsToLeft(3);
+     
     }
   });
  /*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/ 
@@ -499,11 +401,11 @@ class Jogo {
                 this.carro.movimentaHorinzotal(-10);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
-                this.carro.movientaVertical(10);
+                this.carro.movientaVertical(5);
                 !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
             }
             else if (teclaPressionada.toLowerCase() === 's') {
-                this.carro.movientaVertical(-10);
+                this.carro.movientaVertical(-5);
             }
         });
     }
@@ -561,33 +463,33 @@ function curvasAnimacao() {
   function atualizarTimer() {
     var currentTime = Date.now();
     var elapsedTime = currentTime - startTime;
-    const pistaAnimacao = new PistaAnimacao();
+    const movingDiv = new MovingDiv();
     
   
     // Verifique o valor do elapsedTime e ative o método da outra classe, se necessário
     if (elapsedTime > 500 && elapsedTime < 1500 ) {
-      pistaAnimacao.moveDivsToLeft(1);
+      movingDiv.moveDivsToLeft(1);
       
     } else if (elapsedTime > 2500 && elapsedTime < 3500 ) {
-      pistaAnimacao.moveDivsToRight(1);
+      movingDiv.moveDivsToRight(1);
       
     } else if (elapsedTime > 5500 && elapsedTime < 6500 ) {
-      pistaAnimacao.moveDivsToRight(1);
+      movingDiv.moveDivsToRight(1);
       
     } else if (elapsedTime > 9500 && elapsedTime < 10500 ) {
-      pistaAnimacao.moveDivsToLeft(1);
+      movingDiv.moveDivsToLeft(1);
       
     } else if (elapsedTime > 12500 && elapsedTime < 13500 ) {
-      pistaAnimacao.moveDivsToLeft(1);
+      movingDiv.moveDivsToLeft(1);
       
     } else if (elapsedTime > 17500 && elapsedTime < 18500 ) {
-      pistaAnimacao.moveDivsToRight(1);
+      movingDiv.moveDivsToRight(1);
       
     } else if (elapsedTime > 21500 && elapsedTime < 22500 ) {
-      pistaAnimacao.moveDivsToLeft(1);
+      movingDiv.moveDivsToLeft(1);
       
     } else if (elapsedTime > 23500 && elapsedTime < 24500 ) {
-      pistaAnimacao.moveDivsToRight(1);
+      movingDiv.moveDivsToRight(1);
       
     }else if(elapsedTime > 24500 ) {
       // Reinicie o elapsedTime com um novo startTime e currentTime
@@ -611,6 +513,7 @@ class MovingDiv {
     this.interval = null;
     this.isPageVisible = true;
     this.container = document.getElementById(containerId);
+    this.container2= document.querySelector('#container');
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "w") {
@@ -646,11 +549,12 @@ class MovingDiv {
   }
 
   moveDiv() {
+    const divLayers = document.querySelectorAll('#container .div-layer');
     if (this.speed > 0.5 && this.isPageVisible) {
       var divInimigo = document.createElement("div");
       divInimigo.id = "movingDiv";
 
-      let numeroAleatorio = Math.floor(Math.random() * 101) - 50; // Gera um número aleatório entre -20 e 20
+      let numeroAleatorio = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
       divInimigo.style.left = numeroAleatorio + 'px';
 
 
@@ -660,11 +564,16 @@ class MovingDiv {
       
       let containerLeft = this.container.offsetLeft;
       
-      let varMarginInitial =containerLeft + (containerWidth/2) ;
+      let varMarginInitial =containerLeft + (containerWidth/2)-80 ;
 
       let randomMarginLeft = Math.floor(
-        Math.random() * (containerWidth - 100)
+        Math.random() * (containerWidth - 200)
       ); // Ajuste o valor "100" de acordo com a largura desejada para as divs
+
+
+
+
+      
 
       let horizontal = Math.floor(varMarginInitial - randomMarginLeft);
       let taxaHorPorVert = horizontal / containerHeight;
@@ -687,17 +596,33 @@ class MovingDiv {
         } else {
           currentPos += this.speed;
           divInimigo.style.bottom = containerHeight - currentPos + "px";
+
+          
+
           if (taxaHorPorVert >= 0) {
             divInimigo.style.marginLeft =
-              varMarginInitial - (currentPos) * taxaHorPorVert + "px";
+              varMarginInitial - (currentPos) * taxaHorPorVert*0.50 + "px";
           } else {
             divInimigo.style.marginLeft =
-              varMarginInitial - (currentPos) * taxaHorPorVert + "px";
+              varMarginInitial - (currentPos) * taxaHorPorVert*2 + "px";
           }
 
           divInimigo.style.width = 14+currentPos / 3 + "px";
           divInimigo.style.height =8+ currentPos / 4 + "px";
           divInimigo.style.opacity = 5*currentPos / containerHeight;
+
+        
+          const divBottom =402-parseInt(divInimigo.style.bottom);
+          const constIndice = Math.floor(parseInt(divBottom/6));
+
+          const divLayer = divLayers[constIndice];  
+
+
+        const divLayerMarginLeft = divLayer.offsetLeft;
+        
+          var MarginLeft = divLayerMarginLeft;
+        
+        divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px";
         }
       }, this.speed);
     }
@@ -706,6 +631,81 @@ class MovingDiv {
   generateRandomColor() {
     const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
     return `${hue}deg`;
+  }
+
+  
+  novoElemento(tagName, className) {
+    const elemento = document.createElement(tagName);
+    elemento.className = className;
+    return elemento;
+  }
+
+  criarDivs() {
+      for (let i = 0; i < 100; i++) {
+        const div = this.novoElemento('div', 'div-layer');
+        const primeiraDiv = this.container2.firstChild;
+        if (primeiraDiv) {
+          this.container2.insertBefore(div, primeiraDiv);
+         // this.inimigos.style.marginLeft='1px';
+        } else {
+          this.container2.appendChild(div);
+        }
+      }
+    }
+    
+
+  empilhamento() {
+    const divLayers = document.querySelectorAll('#container .div-layer');
+    
+    for (let i = 0; i < divLayers.length; i++) {
+      const widthPercentage =(i * 1);
+
+      divLayers[i].style.width = widthPercentage + '%';   
+      
+      if (i >= 0 && i < 30) {
+          divLayers[i].remove();
+        }
+    }
+  }
+
+  moveDivsToRight(tempoDeTransicao) {
+    const divLayers = document.querySelectorAll('#container .div-layer'); 
+    const montanha = document.querySelector('.montanha');
+    let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
+   
+    for (var i = 0; i < 70; i++) {
+      var div = divLayers[i];
+      var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
+      var newMargin = currentMargin + Math.exp((50 - i/2) / 8);      
+      div.style.marginLeft = newMargin + 'px';
+     
+      
+      div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
+    }
+    
+    montanha.style.marginRight = currentMargin2+200 + 'px';
+    montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
+    
+  }
+  
+  
+  moveDivsToLeft(tempoDeTransicao) {
+    const divLayers = document.querySelectorAll('#container .div-layer'); 
+    const inimigos = document.querySelectorAll('#container #movingDiv');
+    const montanha = document.querySelector('.montanha');
+    let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
+    
+    for (var i = 0; i < 70; i++) {
+      var div = divLayers[i];
+      var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
+      var newMargin = currentMargin + Math.exp((50 - i / 2) / 8);      
+      div.style.marginRight = newMargin + 'px';
+      
+      div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
+    }
+    
+    montanha.style.marginLeft = currentMargin2+200 + 'px';
+    montanha.style.transition = `margin-left ${tempoDeTransicao*3}s ease`;
   }
 }
 

@@ -159,7 +159,7 @@ main{
 }
 
   #container {
-    height: 400px; /* Defina a altura desejada para a pilha de divs */ 
+    height: 420px; /* Defina a altura desejada para a pilha de divs */ 
     margin-top: 180px;
     align-items:center;
     display: flex;
