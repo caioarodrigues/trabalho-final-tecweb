@@ -743,10 +743,10 @@ class PeriodoDia {
         containerFilter: 'brightness(120%) contrast(100%) saturate(10%)'
       },
       {
-        backgroundColor: 'brown', // Cerrado
+        backgroundColor: 'DarkSlateGray', // Cerrado
         montanhaBackgroundImage: 'url(/cenarios/montanhas/montanha1.png)',
-        horizonteBackgroundImage: 'url(path/to/cerrado-horizonte.jpg)',
-        containerFilter: 'brightness(20%) contrast(50%) saturate(200%) blur(1px)'
+        horizonteBackgroundImage: 'url(cenarios/tempo_dia/cerrado.gif)',
+        containerFilter: 'brightness(40%) contrast(80%) saturate(90%) blur(2px)'
       }
     ];
     this.currentIndex = 0;
@@ -757,7 +757,7 @@ class PeriodoDia {
     setInterval(() => {
       this.currentIndex = (this.currentIndex + 1) % this.filters.length;
       this.changeColors();
-    }, 1000);
+    }, 2000);
   }
 
   changeColors() {
@@ -770,6 +770,7 @@ class PeriodoDia {
     this.container.style.filter = currentFilter.containerFilter;
 
     if (this.currentIndex === 3) {
+      this.montanha.style.filter = 'brightness(20%)';
       const fumacaDiv = document.createElement('div');
       fumacaDiv.classList.add('fumaca');
       this.espacoJogador.appendChild(fumacaDiv);
