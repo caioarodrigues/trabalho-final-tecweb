@@ -444,6 +444,8 @@ class Jogo {
         const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
         this.timer.inicia();
 
+         const periodoDia = new PeriodoDia();
+        periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
         this.insereObstaculo(...obstaculosSpan); //CAIOÃ
         const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
@@ -711,6 +713,82 @@ class MovingDiv {
 
 const movingDivInstance = new MovingDiv("container");
 movingDivInstance.start();
+
+
+class PeriodoDia {
+  constructor() {
+    this.espacoJogador = document.querySelector('.espaco-jogador');
+    this.montanha = document.querySelector('.montanha');
+    this.horizonte = document.querySelector('.horizonte');
+    this.container = document.querySelector('#container');
+
+
+    this.filters = [
+      {
+        backgroundColor: 'green', // Dia
+        montanhaBackgroundImage: 'url(/cenarios/montanhas/montanha1.png)',
+        horizonteBackgroundImage: 'url(cenarios/tempo_dia/nuvens.gif)',
+        containerFilter: 'brightness(120%) contrast(100%) saturate(120%)'
+      },
+      {
+        backgroundColor: 'black', // Noite
+        montanhaBackgroundImage: 'url(/cenarios/montanhas/montanha1.png)',
+        horizonteBackgroundImage: 'url(cenarios/tempo_dia/noite.gif)',
+        containerFilter: 'brightness(15%) contrast(100%) saturate(1000%)'
+      },
+      {
+        backgroundColor: 'white', // Neve
+        montanhaBackgroundImage: 'url(/cenarios/montanhas/montanha2.png)',
+        horizonteBackgroundImage: 'url(cenarios/tempo_dia/neve.gif)',
+        containerFilter: 'brightness(120%) contrast(100%) saturate(10%)'
+      },
+      {
+        backgroundColor: 'brown', // Cerrado
+        montanhaBackgroundImage: 'url(/cenarios/montanhas/montanha1.png)',
+        horizonteBackgroundImage: 'url(path/to/cerrado-horizonte.jpg)',
+        containerFilter: 'brightness(20%) contrast(50%) saturate(200%) blur(1px)'
+      }
+    ];
+    this.currentIndex = 0;
+  }
+
+  startAnimation() {
+    this.changeColors();
+    setInterval(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.filters.length;
+      this.changeColors();
+    }, 1000);
+  }
+
+  changeColors() {
+    const currentFilter = this.filters[this.currentIndex];
+    
+    this.espacoJogador.style.backgroundColor = currentFilter.backgroundColor;
+    this.montanha.style.backgroundImage = currentFilter.montanhaBackgroundImage;
+    this.montanha.style.filter = currentFilter.containerFilter;
+    this.horizonte.style.backgroundImage = currentFilter.horizonteBackgroundImage;
+    this.container.style.filter = currentFilter.containerFilter;
+
+    if (this.currentIndex === 3) {
+      const fumacaDiv = document.createElement('div');
+      fumacaDiv.classList.add('fumaca');
+      this.espacoJogador.appendChild(fumacaDiv);
+    } else {
+      const fumacaDiv = document.querySelector('.fumaca');
+      if (fumacaDiv) {
+        this.espacoJogador.removeChild(fumacaDiv);
+      }
+    }
+    
+  }
+}
+
+const periodoDia = new PeriodoDia();
+setTimeout(() => {
+  periodoDia.startAnimation();
+}, 5000); // Aguarda 5 segundos antes de iniciar a animação
+
+
 
 
 
