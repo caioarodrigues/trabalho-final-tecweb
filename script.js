@@ -401,11 +401,11 @@ class Jogo {
                 this.carro.movimentaHorinzotal(-10);
             }
             else if (teclaPressionada.toLowerCase() === 'w') {
-                this.carro.movientaVertical(5);
+                this.carro.movientaVertical(6);
                 !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
             }
             else if (teclaPressionada.toLowerCase() === 's') {
-                this.carro.movientaVertical(-5);
+                this.carro.movientaVertical(-6);
             }
         });
     }
@@ -509,9 +509,9 @@ function curvasAnimacao() {
 /////////////////////////////////////////////////////////
 class MovingDiv {
   constructor(containerId) {
-    this.speed = 1; // Velocidade inicial
-    this.maxSpeed = 5; // Velocidade máxima
-    this.minSpeed = -5; // Velocidade mínima
+    this.speed = 0; // Velocidade inicial
+    this.maxSpeed = 2; // Velocidade máxima
+    this.minSpeed = -2; // Velocidade mínima
     this.interval = null;
     this.isPageVisible = true;
     this.container = document.getElementById(containerId);
@@ -519,12 +519,12 @@ class MovingDiv {
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "w") {
-        this.speed += 0.2; // Aumenta a velocidade ao pressionar 'w'
+        this.speed += 0.1; // Aumenta a velocidade ao pressionar 'w'
         if (this.speed > this.maxSpeed) {
           this.speed = this.maxSpeed; // Define a velocidade máxima
         }
       } else if (event.key === "s") {
-        this.speed -= 0.2; // Diminui a velocidade ao pressionar 's'
+        this.speed -= 0.1; // Diminui a velocidade ao pressionar 's'
         if (this.speed < this.minSpeed) {
           this.speed = this.minSpeed; // Define a velocidade mínima
         }
@@ -570,12 +570,7 @@ class MovingDiv {
 
       let randomMarginLeft = Math.floor(
         Math.random() * (containerWidth - 200)
-      ); // Ajuste o valor "100" de acordo com a largura desejada para as divs
-
-
-
-
-      
+      ); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
 
       let horizontal = Math.floor(varMarginInitial - randomMarginLeft);
       let taxaHorPorVert = horizontal / containerHeight;
@@ -757,17 +752,10 @@ class PeriodoDia {
     setInterval(() => {
       this.currentIndex = (this.currentIndex + 1) % this.filters.length;
       this.changeColors();
-    }, 2000);
+    }, 15000);
   }
 
   changeColors() {
-    const currentFilter = this.filters[this.currentIndex];
-    
-    this.espacoJogador.style.backgroundColor = currentFilter.backgroundColor;
-    this.montanha.style.backgroundImage = currentFilter.montanhaBackgroundImage;
-    this.montanha.style.filter = currentFilter.containerFilter;
-    this.horizonte.style.backgroundImage = currentFilter.horizonteBackgroundImage;
-    this.container.style.filter = currentFilter.containerFilter;
 
     if (this.currentIndex === 3) {
       this.montanha.style.filter = 'brightness(20%)';
@@ -780,19 +768,22 @@ class PeriodoDia {
         this.espacoJogador.removeChild(fumacaDiv);
       }
     }
+
+    const currentFilter = this.filters[this.currentIndex];
+    
+    this.espacoJogador.style.backgroundColor = currentFilter.backgroundColor;
+    this.montanha.style.backgroundImage = currentFilter.montanhaBackgroundImage;
+    this.montanha.style.filter = currentFilter.containerFilter;
+    this.horizonte.style.backgroundImage = currentFilter.horizonteBackgroundImage;
+    this.container.style.filter = currentFilter.containerFilter;
+
+    
     
   }
 }
 
 const periodoDia = new PeriodoDia();
-setTimeout(() => {
-  periodoDia.startAnimation();
-}, 5000); // Aguarda 5 segundos antes de iniciar a animação
-
-
-
-
-
+periodoDia.startAnimation();
 
 ////////////////////////////////////////////////////////////////
 const jogo = new Jogo();
