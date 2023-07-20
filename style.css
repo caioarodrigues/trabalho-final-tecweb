@@ -11,9 +11,26 @@
 
 }
 
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: cornflowerblue;
+}
+
+.start-button {
+  padding: 10px 20px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+
 main{
     height: 100vh;
-    background-color: cornflowerblue;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
