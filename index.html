@@ -8,6 +8,8 @@
     <title>Enduro</title>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
 </head>
 
 <body>
@@ -16,6 +18,16 @@
             <h1>ENDURO</h1>
         </section>
         <section class="playground">
+            <div class="start-screen">
+                <h2>Welcome to Enduro!</h2>
+                <label for="difficulty-select">Select the difficulty</label>
+                <select id="difficulty-select">
+                  <option value="1000">Easy</option>
+                  <option value="800">Normal</option>
+                  <option value="600">Hard</option>
+                </select>
+                <button class="start-button">Iniciar</button>
+            </div>
             <div class="obstaculos"></div>
             <div class="espaco-jogador">
                 <div class="horizonte">
@@ -25,23 +37,48 @@
 
                 </div>
             </div>
-            <div class="metricas">
-                <div class="display">
-                    <div>
-                        <span class="timer"></span>
-                        <span>s</span>
-                    </div>
-                    <div class="escores">
-                        <span class="pontos">0 pontos</span>
-                        <span class="distancia">0 km</span>
-                    </div>
-                    <div class="velocidade-div">
-                        <span class="velocidade-span">0</span>
-                        <span>km/h</span>
-                    </div>
+            
+        </section>
+        <div class="metricas">
+            <div class="display">
+                
+                <div class="relogio">
+                    <i class="fas fa-clock" style="font-size: 24px; color: #ff6600;"></i>
+
+                    <span class="timer"></span>
+                </div>
+
+                <div class=ranking">
+                    <span class="pontos">0 pl</span>
+                </div>
+
+
+                <div class=pontuacao">
+                    
+                    <span class="pontos">Pts:0 pts</span>
+                    <span class="pontosMax">MxPts:0 pts</span>
+                </div>
+
+
+                
+
+                <div class="escores">
+                    <span class="distancia">
+                        <i class="fas fa-road" style="font-size: 40px; color: #007bff;"></i> 0 km</span>
+                </div>
+
+                <div class="velocidade-div">
+                    <div class="kilometers-icon">
+                        <div class="meter">
+                          <div class="needle"></div>
+                        </div>                      
+                      </div>
+                    <span class="velocidade-span">0</span>
+                    <span>km/h</span>
+
                 </div>
             </div>
-        </section>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>

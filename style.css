@@ -8,7 +8,6 @@
   font-size: 40px;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color: rgb(14, 14, 114);
-
 }
 
 body {
@@ -18,7 +17,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: cornflowerblue;
+  background-color: rgb(106, 94, 94);
 }
 
 .start-button {
@@ -27,10 +26,8 @@ body {
   cursor: pointer;
 }
 
-
 main{
-    height: 100vh;
-    
+    height: 100vh;   
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,8 +43,9 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    
+    z-index: 1;  
 }
+
 
 
 
@@ -86,29 +84,36 @@ main{
 }
 
 .display{
-    background-color: brown;
+    background-color: rgb(72, 63, 84);
     display: flex;
-    flex-direction: column;
     padding: 1rem;
-    width: fit-content;
+    width: 750px ;
     margin-block: 0.25rem;
-    
+    border-radius: 10px;
+    align-items: end;
+    justify-content: space-evenly
 }
 
 .metricas{
+  width: 800px;
     display: flex;
     justify-content: center;
-    background-color: darkred;
+    background-color: rgb(185, 133, 133);
     font-size: 20px;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  color:rgba(194, 194, 237, 0.862);
+  font-size: 16px;
+  color: #007bff;
+  font-weight: bold;
+  border-radius: 10px;
+
+  
 
 
 }
 
 
 .metricas .timer{
-  color: rgb(153, 226, 43);
+  color: rgb(229, 160, 221);
   font-style: oblique;
   font-size: x-large;
 
@@ -260,6 +265,164 @@ main{
     opacity: 1;
   }
 }
+
+.start-screen{
+  position: absolute;
+  background-color: rgb(218, 190, 173);
+    width: 800px;
+    height: 600px;
+    border-radius: 5px;
+    border: solid .25rem white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 3;
+    align-items: center;
+    background-image: url('cenarios/menu.png');
+  background-size: 100% 100%;
+
+}
+
+.start-screen .start-button{
+  background-color: rgb(235, 13, 35);
+  border: solid .25rem white;
+  border-radius: 10px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: antiquewhite;
+  display: flex;
+  width: 200px; 
+  display: flex; /* Usando flexbox */
+  justify-content: center; 
+  align-items: center;
+  
+
+
+}
+.start-screen h2{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: rgb(233, 82, 40);
+  font-size: 30px;
+  background-color: rgb(83, 54, 95);
+  border-radius: 10px;
+  padding: 5px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+
+
+.start-screen #difficulty-select label{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 30px;
+  border-radius: 10px;
+  padding: 5px;
+  
+}
+
+.start-screen #difficulty-select option{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+ 
+  border-radius: 10px;
+  padding: 5px;
+  
+}
+
+
+.start-screen #difficulty-select{
+  
+  color: rgb(57, 35, 6);
+  font-size: 30px;
+  
+  
+}
+
+label {
+  display: block; /* Isso faz com que o label ocupe toda a largura disponível */
+  font-weight: bold;
+  margin-bottom: 10px;  
+  font-size: 30px;
+  color: rgb(168, 246, 13);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    
+}
+
+/* Estilizando o select */
+select {
+  width: 200px; /* Largura do select */
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none; /* Remove a borda de foco padrão */
+  /* Outros estilos que você queira adicionar */
+  border-radius: 10px;
+  padding: 5px;
+}
+
+
+.kilometers-icon {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.meter {
+  position: relative;
+  width: 60px; /* Tamanho do medidor reduzido */
+  height: 60px; /* Tamanho do medidor reduzido */
+  border-radius: 50%;
+  border: 3px solid #16151c; /* Espessura da borda reduzida */
+  background-color: #f0f0f0;
+}
+
+.needle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent; /* Espessura da agulha reduzida */
+  border-right: 5px solid transparent; /* Espessura da agulha reduzida */
+  border-bottom: 30px solid #ff2a00; /* Altura da agulha reduzida */
+  transform-origin: bottom;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.kilometers {
+  font-size: 14px; /* Tamanho da fonte reduzido */
+  margin-top: 10px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.velocidade-div{
+  display: flex;
+  align-items: end;
+}
+
+.velocidade-div .velocidade-span{
+  margin-left: 10px;
+
+}
+.escores{
+  display: flex;
+}
+.pontuacao {
+  display: flex;
+  flex-direction: column;
+}
+
+.pontos, .pontosMax {
+  display: block;
+  margin-bottom: 5px; /* Espaçamento entre os elementos */
+}
+
+
+
+
+
+
+
+
 
 
 

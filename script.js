@@ -11,6 +11,7 @@ const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let bufferVelocidadeAcionado = false;
 
 
+
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
     elemento.className = className;
@@ -33,7 +34,7 @@ class Timer{
         
     }
     inicia(contador = 0){
-        this.docTimer.innerText = `${contador.toFixed(3)}`;
+        this.docTimer.innerText = `${contador.toFixed(3)} s`;
         
         setTimeout(() => {
             const fracSegundo = 0.001;
@@ -46,7 +47,7 @@ class Timer{
     
      
     getValor() {
-      return this.contador;
+      return (this.contador);
     }
 
 
@@ -55,6 +56,7 @@ class Timer{
 class velController {
     constructor(){
         this.docVel = document.querySelector('.velocidade-span');
+        
     }
     getVelocidadeAtual(){
         return parseInt(this.docVel.innerHTML);
@@ -62,67 +64,65 @@ class velController {
     
     acelera(valor){
         
-        const velocidadeAtual = this.getVelocidadeAtual();
-        const velocidadeFinal = velocidadeAtual + valor;
+        let velocidadeAtual = this.getVelocidadeAtual();
+        let velocidadeFinal = velocidadeAtual + valor;
+        
         
         if(velocidadeFinal > 0 && velocidadeFinal <= 120)
             this.docVel.innerHTML = velocidadeFinal;
 
-        if(velocidadeFinal===0){
-            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
-            manager.distributeImage();}
-        if(velocidadeFinal>0 && velocidadeFinal<40){
-            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
-            manager.distributeImage();
-            }
-        if(velocidadeFinal>40 && velocidadeFinal<80){
-            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
-            manager.distributeImage();
-            }
-        if(velocidadeFinal>80 && velocidadeFinal<120){
-            const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
-            manager.distributeImage();
-            }
-
-          
-           
-          
-/*////////////atualização do som do carro de acordo com a velocidade//////////*/
-          playgroundAudio.play();
-          playgroundAudio.playMusic();
-          playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
-/*////////////atualização do som do carro de acordo com a velocidade//////////*/
-    
+            if(velocidadeFinal>0 && velocidadeFinal<40){
+              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
+              manager.distributeImage();
+              } 
+ 
 }
-    bufferizaVelocidade(contRepeticoes = 0){
-        const limiteRepeticoes = 2;
-        bufferVelocidadeAcionado = true;
-        //pause
-        if(contRepeticoes === limiteRepeticoes){
-            bufferVelocidadeAcionado = false;
 
-            return;
-        }
+
+    bufferizaVelocidade(contRepeticoes = 0){
+       
+        bufferVelocidadeAcionado = true;
+       
 
         setTimeout(() => {
-            const velocidadeAtual = this.getVelocidadeAtual();
-            const velocidadeFinal = velocidadeAtual - 1;
+            let velocidadeAtual = this.getVelocidadeAtual();
+        let velocidadeFinal = velocidadeAtual - 1;
          
 
-            if(velocidadeFinal > 0)
-                this.docVel.innerHTML = velocidadeFinal;
-            
+         
             this.bufferizaVelocidade(++contRepeticoes);
+            if(velocidadeFinal > 0 && velocidadeFinal <= 120){
+            this.docVel.innerHTML = velocidadeFinal;
 
-               
+
+
+            if(velocidadeFinal===0){
+              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
+              manager.distributeImage();}
+          if(velocidadeFinal>0 && velocidadeFinal<40){
+              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
+              manager.distributeImage();
+              }
+          if(velocidadeFinal>40 && velocidadeFinal<80){
+              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
+              manager.distributeImage();
+              }
+          if(velocidadeFinal>80 && velocidadeFinal<120){
+              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
+              manager.distributeImage();
+              }
+  
+              playgroundAudio.play();  
+              playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
             
-        }, 300);
-    }
 
-
-
-    
+            } 
+                  
+        }, 100);
+      
+    }   
 }
+
 class BordaDaPista{
     constructor(){
         this.elemento = novoElemento('div', 'borda-da-pista');
@@ -153,7 +153,7 @@ class Pista {
     }
 }
 
-/*//////////////adição CAIOÃ //////////////////*/
+/*//////////////adição CAIOÃ //////////////////
 class ObstaculoController{
   getY(className){
       const el = document.querySelector(`.${className}`);
@@ -179,6 +179,7 @@ class ObstaculoController{
       this.setY(className, pos);
   }
 }
+/*
 class Obstaculo {
   constructor(id){
       this.id = id;
@@ -215,8 +216,8 @@ class FabricaDeObstaculo {
       return this.obstaculos.map(({ elemento }) => elemento);
   }
 }
-/*//////////////adição CAIOÃ //////////////////*/
-
+//////////////adição CAIOÃ //////////////////
+*/
 /*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
 
 class ImageDivManager {
@@ -246,54 +247,7 @@ class ImageDivManager {
   }
 }
 
-class Carro {
-    
-    constructor(largura) {
-        this.elemento = novoElemento('span', 'player');
-        this.largura = largura;
-        this.velocidade = 0;
-        this.velController = new velController();
-    }
-    getCarro(){
-        return this.elemento;
-    }
-    getX(){
-        const x = parseInt(this.elemento.style.left.split('px')[0]) || 375;
 
-        return x;
-    }
-    setX(x){
-        this.elemento.style.left = `${x}px`;
-    }
-    movientaVertical(valor){
-        this.velController.acelera(valor);
-    }
-    movimentaHorinzotal(x){
-        const coordX = this.getX();
-        const soma = x + coordX;
-        const bgColor = this.elemento.style.backgroundColor;
-        
-        if(soma < ptoFinalPlayground && soma > 0){
-            if (bgColor === "red") 
-
-            /*Parte modificada para dano no carro após deixar os limites da estrada, desativa o filtro de dano*/ 
-                this.elemento.style.backgroundColor = "transparent";
-                this.elemento.style['filter'] = 'none';
-            /*Parte modificada para dano no carro após deixar os limites, desativa o filtro de dano*/  
-            
-            this.setX(soma);
-        }
-        else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
-
-        /*Parte modificada para dano no carro após bater nos limites da estrada, ativa o filtro de dano*/ 
-        this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
-
-            
-    }
-
-
-      
-}
 
 /*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
 
@@ -342,40 +296,77 @@ class PlaygroundAudio {
     }
   }
 
-/*Expressão necessária para instanciar a classe audio*/ 
 const playgroundAudio = new PlaygroundAudio();
 
-/*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
+class Carro {
+  constructor(largura) {
+    this.elemento = novoElemento('span', 'player');
+    this.largura = largura;
+    this.velocidade = 0;
+    this.teclasPressionadas = {};
+    this.velController = new velController();
+    
 
+    document.addEventListener('keydown', (event) => {
+      this.teclasPressionadas[event.key.toLowerCase()] = true;
+    });
 
+    document.addEventListener('keyup', (event) => {
+      this.teclasPressionadas[event.key.toLowerCase()] = false;
+    });
 
+    // Inicia o loop de atualização contínua para a movimentação horizontal e vertical
+    this.atualizarMovimento();
+  }
 
+  getCarro() {
+    return this.elemento;
+  }
 
-/*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////
-  
-document.addEventListener('keydown', (event) => {
-    const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
-    const player = document.querySelector('.player');
-   
-    if (teclaPressionada === 'w') { 
-        
-       // pistAnima2.moveDivsToRight(3);
-      player.classList.add('w');
-      player.classList.remove('a', 'd', 's');
-    } else if (teclaPressionada === 'a') {
-      player.classList.add('a');
-      player.classList.remove('w', 'd', 's');
-    } else if (teclaPressionada === 'd') {
-      player.classList.add('d');
-      player.classList.remove('w', 'a', 's');
-    } else if (teclaPressionada === 's') {
-      player.classList.add('s');
-      player.classList.remove('w', 'a', 'd');
-     
-     
+  getX() {
+    const x = parseInt(this.elemento.style.left.split('px')[0]) || 375;
+    return x;
+  }
+
+  setX(x) {
+    this.elemento.style.left = `${x}px`;
+  }
+
+  movimentaHorizontal(x) {
+    const coordX = this.getX();
+    const soma = x + coordX;
+    const bgColor = this.elemento.style.backgroundColor;
+
+    if (soma < ptoFinalPlayground && soma > 0) {
+        this.elemento.style['filter'] = 'none';     
+      this.setX(soma);
+    } else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
+    {
+      // Aplica dano caso saia dos limites da estrada
+      this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
     }
-  });
- /*////////////////PARTE ADICIONADA PARA ANIMAÇÃO DO CARRO INDO PARA OS LADOS/////////////*/ 
+  }
+
+  movimentaVertical(valor) {
+    this.velController.acelera(valor);
+  }
+
+  // Função para atualizar o movimento horizontal e vertical do carro de forma contínua
+  atualizarMovimento() {
+    if (this.teclasPressionadas['d']) {
+      this.movimentaHorizontal(8); // Ajuste a velocidade horizontal como desejar
+    } else if (this.teclasPressionadas['a']) {
+      this.movimentaHorizontal(-8); // Ajuste a velocidade horizontal como desejar
+    }
+
+   
+
+    requestAnimationFrame(this.atualizarMovimento.bind(this));
+  }
+}
+
+
+
 
 class Jogo {
 
@@ -387,28 +378,26 @@ class Jogo {
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
-        this.fabricaDeObstaculo = new FabricaDeObstaculo();  //CAIOÃ
-        this.obstaculoController = new ObstaculoController();//CAIOÃ
+        //this.fabricaDeObstaculo = new FabricaDeObstaculo();  //CAIOÃ
+       // this.obstaculoController = new ObstaculoController();//CAIOÃ
 
         document.addEventListener('keydown', (event) => {
             const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
 
-            if (teclaPressionada.toLowerCase() === 'd') {
-                this.carro.movimentaHorinzotal(10);
+            
+           if ((teclaPressionada.toLowerCase() === 'w')) {
+                this.carro.movimentaVertical(1);
+                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
                 
             }
-            else if (teclaPressionada.toLowerCase() === 'a') {
-                this.carro.movimentaHorinzotal(-10);
-            }
-            else if (teclaPressionada.toLowerCase() === 'w') {
-                this.carro.movientaVertical(6);
-                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
-            }
             else if (teclaPressionada.toLowerCase() === 's') {
-                this.carro.movientaVertical(-6);
+                this.carro.movimentaVertical(-1);
+                
             }
+            
         });
-    }
+     }
+    
     insereNoPlayground(...array){
         array.forEach(el => {
             espacoJogador.appendChild(el);
@@ -441,114 +430,216 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
-        const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
+        //const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
         this.timer.inicia();
 
          const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
-        this.insereObstaculo(...obstaculosSpan); //CAIOÃ
+       // this.insereObstaculo(...obstaculosSpan); //CAIOÃ
         const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
-        this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
-        curvasAnimacao();
+       // this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
+       const animationController = new AnimationController();
+       const playgroundAudio = new PlaygroundAudio();
+       playgroundAudio.playMusic();
         
     }
 }
 
 
 
-function curvasAnimacao() {
-  var startTime = Date.now();
+class AnimationController {
+  constructor() {
+    this.anim = 0;
+    this.step = 0; // Valor inicial do incremento
+    this.movingDiv = new MovingDiv(); // Assuming MovingDiv is a class that handles animations of the divs.
+    this.animationActivated_1 = false;
+    this.animationActivated_2 = false;
+    this.animationActivated_3 = false;
+    this.animationActivated_4 = false;
+    this.animationActivated_5 = false;
+    this.animationActivated_6 = false;
+    this.animationActivated_7 = false;
+    this.animationActivated_8 = false;
+    this.animationActivated_9 = false;
+   document.addEventListener('keydown', this.handleKeyPress.bind(this));
+   document.addEventListener('keyup', this.handleKeyRelease.bind(this));
+    window.addEventListener('blur', this.stopIncrement.bind(this));
+  }
+ 
+
+  handleKeyPress(event) {
+
+    if (event.key === 'w') {
+      this.changeAnimation(this.step);
+      this.step += 1; // aumenta o incremento
+      if (this.step > 10) {
+        this.step = 10; // Define um valor máximo para o incremento
+      }
+      this.stopIncrement();
+     
+    } else if (event.key === 's') {
+      this.changeAnimation(this.step);
+      this.step -= 1; // Diminui o incremento
+      if (this.step < 0) {
+        this.step = 0; // Define um valor mínimo para o incremento
+      }
+      this.stopIncrement();
+    
+    }
+  }
+    handleKeyRelease(event) {
+      this.stopIncrement();
+      this.startIncrement(); 
+    }
   
 
-  function atualizarTimer() {
-    var currentTime = Date.now();
-    var elapsedTime = currentTime - startTime;
-    const movingDiv = new MovingDiv();
-    
+
+    startIncrement() {
+      // Iniciar o setInterval para incrementar this.step continuamente
+      this.incrementInterval = setInterval(() => {
+        this.changeAnimation(this.step);
+        this.step -= 1;
+       
+       
+      }, 1000); 
+    }
   
-    // Verifique o valor do elapsedTime e ative o método da outra classe, se necessário
-    if (elapsedTime > 500 && elapsedTime < 1500 ) {
-      movingDiv.moveDivsToLeft(1);
-      
-    } else if (elapsedTime > 2500 && elapsedTime < 3500 ) {
-      movingDiv.moveDivsToRight(1);
-      
-    } else if (elapsedTime > 5500 && elapsedTime < 6500 ) {
-      movingDiv.moveDivsToRight(1);
-      
-    } else if (elapsedTime > 9500 && elapsedTime < 10500 ) {
-      movingDiv.moveDivsToLeft(1);
-      
-    } else if (elapsedTime > 12500 && elapsedTime < 13500 ) {
-      movingDiv.moveDivsToLeft(1);
-      
-    } else if (elapsedTime > 17500 && elapsedTime < 18500 ) {
-      movingDiv.moveDivsToRight(1);
-      
-    } else if (elapsedTime > 21500 && elapsedTime < 22500 ) {
-      movingDiv.moveDivsToLeft(1);
-      
-    } else if (elapsedTime > 23500 && elapsedTime < 24500 ) {
-      movingDiv.moveDivsToRight(1);
-      
-    }else if(elapsedTime > 24500 ) {
-      // Reinicie o elapsedTime com um novo startTime e currentTime
-      startTime = Date.now();
-      elapsedTime = 0;
+    stopIncrement() {
+      // Parar o setInterval para interromper o incremento contínuo
+      clearInterval(this.incrementInterval);
     }
 
-    // Atualize o timer a cada segundo (1000ms)
-    setTimeout(atualizarTimer, 1000);
-  }
+ 
+  
+  changeAnimation(amount) {
+    this.anim += amount;
 
-  // Inicie o timer pela primeira vez
-  atualizarTimer();
+    if (this.anim > 1000 && this.anim < 1500 && !this.animationActivated_1) {
+      this.movingDiv.moveDivsToLeft(1);//esquerda
+      this.animationActivated_1 = true;
+    } else if (this.anim > 2500 && this.anim < 3000 && !this.animationActivated_2) {
+      this.movingDiv.moveDivsToRight(1);//fica reto
+      this.animationActivated_2 = true;
+    } else if (this.anim > 7500 && this.anim < 8000 && !this.animationActivated_3) {
+      this.movingDiv.moveDivsToRight(1);//direita
+      this.animationActivated_3 = true;
+    } else if (this.anim > 9000 && this.anim < 10500 && !this.animationActivated_4) {
+      this.movingDiv.moveDivsToLeft(1);//fica reto
+      this.animationActivated_4 = true;
+    } else if (this.anim > 13500 && this.anim < 14000 && !this.animationActivated_5) {
+      this.movingDiv.moveDivsToLeft(1);//esquerda
+      this.animationActivated_5 = true;
+    } else if (this.anim > 15500 && this.anim < 15600 && !this.animationActivated_6) {
+      this.movingDiv.moveDivsToRight(1);//fica reto
+      this.animationActivated_6 = true;
+    } else if (this.anim > 21500 && this.anim < 22000 && !this.animationActivated_7) {
+      this.movingDiv.moveDivsToLeft(1);//esquerda
+      this.animationActivated_7 = true;
+    } else if (this.anim > 25000 && this.anim < 25500 && !this.animationActivated_8) {
+      this.movingDiv.moveDivsToRight(1);//fica reto
+      this.animationActivated_8 = true;
+    } else if (this.anim > 29500) {
+      this.anim = 0;//recomeça
+      this.animationActivated_1 = false;
+    this.animationActivated_2 = false;
+    this.animationActivated_3 = false;
+    this.animationActivated_4 = false;
+    this.animationActivated_5 = false;
+    this.animationActivated_6 = false;
+    this.animationActivated_7 = false;
+    this.animationActivated_8 = false;
+    this.animationActivated_9 = false;
+    }
+  }
 }
+
+
 /////////////////////////////////////////////////////////
 class MovingDiv {
   constructor(containerId) {
-    this.speed = 0; // Velocidade inicial
-    this.maxSpeed = 2; // Velocidade máxima
-    this.minSpeed = -2; // Velocidade mínima
+    this.speed = 0; // Initial speed
+    this.maxSpeed = 2; // Maximum speed
+    this.minSpeed = -2; // Minimum speed
     this.interval = null;
     this.isPageVisible = true;
     this.container = document.getElementById(containerId);
-    this.container2= document.querySelector('#container');
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "w") {
-        this.speed += 0.1; // Aumenta a velocidade ao pressionar 'w'
-        if (this.speed > this.maxSpeed) {
-          this.speed = this.maxSpeed; // Define a velocidade máxima
-        }
-      } else if (event.key === "s") {
-        this.speed -= 0.1; // Diminui a velocidade ao pressionar 's'
-        if (this.speed < this.minSpeed) {
-          this.speed = this.minSpeed; // Define a velocidade mínima
-        }
-      }
+    this.container2 = document.querySelector('#container');
+    this.interval = null;
+    this.selectedDifficulty = 1000;
+    this.reductionInterval = null;
+    this.difficultySelect = document.getElementById("difficulty-select");
+    this.difficultySelect.addEventListener("change", () => {
+      this.selectedDifficulty = parseInt(this.difficultySelect.value);
+      this.updateInterval();
     });
+    this.keysPressed = {}; // Track which keys are currently pressed
+    this.start();
+    document.addEventListener('keydown', this.handleKeyPress2.bind(this));
+   document.addEventListener('keyup', this.handleKeyRelease2.bind(this));
+    window.addEventListener('blur', this.stopIncrement2.bind(this));
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        this.isPageVisible = true; // A página está visível, retome o setInterval
-      } else {
-        this.isPageVisible = false; // A página não está visível, pare o setInterval
+  }
+  handleKeyPress2(event) {
+
+    if (event.key === 'w') {
+      
+      this.speed += 0.02;
+
+      if (this.speed > this.maxSpeed) {
+        this.speed = this.maxSpeed; 
       }
-    });
+      this.stopIncrement();
+     
+    } else if (event.key === 's') {
+    
+     this.speed -= 0.02; 
+     if (this.speed < this.minSpeed) {
+       this.speed = this.minSpeed; 
+     }
+      this.stopIncrement2();
+    
+    }
+  }
+    handleKeyRelease2(event) {
+      this.stopIncrement2();
+      this.startIncrement2(); 
+    }
+  
+
+
+    startIncrement2() {
+   
+      this.incrementInterval2 = setInterval(() => {
+    
+     this.speed -= 0.02;  
+       
+      }, 100); 
+    }
+  
+    stopIncrement2() {
+      
+      clearInterval(this.incrementInterval2);
+    }
+
+
+  updateInterval() {
+    clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      this.moveDiv();
+    }, this.selectedDifficulty);
   }
 
   start() {
-    this.interval = setInterval(() => {
-      this.moveDiv();
-    }, 1000); // Cria uma nova div a cada 1 segundo
+    this.updateInterval();
   }
 
   stop() {
     clearInterval(this.interval);
+    
   }
+
 
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
@@ -587,9 +678,11 @@ class MovingDiv {
       let frameInterval = setInterval(() => {
       
 
-        if (currentPos >= containerHeight) {
-          clearInterval(frameInterval);
+        if (currentPos >= (containerHeight)) {
+         
+
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
+          clearInterval(frameInterval);
         } else {
           currentPos += this.speed;
           divInimigo.style.bottom = containerHeight - currentPos + "px";
@@ -607,6 +700,11 @@ class MovingDiv {
           divInimigo.style.width = 14+currentPos / 3 + "px";
           divInimigo.style.height =8+ currentPos / 4 + "px";
           divInimigo.style.opacity = 5*currentPos / containerHeight;
+          const limSup= parseInt(divInimigo.style.bottom);
+
+          if(limSup>3000){
+            this.container.removeChild(divInimigo);    
+          }
 
         
           const divBottom =402-parseInt(divInimigo.style.bottom);
@@ -752,7 +850,7 @@ class PeriodoDia {
     setInterval(() => {
       this.currentIndex = (this.currentIndex + 1) % this.filters.length;
       this.changeColors();
-    }, 15000);
+    }, 30000);
   }
 
   changeColors() {
@@ -782,13 +880,37 @@ class PeriodoDia {
   }
 }
 
-const periodoDia = new PeriodoDia();
-periodoDia.startAnimation();
+
 
 ////////////////////////////////////////////////////////////////
-const jogo = new Jogo();
+
+
+// script.js
+document.addEventListener("DOMContentLoaded", function () {
+  // Obtém elementos do DOM
+  const startScreen = document.querySelector(".start-screen");
+  const startButton = document.querySelector(".start-button");
+  const difficultyButtons = document.querySelectorAll(".difficulty-button");
+
+  // Adiciona um ouvinte de evento para o botão de início
+  startButton.addEventListener("click", function () {
+      startScreen.style.display = "none"; // Esconde a tela de start
+      const jogo = new Jogo();
 jogo.inicia();
 
+
+
+  });
+
+  // Adiciona ouvintes de evento para os botões de nível de dificuldade
+  difficultyButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+          const selectedLevel = button.getAttribute("data-level");
+          // Aqui você pode salvar a dificuldade selecionada para uso posterior no jogo
+          console.log("Nível de dificuldade selecionado:", selectedLevel);
+      });
+  });
+});
 
 
 
