@@ -272,7 +272,7 @@ class PlaygroundAudio {
       this.oscillator = this.context.createOscillator();
       this.oscillator.frequency.value = 0;
       this.oscillator.detune.value = 0;
-      this.oscillator.type = 'sawtooth';
+      this.oscillator.type = 'triangle';
       this.oscillator.connect(this.volume);
       this.oscillator.start(0);
     }
@@ -442,7 +442,7 @@ class Jogo {
        // this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
        const animationController = new AnimationController();
        const playgroundAudio = new PlaygroundAudio();
-       playgroundAudio.playMusic();
+      // playgroundAudio.playMusic();
         
     }
 }
@@ -569,6 +569,7 @@ class MovingDiv {
     this.interval = null;
     this.selectedDifficulty = 1000;
     this.reductionInterval = null;
+    
     this.difficultySelect = document.getElementById("difficulty-select");
     this.difficultySelect.addEventListener("change", () => {
       this.selectedDifficulty = parseInt(this.difficultySelect.value);
@@ -579,7 +580,7 @@ class MovingDiv {
     document.addEventListener('keydown', this.handleKeyPress2.bind(this));
    document.addEventListener('keyup', this.handleKeyRelease2.bind(this));
     window.addEventListener('blur', this.stopIncrement2.bind(this));
-
+    
   }
   handleKeyPress2(event) {
 
@@ -590,6 +591,7 @@ class MovingDiv {
       if (this.speed > this.maxSpeed) {
         this.speed = this.maxSpeed; 
       }
+      
       this.stopIncrement();
      
     } else if (event.key === 's') {
@@ -613,8 +615,7 @@ class MovingDiv {
    
       this.incrementInterval2 = setInterval(() => {
     
-     this.speed -= 0.02;  
-       
+     this.speed -= 0.020;
       }, 100); 
     }
   
@@ -628,6 +629,8 @@ class MovingDiv {
     clearInterval(this.interval);
     this.interval = setInterval(() => {
       this.moveDiv();
+      
+
     }, this.selectedDifficulty);
   }
 
@@ -641,11 +644,19 @@ class MovingDiv {
   }
 
 
+
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
-    if (this.speed > 0.5 && this.isPageVisible) {
-      var divInimigo = document.createElement("div");
+    
+
+    
+
+    if (this.speed > 0.5 && this.isPageVisible) {  
+      
+      let divInimigo = document.createElement("div");
       divInimigo.id = "movingDiv";
+
+
 
       let numeroAleatorio = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
       divInimigo.style.left = numeroAleatorio + 'px';
@@ -654,6 +665,7 @@ class MovingDiv {
 
       let containerWidth = this.container.offsetWidth;
       let containerHeight = this.container.offsetHeight;
+      
       
       let containerLeft = this.container.offsetLeft;
       
@@ -675,12 +687,54 @@ class MovingDiv {
       this.container.appendChild(divInimigo);
 
       let currentPos = 0;
-      let frameInterval = setInterval(() => {
+
+      /*
+      this.player = document.querySelector('.player');
+
+      var margemEsquerdaDoPlayer = parseInt(this.player.style.marginLeft);
+      var larguraDoPlayer = player.offsetWidth;
+      var bottomPlayer = parseInt(this.player.style.bottom);
+  
+      var margemEsquerdaDoInimigo = parseInt(divInimigo.style.marginLeft);
+      var larguraDoInimigo = divInimigo.offsetWidth;
+      var bottomDivInimigo = parseInt(divInimigo.style.bottom);
+  
+      var diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
+      var maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
+  
+      if (bottomDivInimigo < 100) {
+        if (diferencaMargem < maiorLargura) {
+          this.speed = -1.25;
+        }
+      }
+     */
+
+
+
       
+      let frameInterval = setInterval(() => {
+        const player = document.querySelector('.player');
+        const margemEsquerdaDoPlayer = parseInt(player.style.left);
+        const larguraDoPlayer = parseInt( player.offsetWidth);
 
-        if (currentPos >= (containerHeight)) {
-         
 
+       const margemEsquerdaDoInimigo = parseInt(divInimigo.style.marginLeft);
+       const larguraDoInimigo = parseInt(divInimigo.offsetWidth);
+        const bottomDivInimigo = parseInt(divInimigo.style.bottom);
+
+        const diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
+       const maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
+
+       // this.docVel2 = document.querySelector('.distancia');
+       // this.docVel2.innerHTML = margemEsquerdaDoPlayer;
+       if (bottomDivInimigo < 100) {
+        if (diferencaMargem < (maiorLargura)) {
+          this.speed = -0.5;
+        }
+      }
+
+        if (currentPos >= (containerHeight+5)) {
+          
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval);
         } else {
@@ -700,6 +754,15 @@ class MovingDiv {
           divInimigo.style.width = 14+currentPos / 3 + "px";
           divInimigo.style.height =8+ currentPos / 4 + "px";
           divInimigo.style.opacity = 5*currentPos / containerHeight;
+
+
+          if (currentPos >= (containerHeight-5)) {
+
+
+             divInimigo.classList.add('diminuirAlturaAnimation');
+            
+
+          }
           const limSup= parseInt(divInimigo.style.bottom);
 
           if(limSup>3000){
@@ -786,7 +849,7 @@ class MovingDiv {
   
   moveDivsToLeft(tempoDeTransicao) {
     const divLayers = document.querySelectorAll('#container .div-layer'); 
-    const inimigos = document.querySelectorAll('#container #movingDiv');
+    //const inimigos = document.querySelectorAll('#container #movingDiv');
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
     
@@ -902,15 +965,10 @@ jogo.inicia();
 
   });
 
-  // Adiciona ouvintes de evento para os botões de nível de dificuldade
-  difficultyButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-          const selectedLevel = button.getAttribute("data-level");
-          // Aqui você pode salvar a dificuldade selecionada para uso posterior no jogo
-          console.log("Nível de dificuldade selecionado:", selectedLevel);
-      });
-  });
+  
 });
+
+
 
 
 
