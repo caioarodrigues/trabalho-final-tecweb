@@ -364,9 +364,13 @@ class MovingDiv {
     this.docInitial=0;
     this.maxDoc =200;
     this.minDoc =0;
+    this.velInitial=-45;
+    this.maxVel =45;
+    this.minVel =-45;
     this.reductionInterval = null;
     this.docVel = document.querySelector('.velocidade-span');
     this.ifpista= new IfPista();
+    this.elementoNeedle = document.querySelector('.needle');
     
     this.difficultySelect = document.getElementById("difficulty-select");
     this.difficultySelect.addEventListener("change", () => {
@@ -383,12 +387,13 @@ class MovingDiv {
   handleKeyPress2(event) {
     playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
     this.ifpista.usarIf(this.docInitial);
-
     if (event.key === 'w') {
       
       this.speed += 0.02;
       this.docInitial+= 1;
+      this.velInitial+=0.45;
       this.docVel.innerHTML= this.docInitial;
+      this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
       
 
       if (this.speed > this.maxSpeed) {
@@ -400,13 +405,21 @@ class MovingDiv {
         this.docInitial = 200
       this.docVel.innerHTML =this.docInitial;}
       
+      if(this.velInitial>this.maxVel){
+        this.velInitial=this.maxVel;
+      }
+
+
+      
       this.stopIncrement();
      
     } else if (event.key === 's') {
     
      this.speed -= 0.02; 
      this.docInitial-= 1;
+     this.velInitial-= 0.45;
      this.docVel.innerHTML= this.docInitial;
+     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
      if (this.speed < this.minSpeed) {
        this.speed = this.minSpeed; 
@@ -416,7 +429,11 @@ class MovingDiv {
      if(this.docInitial <this.minDoc){
       this.docInitial=0;
       this.docVel.innerHTML= this.docInitial;
-    }     
+    }
+    
+    if(this.velInitial<this.minVel){
+      this.velInitial=this.minVel;
+    }
       this.stopIncrement();
       this.stopIncrement2();  
     }
@@ -436,10 +453,15 @@ class MovingDiv {
     
      this.speed -= 0.02;
      this.docInitial-= 1;
+     this.velInitial-=0.45;
      this.docVel.innerHTML= this.docInitial;
+     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
      if (this.speed < this.minSpeed) {
       this.speed = this.minSpeed; 
+    }
+    if(this.velInitial<this.minVel){
+      this.velInitial=this.minVel;
     }
 
     if(this.docInitial <this.minDoc){
@@ -479,9 +501,6 @@ class MovingDiv {
 
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
-    
-
-    
 
     if (this.speed > 0.5 && this.isPageVisible) { 
       
@@ -570,7 +589,10 @@ class MovingDiv {
          if(diferencaMargem < (maiorLargura)){
           this.speed = -0.5;
           this.docInitial = 45;
+          this.velInitial =-11.45;
           playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+          this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
+
           
         }
       }
