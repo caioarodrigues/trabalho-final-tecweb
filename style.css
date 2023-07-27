@@ -63,7 +63,6 @@ main{
   animation: shake 0.3s linear infinite;
   overflow : hidden;
   z-index: 2;
-  background-color: #4400ff;
   
 }
 
@@ -227,13 +226,12 @@ main{
 */
 
   
-#movingDiv {
+.movingDiv {
   position: absolute;
   background-image: url('/Sprites/carBack.gif');
   background-size: 100% 100%;
   z-index: 2;
   bottom: 0;
-  background-color: blue;
 }
 
 
@@ -389,7 +387,7 @@ select {
   border-right: 5px solid transparent; /* Espessura da agulha reduzida */
   border-bottom: 30px solid #ff2a00; /* Altura da agulha reduzida */
   transform-origin: bottom;
-  transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .kilometers {
@@ -437,7 +435,7 @@ select {
 }
 
 .diminuirAlturaAnimation {
-  animation: diminuirAltura 0.15s linear; /* Use a mesma animação definida anteriormente */
+  animation: diminuirAltura 0.1s linear; /* Use a mesma animação definida anteriormente */
 }
 
 

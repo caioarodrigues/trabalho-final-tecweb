@@ -10,29 +10,16 @@ const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let bufferVelocidadeAcionado = false;
 
-
-
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
     elemento.className = className;
     
     return elemento;
 }
-/*//////////////adição CAIOÃ //////////////////*/
-function geraDelayAleatorio(){
-  const inteiro = Math.floor(Math.random() * 5)
-  const delay = Math.random() * 10;
-  const resultado = inteiro + delay;
-
-  return resultado;
-}
-/*//////////////adição CAIOÃ //////////////////*/
 
 class Timer{
     constructor(){
-        this.docTimer = document.querySelector('.timer');
-        
-    }
+        this.docTimer = document.querySelector('.timer');}
     inicia(contador = 0){
         this.docTimer.innerText = `${contador.toFixed(3)} s`;
         
@@ -40,87 +27,11 @@ class Timer{
             const fracSegundo = 0.001;
 
             this.inicia(contador + fracSegundo);
-        }, 1);
-        
-    }
-    
-    
-     
+        }, 1);      
+    }    
     getValor() {
       return (this.contador);
     }
-
-
-}
-
-class velController {
-    constructor(){
-        this.docVel = document.querySelector('.velocidade-span');
-        
-    }
-    getVelocidadeAtual(){
-        return parseInt(this.docVel.innerHTML);
-    }
-    
-    acelera(valor){
-        
-        let velocidadeAtual = this.getVelocidadeAtual();
-        let velocidadeFinal = velocidadeAtual + valor;
-        
-        
-        if(velocidadeFinal > 0 && velocidadeFinal <= 120)
-            this.docVel.innerHTML = velocidadeFinal;
-
-            if(velocidadeFinal>0 && velocidadeFinal<40){
-              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
-              manager.distributeImage();
-              } 
- 
-}
-
-
-    bufferizaVelocidade(contRepeticoes = 0){
-       
-        bufferVelocidadeAcionado = true;
-       
-
-        setTimeout(() => {
-            let velocidadeAtual = this.getVelocidadeAtual();
-        let velocidadeFinal = velocidadeAtual - 1;
-         
-
-         
-            this.bufferizaVelocidade(++contRepeticoes);
-            if(velocidadeFinal > 0 && velocidadeFinal <= 120){
-            this.docVel.innerHTML = velocidadeFinal;
-
-
-
-            if(velocidadeFinal===0){
-              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
-              manager.distributeImage();}
-          if(velocidadeFinal>0 && velocidadeFinal<40){
-              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
-              manager.distributeImage();
-              }
-          if(velocidadeFinal>40 && velocidadeFinal<80){
-              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
-              manager.distributeImage();
-              }
-          if(velocidadeFinal>80 && velocidadeFinal<120){
-              const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
-              manager.distributeImage();
-              }
-  
-              playgroundAudio.play();  
-              playgroundAudio.atualizaFrequenciaOscilador(velocidadeFinal);
-            
-
-            } 
-                  
-        }, 100);
-      
-    }   
 }
 
 class BordaDaPista{
@@ -153,72 +64,28 @@ class Pista {
     }
 }
 
-/*//////////////adição CAIOÃ //////////////////
-class ObstaculoController{
-  getY(className){
-      const el = document.querySelector(`.${className}`);
-      const pos = parseInt(el.style.top) || 0;
-      
-      return pos;
-  }
-  setY(className, posAtual = 0){
-      const velocidade = 10;
-      const obstaculo = document.querySelector(`.${className}`);
-
-      if(posAtual === 0 || posAtual > 0) obstaculo.style.top = `${posAtual + velocidade}px`;
-      if (posAtual > 440) obstaculo.style.top = `0px`;
-  }
-  setPosicaoInicial(className){
-      this.setY(className);
-  }
-  acelera(className){
-      const velocidade = 10;
-      const pos = this.getY(className); 
-      const obstaculo = document.querySelector(`.${className}`);
-
-      this.setY(className, pos);
-  }
-}
-/*
-class Obstaculo {
-  constructor(id){
-      this.id = id;
-      this.elemento = novoElemento('span', `obstaculo obs-${id}`);
-      this.velocidade = 10;
-      this.obstaculoController = new ObstaculoController();
-  }
-  getObstaculo(qtde = 0){
-      if(qtde > 0){
-          const obstaculos = [];
-
-          for(let i = 0; i < qtde; i++)
-              obstaculos.push(new Obstaculo(i));
-
-          return obstaculos; 
-      }
-
-      return this.elemento;
-  }
-  anima(){
-      setTimeout(() => {
-          this.movimentaY();
-      }, 100);
-      this.anima();
-  }
-}
-
-class FabricaDeObstaculo {
-  constructor(limite = 8){
-      this.obstaculo = new Obstaculo();
-      this.obstaculos = this.obstaculo.getObstaculo(limite);
-  }
-  getObstaculos(){
-      return this.obstaculos.map(({ elemento }) => elemento);
-  }
-}
-//////////////adição CAIOÃ //////////////////
-*/
 /*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
+
+class IfPista{
+  
+  usarIf(velocidadeFinal){
+    if(velocidadeFinal===0){
+      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
+      manager.distributeImage();}
+  if(velocidadeFinal>0 && velocidadeFinal<40){
+      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
+      manager.distributeImage();
+      }
+  if(velocidadeFinal>40 && velocidadeFinal<80){
+      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
+      manager.distributeImage();
+      }
+  if(velocidadeFinal>80 && velocidadeFinal<120){
+      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
+      manager.distributeImage();
+      }
+  }
+}
 
 class ImageDivManager {
   constructor(containerSelector, divSelector, divHeight, imageHeight, imagePath) {
@@ -247,8 +114,6 @@ class ImageDivManager {
   }
 }
 
-
-
 /*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
 
 class PlaygroundAudio {
@@ -258,8 +123,9 @@ class PlaygroundAudio {
       this.volume.connect(this.context.destination);
       this.oscillator = null;
       this.audio = new Audio('/music/musicCar.mp3');
+      this.audio.volume =0.2;
       this.audio.loop = true;
-      this.volumeFixo = 0.2; // Valor fixo para o volume (por exemplo, 0.5)
+      this.volumeFixo = 0.05; // Valor fixo para o volume (por exemplo, 0.5)
       this.volume.gain.value = this.volumeFixo;
     }
     play() {
@@ -272,15 +138,15 @@ class PlaygroundAudio {
       this.oscillator = this.context.createOscillator();
       this.oscillator.frequency.value = 0;
       this.oscillator.detune.value = 0;
-      this.oscillator.type = 'triangle';
+      this.oscillator.type = 'sawtooth';
       this.oscillator.connect(this.volume);
       this.oscillator.start(0);
     }
   
     atualizaFrequenciaOscilador(velocidadeFinal) {
       const frequenciaMinima = 20;
-      const frequenciaMaxima = 120;
-      const proporcao = (velocidadeFinal - 0) / (120 - 0);
+      const frequenciaMaxima = 200;
+      const proporcao = (velocidadeFinal - 0) / (200 - 0);
       const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
       this.oscillator.frequency.value = frequencia;
     }
@@ -304,8 +170,6 @@ class Carro {
     this.largura = largura;
     this.velocidade = 0;
     this.teclasPressionadas = {};
-    this.velController = new velController();
-    
 
     document.addEventListener('keydown', (event) => {
       this.teclasPressionadas[event.key.toLowerCase()] = true;
@@ -327,15 +191,12 @@ class Carro {
     const x = parseInt(this.elemento.style.left.split('px')[0]) || 375;
     return x;
   }
-
   setX(x) {
     this.elemento.style.left = `${x}px`;
   }
-
   movimentaHorizontal(x) {
     const coordX = this.getX();
     const soma = x + coordX;
-    const bgColor = this.elemento.style.backgroundColor;
 
     if (soma < ptoFinalPlayground && soma > 0) {
         this.elemento.style['filter'] = 'none';     
@@ -347,29 +208,18 @@ class Carro {
     }
   }
 
-  movimentaVertical(valor) {
-    this.velController.acelera(valor);
-  }
-
   // Função para atualizar o movimento horizontal e vertical do carro de forma contínua
   atualizarMovimento() {
     if (this.teclasPressionadas['d']) {
-      this.movimentaHorizontal(8); // Ajuste a velocidade horizontal como desejar
+      this.movimentaHorizontal(10); // Ajuste a velocidade horizontal como desejar
     } else if (this.teclasPressionadas['a']) {
-      this.movimentaHorizontal(-8); // Ajuste a velocidade horizontal como desejar
+      this.movimentaHorizontal(-10); // Ajuste a velocidade horizontal como desejar
     }
-
-   
-
     requestAnimationFrame(this.atualizarMovimento.bind(this));
   }
 }
 
-
-
-
 class Jogo {
-
     constructor(){
         this.pontos = 0;
         this.areaDoJogo = document.querySelector(".playground");
@@ -378,24 +228,6 @@ class Jogo {
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
         this.pista = new Pista();
-        //this.fabricaDeObstaculo = new FabricaDeObstaculo();  //CAIOÃ
-       // this.obstaculoController = new ObstaculoController();//CAIOÃ
-
-        document.addEventListener('keydown', (event) => {
-            const teclaPressionada = event.key || String.fromCharCode(event.keyCode);
-
-            
-           if ((teclaPressionada.toLowerCase() === 'w')) {
-                this.carro.movimentaVertical(1);
-                !bufferVelocidadeAcionado && this.carro.velController.bufferizaVelocidade();
-                
-            }
-            else if (teclaPressionada.toLowerCase() === 's') {
-                this.carro.movimentaVertical(-1);
-                
-            }
-            
-        });
      }
     
     insereNoPlayground(...array){
@@ -403,51 +235,22 @@ class Jogo {
             espacoJogador.appendChild(el);
         });
     }
-
-
-    insereObstaculo(...obstaculos){
-      const divObstaculos = document.querySelector(".obstaculos");
-
-      obstaculos.forEach(obs => divObstaculos.appendChild(obs));
-  }
-  movimentaObstaculos(indice = 0, ...obstaculos){
-      const delay = geraDelayAleatorio();
-      const obstaculo = obstaculos[indice];
-      const className = obstaculo.classList.value.split(' ')[1];
-      
-      console.log(`indice = ${indice}`)
-      this.obstaculoController.acelera(className);
-
-      
-      setTimeout(() => {
-          if(indice === obstaculos.length - 1) indice = -1;
-
-          this.movimentaObstaculos(++indice, ...obstaculos);
-      }, delay);
-  }
-    inicia(){
-       
+    inicia(){      
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
-        //const obstaculosSpan = this.fabricaDeObstaculo.getObstaculos();
         this.timer.inicia();
-
          const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
-       // this.insereObstaculo(...obstaculosSpan); //CAIOÃ
         const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
-       // this.movimentaObstaculos(0, ...obstaculosSpan);//OBSTÁCULOS
        const animationController = new AnimationController();
        const playgroundAudio = new PlaygroundAudio();
-      // playgroundAudio.playMusic();
+      playgroundAudio.playMusic();
         
     }
 }
-
-
 
 class AnimationController {
   constructor() {
@@ -467,10 +270,7 @@ class AnimationController {
    document.addEventListener('keyup', this.handleKeyRelease.bind(this));
     window.addEventListener('blur', this.stopIncrement.bind(this));
   }
- 
-
   handleKeyPress(event) {
-
     if (event.key === 'w') {
       this.changeAnimation(this.step);
       this.step += 1; // aumenta o incremento
@@ -494,24 +294,17 @@ class AnimationController {
       this.startIncrement(); 
     }
   
-
-
     startIncrement() {
       // Iniciar o setInterval para incrementar this.step continuamente
       this.incrementInterval = setInterval(() => {
         this.changeAnimation(this.step);
-        this.step -= 1;
-       
-       
+        this.step -= 1;      
       }, 1000); 
     }
-  
     stopIncrement() {
       // Parar o setInterval para interromper o incremento contínuo
       clearInterval(this.incrementInterval);
     }
-
- 
   
   changeAnimation(amount) {
     this.anim += amount;
@@ -568,7 +361,12 @@ class MovingDiv {
     this.container2 = document.querySelector('#container');
     this.interval = null;
     this.selectedDifficulty = 1000;
+    this.docInitial=0;
+    this.maxDoc =200;
+    this.minDoc =0;
     this.reductionInterval = null;
+    this.docVel = document.querySelector('.velocidade-span');
+    this.ifpista= new IfPista();
     
     this.difficultySelect = document.getElementById("difficulty-select");
     this.difficultySelect.addEventListener("change", () => {
@@ -580,42 +378,76 @@ class MovingDiv {
     document.addEventListener('keydown', this.handleKeyPress2.bind(this));
    document.addEventListener('keyup', this.handleKeyRelease2.bind(this));
     window.addEventListener('blur', this.stopIncrement2.bind(this));
-    
+    playgroundAudio.play(); 
   }
   handleKeyPress2(event) {
+    playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+    this.ifpista.usarIf(this.docInitial);
 
     if (event.key === 'w') {
       
       this.speed += 0.02;
+      this.docInitial+= 1;
+      this.docVel.innerHTML= this.docInitial;
+      
 
       if (this.speed > this.maxSpeed) {
         this.speed = this.maxSpeed; 
+        
       }
+
+      if( this.docInitial>this.maxDoc){
+        this.docInitial = 200
+      this.docVel.innerHTML =this.docInitial;}
       
       this.stopIncrement();
      
     } else if (event.key === 's') {
     
      this.speed -= 0.02; 
+     this.docInitial-= 1;
+     this.docVel.innerHTML= this.docInitial;
+
      if (this.speed < this.minSpeed) {
        this.speed = this.minSpeed; 
+
      }
-      this.stopIncrement2();
-    
+
+     if(this.docInitial <this.minDoc){
+      this.docInitial=0;
+      this.docVel.innerHTML= this.docInitial;
+    }     
+      this.stopIncrement();
+      this.stopIncrement2();  
     }
   }
     handleKeyRelease2(event) {
+      playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+      this.ifpista.usarIf(this.docInitial);
       this.stopIncrement2();
       this.startIncrement2(); 
     }
-  
-
-
     startIncrement2() {
    
       this.incrementInterval2 = setInterval(() => {
+        playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+        
+        this.ifpista.usarIf(this.docInitial);
     
-     this.speed -= 0.020;
+     this.speed -= 0.02;
+     this.docInitial-= 1;
+     this.docVel.innerHTML= this.docInitial;
+
+     if (this.speed < this.minSpeed) {
+      this.speed = this.minSpeed; 
+    }
+
+    if(this.docInitial <this.minDoc){
+      this.docInitial=0;
+      this.docVel.innerHTML= this.docInitial;
+    }
+
+
       }, 100); 
     }
   
@@ -651,21 +483,15 @@ class MovingDiv {
 
     
 
-    if (this.speed > 0.5 && this.isPageVisible) {  
+    if (this.speed > 0.5 && this.isPageVisible) { 
       
-      let divInimigo = document.createElement("div");
-      divInimigo.id = "movingDiv";
-
-
+      let divInimigo = novoElemento('div', 'movingDiv');
 
       let numeroAleatorio = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
       divInimigo.style.left = numeroAleatorio + 'px';
 
-
-
       let containerWidth = this.container.offsetWidth;
       let containerHeight = this.container.offsetHeight;
-      
       
       let containerLeft = this.container.offsetLeft;
       
@@ -688,51 +514,8 @@ class MovingDiv {
 
       let currentPos = 0;
 
-      /*
-      this.player = document.querySelector('.player');
-
-      var margemEsquerdaDoPlayer = parseInt(this.player.style.marginLeft);
-      var larguraDoPlayer = player.offsetWidth;
-      var bottomPlayer = parseInt(this.player.style.bottom);
-  
-      var margemEsquerdaDoInimigo = parseInt(divInimigo.style.marginLeft);
-      var larguraDoInimigo = divInimigo.offsetWidth;
-      var bottomDivInimigo = parseInt(divInimigo.style.bottom);
-  
-      var diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
-      var maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
-  
-      if (bottomDivInimigo < 100) {
-        if (diferencaMargem < maiorLargura) {
-          this.speed = -1.25;
-        }
-      }
-     */
-
-
-
-      
       let frameInterval = setInterval(() => {
-        const player = document.querySelector('.player');
-        const margemEsquerdaDoPlayer = parseInt(player.style.left);
-        const larguraDoPlayer = parseInt( player.offsetWidth);
-
-
-       const margemEsquerdaDoInimigo = parseInt(divInimigo.style.marginLeft);
-       const larguraDoInimigo = parseInt(divInimigo.offsetWidth);
-        const bottomDivInimigo = parseInt(divInimigo.style.bottom);
-
-        const diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
-       const maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
-
-       // this.docVel2 = document.querySelector('.distancia');
-       // this.docVel2.innerHTML = margemEsquerdaDoPlayer;
-       if (bottomDivInimigo < 100) {
-        if (diferencaMargem < (maiorLargura)) {
-          this.speed = -0.5;
-        }
-      }
-
+        
         if (currentPos >= (containerHeight+5)) {
           
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
@@ -740,8 +523,6 @@ class MovingDiv {
         } else {
           currentPos += this.speed;
           divInimigo.style.bottom = containerHeight - currentPos + "px";
-
-          
 
           if (taxaHorPorVert >= 0) {
             divInimigo.style.marginLeft =
@@ -757,30 +538,43 @@ class MovingDiv {
 
 
           if (currentPos >= (containerHeight-5)) {
-
-
              divInimigo.classList.add('diminuirAlturaAnimation');
-            
-
           }
           const limSup= parseInt(divInimigo.style.bottom);
 
-          if(limSup>3000){
+          if(limSup>420){
             this.container.removeChild(divInimigo);    
-          }
-
-        
+          }        
           const divBottom =402-parseInt(divInimigo.style.bottom);
           const constIndice = Math.floor(parseInt(divBottom/6));
 
           const divLayer = divLayers[constIndice];  
-
-
-        const divLayerMarginLeft = divLayer.offsetLeft;
-        
+          const divLayerMarginLeft = divLayer.offsetLeft;
           var MarginLeft = divLayerMarginLeft;
         
-        divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px";
+        divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px";    
+        const divInimigo2= document.querySelectorAll('#container .movingDiv'); 
+
+        for (let i = 0; i < divInimigo2.length; i++) {
+          let bottomDivInimigo = parseInt(divInimigo2[i].style.bottom);
+       if (bottomDivInimigo < 100) {
+        const player= document.querySelector('.player');
+        let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
+        let larguraDoPlayer = parseInt( player.offsetWidth);
+
+        let margemEsquerdaDoInimigo = parseInt(divInimigo2[i].style.marginLeft);
+        let larguraDoInimigo = parseInt(divInimigo2[i].offsetWidth);
+        let diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
+        let maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
+
+         if(diferencaMargem < (maiorLargura)){
+          this.speed = -0.5;
+          this.docInitial = 45;
+          playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+          
+        }
+      }
+    }
         }
       }, this.speed);
     }
@@ -791,13 +585,11 @@ class MovingDiv {
     return `${hue}deg`;
   }
 
-  
   novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
     elemento.className = className;
     return elemento;
   }
-
   criarDivs() {
       for (let i = 0; i < 100; i++) {
         const div = this.novoElemento('div', 'div-layer');
@@ -809,15 +601,12 @@ class MovingDiv {
           this.container2.appendChild(div);
         }
       }
-    }
-    
+    }  
 
   empilhamento() {
-    const divLayers = document.querySelectorAll('#container .div-layer');
-    
+    const divLayers = document.querySelectorAll('#container .div-layer');  
     for (let i = 0; i < divLayers.length; i++) {
       const widthPercentage =(i * 1);
-
       divLayers[i].style.width = widthPercentage + '%';   
       
       if (i >= 0 && i < 30) {
@@ -825,7 +614,6 @@ class MovingDiv {
         }
     }
   }
-
   moveDivsToRight(tempoDeTransicao) {
     const divLayers = document.querySelectorAll('#container .div-layer'); 
     const montanha = document.querySelector('.montanha');
@@ -835,24 +623,18 @@ class MovingDiv {
       var div = divLayers[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
       var newMargin = currentMargin + Math.exp((50 - i/2) / 8);      
-      div.style.marginLeft = newMargin + 'px';
-     
-      
-      div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
+      div.style.marginLeft = newMargin + 'px';  
+     div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
     }
-    
     montanha.style.marginRight = currentMargin2+200 + 'px';
     montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
     
   }
   
-  
   moveDivsToLeft(tempoDeTransicao) {
     const divLayers = document.querySelectorAll('#container .div-layer'); 
-    //const inimigos = document.querySelectorAll('#container #movingDiv');
     const montanha = document.querySelector('.montanha');
-    let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
-    
+    let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0); 
     for (var i = 0; i < 70; i++) {
       var div = divLayers[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
@@ -867,17 +649,12 @@ class MovingDiv {
   }
 }
 
-const movingDivInstance = new MovingDiv("container");
-movingDivInstance.start();
-
-
 class PeriodoDia {
   constructor() {
     this.espacoJogador = document.querySelector('.espaco-jogador');
     this.montanha = document.querySelector('.montanha');
     this.horizonte = document.querySelector('.horizonte');
     this.container = document.querySelector('#container');
-
 
     this.filters = [
       {
@@ -907,7 +684,6 @@ class PeriodoDia {
     ];
     this.currentIndex = 0;
   }
-
   startAnimation() {
     this.changeColors();
     setInterval(() => {
@@ -917,7 +693,6 @@ class PeriodoDia {
   }
 
   changeColors() {
-
     if (this.currentIndex === 3) {
       this.montanha.style.filter = 'brightness(20%)';
       const fumacaDiv = document.createElement('div');
@@ -929,24 +704,15 @@ class PeriodoDia {
         this.espacoJogador.removeChild(fumacaDiv);
       }
     }
-
     const currentFilter = this.filters[this.currentIndex];
     
     this.espacoJogador.style.backgroundColor = currentFilter.backgroundColor;
     this.montanha.style.backgroundImage = currentFilter.montanhaBackgroundImage;
     this.montanha.style.filter = currentFilter.containerFilter;
     this.horizonte.style.backgroundImage = currentFilter.horizonteBackgroundImage;
-    this.container.style.filter = currentFilter.containerFilter;
-
-    
-    
+    this.container.style.filter = currentFilter.containerFilter;   
   }
 }
-
-
-
-////////////////////////////////////////////////////////////////
-
 
 // script.js
 document.addEventListener("DOMContentLoaded", function () {
@@ -960,11 +726,10 @@ document.addEventListener("DOMContentLoaded", function () {
       startScreen.style.display = "none"; // Esconde a tela de start
       const jogo = new Jogo();
 jogo.inicia();
-
-
+const movingDivInstance = new MovingDiv("container");
+movingDivInstance.start();
 
   });
-
   
 });
 
