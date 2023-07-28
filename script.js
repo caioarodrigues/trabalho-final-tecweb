@@ -572,9 +572,10 @@ class MovingDiv {
       let frameInterval = setInterval(() => {
         
         if (currentPos >= (containerHeight)) {
+          
+          this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
           this.rankao +=1;
           this.docRank.innerHTML= this.rankao;
-          this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval);
         } else {
           currentPos += this.speed;
