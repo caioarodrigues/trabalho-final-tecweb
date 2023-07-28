@@ -8,7 +8,38 @@ const larguraMargem = (larguraTela - larguraPlayground) / 2
 const larguraPlayer = 130;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
-let bufferVelocidadeAcionado = false;
+let selectedDifficulty=2000; //valor padrao faacil
+
+
+
+
+class DifficultySelect {
+  constructor() {
+    this.difficultySelect = document.getElementById("difficulty-select");
+    this.selected = 2000;
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    this.difficultySelect.addEventListener("change", () => {
+      this.selected = parseInt(this.difficultySelect.value);
+    });
+  }
+
+  escolhaDificuldade(callback) {
+    // Chamamos o callback com o valor selecionado após o evento de mudança
+    this.difficultySelect.addEventListener("change", () => {
+      this.selected = parseInt(this.difficultySelect.value);
+      callback(this.selected);
+    });
+  }
+}
+
+const dificuldade = new DifficultySelect();
+dificuldade.escolhaDificuldade((selectedValue) => {
+  selectedDifficulty = selectedValue;
+});
+
 
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName);
@@ -246,7 +277,6 @@ class Jogo {
         const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
        const animationController = new AnimationController();
-       const playgroundAudio = new PlaygroundAudio();
       playgroundAudio.playMusic();
         
     }
@@ -360,7 +390,7 @@ class MovingDiv {
     this.container = document.getElementById(containerId);
     this.container2 = document.querySelector('#container');
     this.interval = null;
-    this.selectedDifficulty = 1000;
+   // this.selectedDifficulty = 1000;
     this.docInitial=0;
     this.maxDoc =200;
     this.minDoc =0;
@@ -383,13 +413,6 @@ class MovingDiv {
     this.ifpista= new IfPista();
     this.elementoNeedle = document.querySelector('.needle');
     
-    this.difficultySelect = document.getElementById("difficulty-select");
-    this.difficultySelect.addEventListener("change", () => {
-      this.selectedDifficulty = parseInt(this.difficultySelect.value);
-      this.updateInterval();
-      this.updateIntervalPonto();
-      this.updateIntervalPosto();
-    });
     this.keysPressed = {}; // Track which keys are currently pressed
     this.start();
    
@@ -501,7 +524,7 @@ class MovingDiv {
       this.moveDiv();
       
 
-    }, this.selectedDifficulty);
+    }, selectedDifficulty);
   }
 
   updateIntervalPonto() {
@@ -510,7 +533,7 @@ class MovingDiv {
       this.moveDivPonto();
       
 
-    }, (this.selectedDifficulty+5231));
+    }, (selectedDifficulty+5231));
   }
 
   updateIntervalPosto() {
@@ -519,7 +542,7 @@ class MovingDiv {
       this.moveDivPosto();
       
 
-    }, (this.selectedDifficulty+10234));
+    }, (selectedDifficulty+10234));
   }
 
   start() {
@@ -550,7 +573,7 @@ class MovingDiv {
       
       let containerLeft = this.container.offsetLeft;
       
-      let varMarginInitial =containerLeft + (containerWidth/2)-80 ;
+      let varMarginInitial =containerLeft + (containerWidth/2)-120 ;
 
       let randomMarginLeft = Math.floor(
         Math.random() * (containerWidth - 200)
@@ -586,7 +609,7 @@ class MovingDiv {
               varMarginInitial - (currentPos) * taxaHorPorVert*0.50 + "px";
           } else {
             divInimigo.style.marginLeft =
-              varMarginInitial - (currentPos) * taxaHorPorVert*1.5 + "px";
+              varMarginInitial - (currentPos) * taxaHorPorVert*1.6 + "px";
           }
 
           divInimigo.style.width = 14+currentPos / 3 + "px";
@@ -998,10 +1021,15 @@ document.addEventListener("DOMContentLoaded", function () {
      jogo.inicia();
      const movingDivInstance = new MovingDiv("container");
      movingDivInstance.start();
+     
 
   });
   
 });
+
+
+
+    
 
 
 
