@@ -234,6 +234,22 @@ main{
   bottom: 0;
 }
 
+.pontoDiv {
+  position: absolute;
+  background-image: url('/personagens/nitro.png');
+  background-size: 100% 100%;
+  z-index: 2;
+  bottom: 0;
+}
+
+.postoDiv {
+  position: absolute;
+  background-image: url('/personagens/posto.png');
+  background-size: 100% 100%;
+  z-index: 2;
+  bottom: 0;
+}
+
 
 .fumaca{
   position: absolute;
@@ -374,7 +390,7 @@ select {
   height: 60px; /* Tamanho do medidor reduzido */
   border-radius: 50%;
   border: 3px solid #16151c; /* Espessura da borda reduzida */
-  background-color: #f0f0f0;
+  background-color: #0de3ee;
 }
 
 .needle {
@@ -385,7 +401,7 @@ select {
   height: 0;
   border-left: 5px solid transparent; /* Espessura da agulha reduzida */
   border-right: 5px solid transparent; /* Espessura da agulha reduzida */
-  border-bottom: 30px solid #ff2a00; /* Altura da agulha reduzida */
+  border-bottom: 30px solid #f01212; /* Altura da agulha reduzida */
   transform-origin: bottom;
   transform: translate(-50%, -50%) rotate(-45deg);
 }
@@ -393,7 +409,7 @@ select {
 .kilometers {
   font-size: 14px; /* Tamanho da fonte reduzido */
   margin-top: 10px;
-  color: #007bff;
+  color: #2564a6;
   font-weight: bold;
 }
 
@@ -411,11 +427,10 @@ select {
 }
 .pontuacao {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-.pontos, .pontosMax {
-  display: block;
+.pontos{
   margin-bottom: 5px; /* Espaçamento entre os elementos */
 }
 
@@ -437,6 +452,8 @@ select {
 .diminuirAlturaAnimation {
   animation: diminuirAltura 0.1s linear; /* Use a mesma animação definida anteriormente */
 }
+
+
 
 
 

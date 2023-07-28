@@ -72,15 +72,15 @@ class IfPista{
     if(velocidadeFinal===0){
       const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
       manager.distributeImage();}
-  if(velocidadeFinal>0 && velocidadeFinal<40){
+  if(velocidadeFinal>0 && velocidadeFinal<60){
       const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
       manager.distributeImage();
       }
-  if(velocidadeFinal>40 && velocidadeFinal<80){
+  if(velocidadeFinal>60 && velocidadeFinal<130){
       const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
       manager.distributeImage();
       }
-  if(velocidadeFinal>80 && velocidadeFinal<120){
+  if(velocidadeFinal>130 && velocidadeFinal<200){
       const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
       manager.distributeImage();
       }
@@ -369,6 +369,17 @@ class MovingDiv {
     this.minVel =-45;
     this.reductionInterval = null;
     this.docVel = document.querySelector('.velocidade-span');
+
+    this.docPonto = document.querySelector('.pontos');
+    this.pontao = 0;
+
+    this.docPosto = document.querySelector('.gasolina');
+    this.postao = 0;
+
+    this.docRank = document.querySelector('.rank');
+    this.rankao = 0;
+ 
+
     this.ifpista= new IfPista();
     this.elementoNeedle = document.querySelector('.needle');
     
@@ -376,9 +387,13 @@ class MovingDiv {
     this.difficultySelect.addEventListener("change", () => {
       this.selectedDifficulty = parseInt(this.difficultySelect.value);
       this.updateInterval();
+      this.updateIntervalPonto();
+      this.updateIntervalPosto();
     });
     this.keysPressed = {}; // Track which keys are currently pressed
     this.start();
+   
+    
     document.addEventListener('keydown', this.handleKeyPress2.bind(this));
    document.addEventListener('keyup', this.handleKeyRelease2.bind(this));
     window.addEventListener('blur', this.stopIncrement2.bind(this));
@@ -393,6 +408,7 @@ class MovingDiv {
       this.docInitial+= 1;
       this.velInitial+=0.45;
       this.docVel.innerHTML= this.docInitial;
+     
       this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
       
 
@@ -488,8 +504,28 @@ class MovingDiv {
     }, this.selectedDifficulty);
   }
 
+  updateIntervalPonto() {
+    clearInterval(this.interval2);
+    this.interval2 = setInterval(() => {
+      this.moveDivPonto();
+      
+
+    }, (this.selectedDifficulty+5231));
+  }
+
+  updateIntervalPosto() {
+    clearInterval(this.interval3);
+    this.interval3 = setInterval(() => {
+      this.moveDivPosto();
+      
+
+    }, (this.selectedDifficulty+10234));
+  }
+
   start() {
     this.updateInterval();
+    this.updateIntervalPonto();
+    this.updateIntervalPosto();
   }
 
   stop() {
@@ -535,8 +571,9 @@ class MovingDiv {
 
       let frameInterval = setInterval(() => {
         
-        if (currentPos >= (containerHeight+5)) {
-          
+        if (currentPos >= (containerHeight)) {
+          this.rankao +=1;
+          this.docRank.innerHTML= this.rankao;
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval);
         } else {
@@ -548,7 +585,7 @@ class MovingDiv {
               varMarginInitial - (currentPos) * taxaHorPorVert*0.50 + "px";
           } else {
             divInimigo.style.marginLeft =
-              varMarginInitial - (currentPos) * taxaHorPorVert*2 + "px";
+              varMarginInitial - (currentPos) * taxaHorPorVert*1.5 + "px";
           }
 
           divInimigo.style.width = 14+currentPos / 3 + "px";
@@ -571,7 +608,9 @@ class MovingDiv {
           const divLayerMarginLeft = divLayer.offsetLeft;
           var MarginLeft = divLayerMarginLeft;
         
-        divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px";    
+        divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px"; 
+        
+        
         const divInimigo2= document.querySelectorAll('#container .movingDiv'); 
 
         for (let i = 0; i < divInimigo2.length; i++) {
@@ -593,7 +632,7 @@ class MovingDiv {
           playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
           this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
-          
+                
         }
       }
     }
@@ -601,6 +640,215 @@ class MovingDiv {
       }, this.speed);
     }
   }
+
+
+  moveDivPonto() {
+    const divLayers2 = document.querySelectorAll('#container .div-layer');
+
+    if (this.speed > 0.5 && this.isPageVisible) { 
+      
+      let divPonto = novoElemento('div', 'pontoDiv');
+
+      let numeroAleatorio2 = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
+      divPonto.style.left = numeroAleatorio2 + 'px';
+
+      let containerWidth2 = this.container.offsetWidth;
+      let containerHeight2 = this.container.offsetHeight;
+      
+      let containerLeft2 = this.container.offsetLeft;
+      
+      let varMarginInitial2 =containerLeft2 + (containerWidth2/2)-80 ;
+
+      let randomMarginLeft2 = Math.floor(
+        Math.random() * (containerWidth2 - 200)
+      ); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
+
+      let horizontal2 = Math.floor(varMarginInitial2 - randomMarginLeft2);
+      let taxaHorPorVert2 = horizontal2 / containerHeight2;
+
+      divPonto.style.marginLeft = varMarginInitial2 + "px";
+
+      // Generate a random filter color
+      const randomColor2 = this.generateRandomColor();
+      divPonto.style.filter = `hue-rotate(${randomColor2})`;
+
+      this.container.appendChild(divPonto);
+
+      let currentPos2 = 0;
+
+      let frameInterval2 = setInterval(() => {
+        
+        if (currentPos2 >= (containerHeight2)) {
+          
+          this.container.removeChild(divPonto); // Remove a div quando atinge o limite inferior
+          clearInterval(frameInterval2);
+        } else {
+          currentPos2 += this.speed;
+          divPonto.style.bottom = containerHeight2 - currentPos2 + "px";
+
+          if (taxaHorPorVert2 >= 0) {
+            divPonto.style.marginLeft =
+              varMarginInitial2 - (currentPos2) * taxaHorPorVert2*0.50 + "px"; //taxa de curvatura da parte esquerda
+          } else {
+            divPonto.style.marginLeft =
+              varMarginInitial2 - (currentPos2) * taxaHorPorVert2*1.5 + "px"; //taxa de curvatura da parte direita
+          }
+
+          divPonto.style.width = 2+currentPos2 / 8 + "px";
+          divPonto.style.height =6+ currentPos2 / 6 + "px";
+          divPonto.style.opacity = 5*currentPos2 / containerHeight2;
+
+
+          if (currentPos2 >= (containerHeight2-5)) {
+            divPonto.classList.add('diminuirAlturaAnimation');
+          }
+          const limSup2= parseInt(divPonto.style.bottom);
+
+          if(limSup2>420){
+            this.container.removeChild(divPonto);    
+          }        
+          const divBottom2 =402-parseInt(divPonto.style.bottom);
+          const constIndice2 = Math.floor(parseInt(divBottom2/6));
+
+          const divLayer2 = divLayers2[constIndice2];  
+          const divLayerMarginLeft2 = divLayer2.offsetLeft;
+          var MarginLeft2 = divLayerMarginLeft2;
+        
+        divPonto.style.marginLeft = parseInt(divPonto.style.marginLeft) + MarginLeft2 - 220+"px";    
+        const divPonto2= document.querySelectorAll('#container .pontoDiv'); 
+
+        for (let i = 0; i < divPonto2.length; i++) {
+          let bottomDivPonto2 = parseInt(divPonto2[i].style.bottom);
+       if (bottomDivPonto2 < 90) {
+        const player2= document.querySelector('.player');
+        let margemEsquerdaDoPlayer2 = parseInt(player2.style.left.split('px')[0]) || 375;
+        let larguraDoPlayer2 = parseInt( player2.offsetWidth);
+
+        let margemEsquerdaDoInimigo2 = parseInt(divPonto2[i].style.marginLeft);
+        let larguraDoInimigo2 = parseInt(divPonto2[i].offsetWidth);
+        let diferencaMargem2 = Math.abs(margemEsquerdaDoPlayer2 - margemEsquerdaDoInimigo2);
+        let maiorLargura2 = Math.max(larguraDoPlayer2, larguraDoInimigo2);
+
+         if(diferencaMargem2 < (maiorLargura2)){
+          this.pontao += 1;
+          this.docPonto.innerHTML= this.pontao;
+          this.container.removeChild(divPonto); // Remove a div quando atinge o limite inferior
+          clearInterval(frameInterval2);
+          
+        
+          
+        }
+      }
+    }
+        }
+      }, this.speed/3);
+    }
+  }
+
+  moveDivPosto() {
+    const divLayers3 = document.querySelectorAll('#container .div-layer');
+
+    if (this.speed > 0.5 && this.isPageVisible) { 
+      
+      let divPosto = novoElemento('div', 'postoDiv');
+
+      let numeroAleatorio3 = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
+      divPosto.style.left = numeroAleatorio3 + 'px';
+
+      let containerWidth3 = this.container.offsetWidth;
+      let containerHeight3 = this.container.offsetHeight;
+      
+      let containerLeft3 = this.container.offsetLeft;
+      
+      let varMarginInitial3 =containerLeft3 + (containerWidth3/2)-80 ;
+
+      let randomMarginLeft3 = Math.floor(
+        Math.random() * (containerWidth3 - 200)
+      ); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
+
+      let horizontal3 = Math.floor(varMarginInitial3 - randomMarginLeft3);
+      let taxaHorPorVert3 = horizontal3 / containerHeight3;
+
+      divPosto.style.marginLeft = varMarginInitial3 + "px";
+
+      // Generate a random filter color
+      const randomColor3 = this.generateRandomColor();
+      divPosto.style.filter = `hue-rotate(${randomColor3})`;
+
+      this.container.appendChild(divPosto);
+
+      let currentPos3 = 0;
+
+      let frameInterval3 = setInterval(() => {
+        
+        if (currentPos3 >= (containerHeight3)) {
+          
+          this.container.removeChild(divPosto); // Remove a div quando atinge o limite inferior
+          clearInterval(frameInterval3);
+        } else {
+          currentPos3 += this.speed;
+          divPosto.style.bottom = containerHeight3 - currentPos3 + "px";
+
+          if (taxaHorPorVert3 >= 0) {
+            divPosto.style.marginLeft =
+              varMarginInitial3 - (currentPos3) * taxaHorPorVert3*0.50 + "px"; //taxa de curvatura da parte esquerda
+          } else {
+            divPosto.style.marginLeft =
+              varMarginInitial3 - (currentPos3) * taxaHorPorVert3*1.5 + "px"; //taxa de curvatura da parte direita
+          }
+
+          divPosto.style.width = 2+currentPos3 / 8 + "px";
+          divPosto.style.height =6+ currentPos3 / 6 + "px";
+          divPosto.style.opacity = 5*currentPos3 / containerHeight3;
+
+
+          if (currentPos3 >= (containerHeight3-5)) {
+            divPosto.classList.add('diminuirAlturaAnimation');
+          }
+          const limSup3= parseInt(divPosto.style.bottom);
+
+          if(limSup3>420){
+            this.container.removeChild(divPosto);    
+          }        
+          const divBottom3 =402-parseInt(divPosto.style.bottom);
+          const constIndice3 = Math.floor(parseInt(divBottom3/6));
+
+          const divLayer3 = divLayers3[constIndice3];  
+          const divLayerMarginLeft3 = divLayer3.offsetLeft;
+          var MarginLeft3 = divLayerMarginLeft3;
+        
+        divPosto.style.marginLeft = parseInt(divPosto.style.marginLeft) + MarginLeft3 - 220+"px";    
+        const divPosto3= document.querySelectorAll('#container .postoDiv'); 
+
+        for (let i = 0; i < divPosto3.length; i++) {
+          let bottomDivPosto3 = parseInt(divPosto3[i].style.bottom);
+       if (bottomDivPosto3 < 80) {
+        const player3= document.querySelector('.player');
+        let margemEsquerdaDoPlayer3 = parseInt(player3.style.left.split('px')[0]) || 375;
+        let larguraDoPlayer3 = parseInt( player3.offsetWidth);
+
+        let margemEsquerdaDoInimigo3 = parseInt(divPosto3[i].style.marginLeft);
+        let larguraDoInimigo3 = parseInt(divPosto3[i].offsetWidth);
+        let diferencaMargem3 = Math.abs(margemEsquerdaDoPlayer3 - margemEsquerdaDoInimigo3);
+        let maiorLargura3 = Math.max(larguraDoPlayer3, larguraDoInimigo3);
+
+         if(diferencaMargem3 < (maiorLargura3)){
+          this.postao += 1;
+          this.docPosto.innerHTML= this.postao;
+          this.container.removeChild(divPosto); // Remove a div quando atinge o limite inferior
+          clearInterval(frameInterval3);
+         
+          
+        }
+      }
+    }
+        }
+      }, this.speed/3);
+    }
+  }
+
+
+  
 
   generateRandomColor() {
     const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
@@ -631,7 +879,7 @@ class MovingDiv {
       const widthPercentage =(i * 1);
       divLayers[i].style.width = widthPercentage + '%';   
       
-      if (i >= 0 && i < 30) {
+      if (i >= 0 && i < 20) {
           divLayers[i].remove();
         }
     }
@@ -741,15 +989,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Obtém elementos do DOM
   const startScreen = document.querySelector(".start-screen");
   const startButton = document.querySelector(".start-button");
-  const difficultyButtons = document.querySelectorAll(".difficulty-button");
 
   // Adiciona um ouvinte de evento para o botão de início
   startButton.addEventListener("click", function () {
       startScreen.style.display = "none"; // Esconde a tela de start
       const jogo = new Jogo();
-jogo.inicia();
-const movingDivInstance = new MovingDiv("container");
-movingDivInstance.start();
+     jogo.inicia();
+     const movingDivInstance = new MovingDiv("container");
+     movingDivInstance.start();
 
   });
   

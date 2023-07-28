@@ -20,11 +20,11 @@
         <section class="playground">
             <div class="start-screen">
                 <h2>Welcome to Enduro!</h2>
-                <label for="difficulty-select">Select the difficulty</label>
+                <label for="difficulty-select2">Select the difficulty</label>
                 <select id="difficulty-select">
                   <option value="2000">Easy</option>
                   <option value="1400">Normal</option>
-                  <option value="800">Hard</option>
+                  <option value="100">Hard</option>
                 </select>
                 <button class="start-button">Iniciar</button>
             </div>
@@ -43,28 +43,29 @@
             <div class="display">
                 
                 <div class="relogio">
-                    <i class="fas fa-clock" style="font-size: 24px; color: #ff6600;"></i>
+                    <i class="fas fa-stopwatch" style="font-size: 24px; color: #5ae33b;"></i>
 
                     <span class="timer"></span>
                 </div>
 
                 <div class=ranking">
-                    <span class="pontos">0 pl</span>
+                    <i class="fas fa-flag-checkered" style="font-size: 24px; color: #00e5ff;"></i>
+                    <span class="rank">0</span>
                 </div>
 
 
                 <div class=pontuacao">
-                    
-                    <span class="pontos">Pts:0 pts</span>
-                    <span class="pontosMax">MxPts:0 pts</span>
+                    <i class="fas fa-bolt" style="font-size: 24px; color: #6b8398;"></i>
+                    <span class="pontos">0</span>
                 </div>
 
 
                 
 
                 <div class="escores">
-                    <span class="distancia">
-                        <i class="fas fa-road" style="font-size: 40px; color: #007bff;"></i> 0 km</span>
+                    <span class="posto">
+                        <i class="fas fa-gas-pump" style="font-size: 24px; color: #cd7c18;"></i>
+                        <span class="gasolina">0</span>
                 </div>
 
                 <div class="velocidade-div">
@@ -73,8 +74,7 @@
                           <div class="needle"></div>
                         </div>                      
                       </div>
-                    <span class="velocidade-span">0</span>
-                    <span>km/h</span>
+                    <span class="velocidade-span">0</span> km/h
 
                 </div>
             </div>
