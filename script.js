@@ -65,25 +65,11 @@ class Timer{
     }
 }
 
-class BordaDaPista{
-    constructor(){
-        this.elemento = novoElemento('div', 'borda-da-pista');
-        this.elemento.style.height = `${alturaEspacoJogador}px`;
-        this.elemento.style.backgroundColor = 'black';
-    }
-    getBorda(){
-        return this.elemento;
-    }
-}
 
 class Pista {
     constructor(){
         this.elemento = novoElemento('div', 'pista');
-        this.bordaEsquerda = new BordaDaPista().getBorda();
-        this.bordaDireita = new BordaDaPista().getBorda();
-
-        this.elemento.appendChild(this.bordaEsquerda);
-        this.elemento.appendChild(this.bordaDireita);
+       
         const pistAnima = new MovingDiv();
         pistAnima.criarDivs();
         pistAnima.empilhamento();
@@ -383,8 +369,8 @@ class AnimationController {
 class MovingDiv {
   constructor(containerId) {
     this.speed = 0; // Initial speed
-    this.maxSpeed = 2; // Maximum speed
-    this.minSpeed = -2; // Minimum speed
+    this.maxSpeed = 1; // Maximum speed
+    this.minSpeed = -1; // Minimum speed
     this.interval = null;
     this.isPageVisible = true;
     this.container = document.getElementById(containerId);
@@ -407,7 +393,8 @@ class MovingDiv {
     this.postao = 0;
 
     this.docRank = document.querySelector('.rank');
-    this.rankao = 0;
+    this.rankao = 300;
+    this.docRank.innerHTML= this.rankao;
  
 
     this.ifpista= new IfPista();
@@ -427,7 +414,7 @@ class MovingDiv {
     this.ifpista.usarIf(this.docInitial);
     if (event.key === 'w') {
       
-      this.speed += 0.02;
+      this.speed += 0.01;
       this.docInitial+= 1;
       this.velInitial+=0.45;
       this.docVel.innerHTML= this.docInitial;
@@ -454,7 +441,7 @@ class MovingDiv {
      
     } else if (event.key === 's') {
     
-     this.speed -= 0.02; 
+     this.speed -= 0.01; 
      this.docInitial-= 1;
      this.velInitial-= 0.45;
      this.docVel.innerHTML= this.docInitial;
@@ -490,7 +477,7 @@ class MovingDiv {
         
         this.ifpista.usarIf(this.docInitial);
     
-     this.speed -= 0.02;
+     this.speed -= 0.01;
      this.docInitial-= 1;
      this.velInitial-=0.45;
      this.docVel.innerHTML= this.docInitial;
@@ -561,7 +548,7 @@ class MovingDiv {
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.5 && this.isPageVisible) { 
+    if (this.speed > 0.2 && this.isPageVisible) { 
       
       let divInimigo = novoElemento('div', 'movingDiv');
 
@@ -594,12 +581,13 @@ class MovingDiv {
 
       let frameInterval = setInterval(() => {
         
-        if (currentPos >= (containerHeight)) {
-          
+        if (currentPos >= (containerHeight)) {         
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
-          this.rankao +=1;
+          
+          this.rankao -=1;
           this.docRank.innerHTML= this.rankao;
           clearInterval(frameInterval);
+
         } else {
           currentPos += this.speed;
           divInimigo.style.bottom = containerHeight - currentPos + "px";
@@ -612,9 +600,9 @@ class MovingDiv {
               varMarginInitial - (currentPos) * taxaHorPorVert*1.6 + "px";
           }
 
-          divInimigo.style.width = 14+currentPos / 3 + "px";
-          divInimigo.style.height =8+ currentPos / 4 + "px";
-          divInimigo.style.opacity = 5*currentPos / containerHeight;
+          divInimigo.style.width = 10+currentPos / 4 + "px";
+          divInimigo.style.height =8+ currentPos / 6 + "px";
+          divInimigo.style.opacity = 10*currentPos / containerHeight;
 
 
           if (currentPos >= (containerHeight-5)) {
@@ -639,7 +627,7 @@ class MovingDiv {
 
         for (let i = 0; i < divInimigo2.length; i++) {
           let bottomDivInimigo = parseInt(divInimigo2[i].style.bottom);
-       if (bottomDivInimigo < 100) {
+       if (bottomDivInimigo < 75) {
         const player= document.querySelector('.player');
         let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
         let larguraDoPlayer = parseInt( player.offsetWidth);
@@ -650,9 +638,9 @@ class MovingDiv {
         let maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
 
          if(diferencaMargem < (maiorLargura)){
-          this.speed = -0.5;
-          this.docInitial = 45;
-          this.velInitial =-11.45;
+          this.speed = -0.2;
+          this.docInitial = 80;
+          this.velInitial =20;
           playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
           this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
@@ -664,12 +652,10 @@ class MovingDiv {
       }, this.speed);
     }
   }
-
-
   moveDivPonto() {
     const divLayers2 = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.5 && this.isPageVisible) { 
+    if (this.speed > 0.2 && this.isPageVisible) { 
       
       let divPonto = novoElemento('div', 'pontoDiv');
 
@@ -692,9 +678,7 @@ class MovingDiv {
 
       divPonto.style.marginLeft = varMarginInitial2 + "px";
 
-      // Generate a random filter color
-      const randomColor2 = this.generateRandomColor();
-      divPonto.style.filter = `hue-rotate(${randomColor2})`;
+  
 
       this.container.appendChild(divPonto);
 
@@ -743,7 +727,7 @@ class MovingDiv {
 
         for (let i = 0; i < divPonto2.length; i++) {
           let bottomDivPonto2 = parseInt(divPonto2[i].style.bottom);
-       if (bottomDivPonto2 < 90) {
+       if (bottomDivPonto2 < 70) {
         const player2= document.querySelector('.player');
         let margemEsquerdaDoPlayer2 = parseInt(player2.style.left.split('px')[0]) || 375;
         let larguraDoPlayer2 = parseInt( player2.offsetWidth);
@@ -765,14 +749,14 @@ class MovingDiv {
       }
     }
         }
-      }, this.speed/3);
+      }, this.speed);
     }
   }
 
   moveDivPosto() {
     const divLayers3 = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.5 && this.isPageVisible) { 
+    if (this.speed > 0.2 && this.isPageVisible) { 
       
       let divPosto = novoElemento('div', 'postoDiv');
 
@@ -846,7 +830,7 @@ class MovingDiv {
 
         for (let i = 0; i < divPosto3.length; i++) {
           let bottomDivPosto3 = parseInt(divPosto3[i].style.bottom);
-       if (bottomDivPosto3 < 80) {
+       if (bottomDivPosto3 < 70) {
         const player3= document.querySelector('.player');
         let margemEsquerdaDoPlayer3 = parseInt(player3.style.left.split('px')[0]) || 375;
         let larguraDoPlayer3 = parseInt( player3.offsetWidth);

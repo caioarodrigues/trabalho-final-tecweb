@@ -53,8 +53,8 @@ main{
 
 /*Parte modificada, coloquei altura e tamanho relativos ao tamanho do sprite 96px de largura por 64 de altura e coloquei como background a figura, tbm retirei a cor que estava*/
 .player {
-  height: 100px;
-  width: 130px;
+  height:75px;
+  width: 110px;
   bottom: 0px;
   left: 375px;
   position: absolute;
@@ -132,7 +132,8 @@ main{
 
 .borda-da-pista{
     position: absolute;
-    width: 5px;
+    width: 0px;
+    display:none;
 }
 
 .pista{
@@ -236,7 +237,7 @@ main{
 
 .pontoDiv {
   position: absolute;
-  background-image: url('/personagens/nitro.png');
+  background-image: url('/personagens/ponto.gif');
   background-size: 100% 100%;
   z-index: 2;
   bottom: 0;
