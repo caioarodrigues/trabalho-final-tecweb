@@ -48,22 +48,130 @@ function novoElemento(tagName, className) {
     return elemento;
 }
 
-class Timer{
-    constructor(){
-        this.docTimer = document.querySelector('.timer');}
-    inicia(contador = 0){
-        this.docTimer.innerText = `${contador.toFixed(3)} s`;
-        
-        setTimeout(() => {
-            const fracSegundo = 0.001;
+class Timer {
+  constructor() {
+    this.timer = document.querySelector('.timer');
+    this.segundos = 0;
+    this.minutos = 0;
+    this.horas = 0;
+    this.cronometroRodando = false;
+    this.cronometroInterval = null;
+  }
 
-            this.inicia(contador + fracSegundo);
-        }, 1);      
-    }    
-    getValor() {
-      return (this.contador);
+  iniciarTemporizador(minutos) {
+    if (!this.cronometroRodando) {
+      const segundosTotais = minutos * 60;
+      this.segundos = segundosTotais % 60;
+      this.minutos = Math.floor(segundosTotais / 60);
+      this.horas = 0;
+
+      this.timer.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
+      this.cronometroInterval = setInterval(() => this.atualizarTemporizador(), 1000);
+      this.cronometroRodando = true;
     }
+  }
+
+  atualizarTemporizador() {
+    if (this.segundos === 0 && this.minutos === 0 && this.horas === 0) {
+      this.parar();
+      
+    }
+
+    if (this.segundos === 10 && this.minutos === 0 && this.horas === 0) {
+      this.timer.classList.add('red-blink');
+    }
+
+    if (this.segundos === 0) {
+      if (this.minutos > 0) {
+        this.minutos--;
+        this.segundos = 59;
+      }
+      if (this.minutos === 0 && this.horas > 0) {
+        this.horas--;
+        this.minutos = 59;
+      }
+    } else {
+      this.segundos--;
+    }
+
+    this.timer.innerHTML = this.formatarTempo(this.horas, this.minutos, this.segundos);
+  }
+
+  parar() {
+    clearInterval(this.cronometroInterval);
+    this.cronometroRodando = false;
+  }
+
+  formatarTempo(horas, minutos, segundos) {
+    return `${this.adicionarZeroEsquerda(horas)}:${this.adicionarZeroEsquerda(minutos)}:${this.adicionarZeroEsquerda(segundos)}`;
+  }
+
+  adicionarZeroEsquerda(numero) {
+    return numero < 10 ? `0${numero}` : numero;
+  }
+
 }
+
+
+class TimerPassa {
+  constructor() {
+    this.timerPassa = document.querySelector('.timerPassa');
+    this.segundos = 0;
+    this.minutos = 0;
+    this.horas = 0;
+    this.cronometroRodando = false;
+    this.cronometroInterval = null;
+    this.timer = document.querySelector('.timer');
+    this.varTimer = (this.timer.innerHTML);
+  }
+
+  inicia() {
+    if (!this.cronometroRodando) {
+      this.cronometroInterval = setInterval(() => this.atualizarCronometro(), 1000);
+      this.cronometroRodando = true;
+    }
+  }
+
+  atualizarCronometro() {
+    this.segundos++;
+    if (this.segundos === 60) {
+      this.segundos = 0;
+      this.minutos++;
+      if (this.minutos === 60) {
+        this.minutos = 0;
+        this.horas++;
+      }
+    }
+    this.varTimer = (this.timer.innerHTML);
+
+    if(this.varTimer === '00:00:00'){
+      this.parar();
+    }
+    this.timerPassa.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
+  }
+
+  formatarTempo(horas, minutos, segundos) {
+    return `${this.adicionarZeroEsquerda(horas)}:${this.adicionarZeroEsquerda(minutos)}:${this.adicionarZeroEsquerda(segundos)}`;
+  }
+
+  adicionarZeroEsquerda(numero) {
+    return numero < 10 ? `0${numero}` : numero;
+  }
+
+  parar() {
+    clearInterval(this.cronometroInterval);
+    this.cronometroRodando = false;
+  }
+  
+  reiniciar() {
+    this.parar();
+    this.segundos = 0;
+    this.minutos = 0;
+    this.horas = 0;
+    this.timerPassa.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
+  }
+}
+
 
 
 class Pista {
@@ -144,6 +252,20 @@ class PlaygroundAudio {
       this.audio.loop = true;
       this.volumeFixo = 0.05; // Valor fixo para o volume (por exemplo, 0.5)
       this.volume.gain.value = this.volumeFixo;
+      this.timer = document.querySelector('.timer');
+      this.varTimer3 = (this.timer.innerHTML);
+
+      this.audioWin = new Audio('/music/win.mpp3');
+      this.audioLoss = new Audio('/music/loss.mpp3');
+      this.audioGas = new Audio('/music/gasolina.mp3');
+      this.audioStar = new Audio('/music/estrelas.mp3');
+      this.audioWin.volume =0.2;
+      this.audioLoss.volume =0.2;
+      this.audioGas.volume =0.2;
+      this.audioStar.volume =0.2;
+
+      
+     
     }
     play() {
       if (this.oscillator) {
@@ -159,18 +281,46 @@ class PlaygroundAudio {
       this.oscillator.connect(this.volume);
       this.oscillator.start(0);
     }
+    stop() {
+      if (this.oscillator) {
+        this.oscillator.stop(this.context.currentTime);
+        this.oscillator.disconnect(this.volume);
+        this.oscillator = null;
+      }
+    }
   
     atualizaFrequenciaOscilador(velocidadeFinal) {
+
       const frequenciaMinima = 20;
       const frequenciaMaxima = 200;
       const proporcao = (velocidadeFinal - 0) / (200 - 0);
       const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
       this.oscillator.frequency.value = frequencia;
+
+      
     }
   /*adição de trilha sonora do jogo, resta ainda ativa-la assim qque iniciar o jogo, por enquanto é só ativada ao acelerar*/
     playMusic() {
     
       this.audio.play();
+    }
+
+    playWin() {
+    
+      this.audioWin.play();
+    }
+    playLoss() {
+    
+      this.audioLoss.play();
+    }
+    playGas() {
+    
+      this.audioGas.play();
+    }
+
+    playStar() {
+    
+      this.audioStar.play();
     }
   
     stopMusic() {
@@ -244,6 +394,8 @@ class Jogo {
         this.largura = this.areaDoJogo.clientWidth;
         this.carro = new Carro(this.largura);
         this.timer = new Timer();
+        this.timerPassa = new TimerPassa();
+
         this.pista = new Pista();
      }
     
@@ -256,7 +408,8 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
-        this.timer.inicia();
+        this.timer.iniciarTemporizador(1);
+        this.timerPassa.inicia();
          const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
@@ -264,6 +417,7 @@ class Jogo {
         manager.distributeImage(); 
        const animationController = new AnimationController();
       playgroundAudio.playMusic();
+      
         
     }
 }
@@ -282,6 +436,9 @@ class AnimationController {
     this.animationActivated_7 = false;
     this.animationActivated_8 = false;
     this.animationActivated_9 = false;
+    this.timer3 = document.querySelector('.timer');
+    this.varTimer3 = (this.timer3.innerHTML);
+   
    document.addEventListener('keydown', this.handleKeyPress.bind(this));
    document.addEventListener('keyup', this.handleKeyRelease.bind(this));
     window.addEventListener('blur', this.stopIncrement.bind(this));
@@ -311,10 +468,15 @@ class AnimationController {
     }
   
     startIncrement() {
-      // Iniciar o setInterval para incrementar this.step continuamente
+      this.timer = document.querySelector('.timer');
+      this.varTimer = (this.timer.innerHTML);
       this.incrementInterval = setInterval(() => {
         this.changeAnimation(this.step);
-        this.step -= 1;      
+        this.step -= 1;  
+        if(this.varTimer === '00:00:00'||this.postao === 0){
+          this.stopIncrement();
+        }
+        
       }, 1000); 
     }
     stopIncrement() {
@@ -324,6 +486,15 @@ class AnimationController {
   
   changeAnimation(amount) {
     this.anim += amount;
+    
+    this.varTimer3 = (this.timer3.innerHTML);
+      
+    if(this.varTimer3 === '00:00:00'||this.postao === 0){
+      this.anim=0;
+      amount=0;
+    }
+    
+  
 
     if (this.anim > 1000 && this.anim < 1500 && !this.animationActivated_1) {
       this.movingDiv.moveDivsToLeft(1);//esquerda
@@ -376,7 +547,6 @@ class MovingDiv {
     this.container = document.getElementById(containerId);
     this.container2 = document.querySelector('#container');
     this.interval = null;
-   // this.selectedDifficulty = 1000;
     this.docInitial=0;
     this.maxDoc =200;
     this.minDoc =0;
@@ -390,15 +560,27 @@ class MovingDiv {
     this.pontao = 0;
 
     this.docPosto = document.querySelector('.gasolina');
-    this.postao = 0;
+    this.postao = 5;
+    this.docPosto.innerHTML= this.postao;
 
     this.docRank = document.querySelector('.rank');
-    this.rankao = 300;
+    this.rankao = 10;
     this.docRank.innerHTML= this.rankao;
+
+    this.distancia = document.querySelector('.metros');
+    this.metros = 5000; 
+    this.distancia.innerHTML= this.metros;
+
+
+
  
 
     this.ifpista= new IfPista();
     this.elementoNeedle = document.querySelector('.needle');
+
+    this.timer3 = document.querySelector('.timer');
+    this.varTimer3 = (this.timer3.innerHTML);
+    
     
     this.keysPressed = {}; // Track which keys are currently pressed
     this.start();
@@ -412,6 +594,7 @@ class MovingDiv {
   handleKeyPress2(event) {
     playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
     this.ifpista.usarIf(this.docInitial);
+
     if (event.key === 'w') {
       
       this.speed += 0.01;
@@ -420,15 +603,24 @@ class MovingDiv {
       this.docVel.innerHTML= this.docInitial;
      
       this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
+
+      
       
 
       if (this.speed > this.maxSpeed) {
         this.speed = this.maxSpeed; 
+      }
+
+      this.postao -= 0.01;
+          this.docPosto.innerHTML= Math.ceil(this.postao);
+      if (this.postao <= 0) {
+        this.postao = 0; 
+        this.docPosto.innerHTML= Math.ceil(this.postao);
         
       }
 
       if( this.docInitial>this.maxDoc){
-        this.docInitial = 200
+        this.docInitial = this.maxDoc;
       this.docVel.innerHTML =this.docInitial;}
       
       if(this.velInitial>this.maxVel){
@@ -438,6 +630,7 @@ class MovingDiv {
 
       
       this.stopIncrement();
+      this.stopIncrement2();
      
     } else if (event.key === 's') {
     
@@ -453,7 +646,7 @@ class MovingDiv {
      }
 
      if(this.docInitial <this.minDoc){
-      this.docInitial=0;
+      this.docInitial=this.minDoc;
       this.docVel.innerHTML= this.docInitial;
     }
     
@@ -471,9 +664,15 @@ class MovingDiv {
       this.startIncrement2(); 
     }
     startIncrement2() {
-   
+      this.timer2 = document.querySelector('.timer');
+      this.varTimer2 = (this.timer2.innerHTML);
+     
       this.incrementInterval2 = setInterval(() => {
+        this.varTimer2 = (this.timer2.innerHTML);
         playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+        if(this.varTimer2 === '00:00:00'||this.postao === 0){
+          this.stopIncrement2();
+        }
         
         this.ifpista.usarIf(this.docInitial);
     
@@ -491,7 +690,7 @@ class MovingDiv {
     }
 
     if(this.docInitial <this.minDoc){
-      this.docInitial=0;
+      this.docInitial=this.minDoc;
       this.docVel.innerHTML= this.docInitial;
     }
 
@@ -507,8 +706,15 @@ class MovingDiv {
 
   updateInterval() {
     clearInterval(this.interval);
+   
+    
     this.interval = setInterval(() => {
       this.moveDiv();
+      this.varTimer3 = (this.timer3.innerHTML);
+      
+      if(this.varTimer3 === '00:00:00'||this.postao === 0){
+        this.stop();
+      }
       
 
     }, selectedDifficulty);
@@ -540,6 +746,8 @@ class MovingDiv {
 
   stop() {
     clearInterval(this.interval);
+    clearInterval(this.interval2);
+    clearInterval(this.interval3);
     
   }
 
@@ -548,7 +756,7 @@ class MovingDiv {
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.2 && this.isPageVisible) { 
+    if (this.speed > 0.5 && this.isPageVisible) { 
       
       let divInimigo = novoElemento('div', 'movingDiv');
 
@@ -580,13 +788,26 @@ class MovingDiv {
       let currentPos = 0;
 
       let frameInterval = setInterval(() => {
-        
+        this.varTimer3 = (this.timer3.innerHTML);
+      
+        if(this.varTimer3 === '00:00:00'||this.postao === 0){
+          clearInterval(frameInterval);
+          playgroundAudio.stop();
+          playgroundAudio.stopMusic();
+          this.ifpista.usarIf(0);
+        }
+
         if (currentPos >= (containerHeight)) {         
           this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
           
           this.rankao -=1;
           this.docRank.innerHTML= this.rankao;
-          clearInterval(frameInterval);
+
+          if(this.rankao <1){
+            this.rankao= 1;
+            this.docRank.innerHTML= this.rankao;
+          }
+          
 
         } else {
           currentPos += this.speed;
@@ -623,31 +844,46 @@ class MovingDiv {
         divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px"; 
         
         
-        const divInimigo2= document.querySelectorAll('#container .movingDiv'); 
-
-        for (let i = 0; i < divInimigo2.length; i++) {
-          let bottomDivInimigo = parseInt(divInimigo2[i].style.bottom);
-       if (bottomDivInimigo < 75) {
+        //const divInimigo2= document.querySelectorAll('#container .movingDiv'); 
+        const divInimigo2= document.querySelector('.movingDiv'); 
         const player= document.querySelector('.player');
-        let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
+       // for (let i = 0; i < divInimigo2.length; i++) {
+          let bottomDivInimigo = parseInt(divInimigo2.style.bottom);
+          let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
+       if (bottomDivInimigo < 75) {
+        
+        
         let larguraDoPlayer = parseInt( player.offsetWidth);
 
-        let margemEsquerdaDoInimigo = parseInt(divInimigo2[i].style.marginLeft);
-        let larguraDoInimigo = parseInt(divInimigo2[i].offsetWidth);
+        let margemEsquerdaDoInimigo = parseInt(divInimigo2.style.marginLeft);
+        let larguraDoInimigo = parseInt(divInimigo2.offsetWidth);
         let diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
         let maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
 
          if(diferencaMargem < (maiorLargura)){
-          this.speed = -0.2;
-          this.docInitial = 80;
-          this.velInitial =20;
+          this.speed -= 0.01;
+          this.docInitial -= 1;
           playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
+          this.velInitial -=0.45;   
+          
+          if (this.speed < this.minSpeed) {
+            this.speed = this.minSpeed; 
+          }
+          if(this.velInitial<this.minVel){
+            this.velInitial=this.minVel;
+          }
+      
+          if(this.docInitial <this.minDoc){
+            this.docInitial=0;
+            this.docVel.innerHTML= this.docInitial;
+          }
           this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
                 
         }
+        
       }
-    }
+  //  }
         }
       }, this.speed);
     }
@@ -685,10 +921,15 @@ class MovingDiv {
       let currentPos2 = 0;
 
       let frameInterval2 = setInterval(() => {
+        this.varTimer3 = (this.timer3.innerHTML);
+      
+        if(this.varTimer3 === '00:00:00'||this.postao === 0){
+          clearInterval(frameInterval2);
+        }
         
         if (currentPos2 >= (containerHeight2)) {
           
-          this.container.removeChild(divPonto); // Remove a div quando atinge o limite inferior
+          this.container.removeChild(divPonto); 
           clearInterval(frameInterval2);
         } else {
           currentPos2 += this.speed;
@@ -722,32 +963,36 @@ class MovingDiv {
           const divLayerMarginLeft2 = divLayer2.offsetLeft;
           var MarginLeft2 = divLayerMarginLeft2;
         
-        divPonto.style.marginLeft = parseInt(divPonto.style.marginLeft) + MarginLeft2 - 220+"px";    
-        const divPonto2= document.querySelectorAll('#container .pontoDiv'); 
+        divPonto.style.marginLeft = parseInt(divPonto.style.marginLeft) + MarginLeft2 - 220+"px";   
 
-        for (let i = 0; i < divPonto2.length; i++) {
-          let bottomDivPonto2 = parseInt(divPonto2[i].style.bottom);
+        //const divPonto2= document.querySelectorAll('#container .pontoDiv'); 
+        const divPonto2= document.querySelector('.pontoDiv'); 
+
+       // for (let i = 0; i < divPonto2.length; i++) {
+          let bottomDivPonto2 = parseInt(divPonto2.style.bottom);
        if (bottomDivPonto2 < 70) {
         const player2= document.querySelector('.player');
         let margemEsquerdaDoPlayer2 = parseInt(player2.style.left.split('px')[0]) || 375;
         let larguraDoPlayer2 = parseInt( player2.offsetWidth);
 
-        let margemEsquerdaDoInimigo2 = parseInt(divPonto2[i].style.marginLeft);
-        let larguraDoInimigo2 = parseInt(divPonto2[i].offsetWidth);
+        let margemEsquerdaDoInimigo2 = parseInt(divPonto2.style.marginLeft);
+        let larguraDoInimigo2 = parseInt(divPonto2.offsetWidth);
         let diferencaMargem2 = Math.abs(margemEsquerdaDoPlayer2 - margemEsquerdaDoInimigo2);
         let maiorLargura2 = Math.max(larguraDoPlayer2, larguraDoInimigo2);
 
          if(diferencaMargem2 < (maiorLargura2)){
+          playgroundAudio.playStar(); 
           this.pontao += 1;
           this.docPonto.innerHTML= this.pontao;
-          this.container.removeChild(divPonto); // Remove a div quando atinge o limite inferior
+          this.container.removeChild(divPonto);
+         // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval2);
           
         
           
         }
       }
-    }
+   // }
         }
       }, this.speed);
     }
@@ -756,7 +1001,7 @@ class MovingDiv {
   moveDivPosto() {
     const divLayers3 = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.2 && this.isPageVisible) { 
+    if (this.speed > 0.5 && this.isPageVisible) { 
       
       let divPosto = novoElemento('div', 'postoDiv');
 
@@ -788,6 +1033,11 @@ class MovingDiv {
       let currentPos3 = 0;
 
       let frameInterval3 = setInterval(() => {
+        this.varTimer3 = (this.timer3.innerHTML);
+      
+        if(this.varTimer3 === '00:00:00'||this.postao === 0){
+          clearInterval(frameInterval3);
+        }
         
         if (currentPos3 >= (containerHeight3)) {
           
@@ -826,32 +1076,34 @@ class MovingDiv {
           var MarginLeft3 = divLayerMarginLeft3;
         
         divPosto.style.marginLeft = parseInt(divPosto.style.marginLeft) + MarginLeft3 - 220+"px";    
-        const divPosto3= document.querySelectorAll('#container .postoDiv'); 
+       // const divPosto3= document.querySelectorAll('#container .postoDiv'); 
+        const divPosto3= document.querySelector('.postoDiv');
 
-        for (let i = 0; i < divPosto3.length; i++) {
-          let bottomDivPosto3 = parseInt(divPosto3[i].style.bottom);
+      //  for (let i = 0; i < divPosto3.length; i++) {
+          let bottomDivPosto3 = parseInt(divPosto3.style.bottom);
        if (bottomDivPosto3 < 70) {
         const player3= document.querySelector('.player');
         let margemEsquerdaDoPlayer3 = parseInt(player3.style.left.split('px')[0]) || 375;
         let larguraDoPlayer3 = parseInt( player3.offsetWidth);
 
-        let margemEsquerdaDoInimigo3 = parseInt(divPosto3[i].style.marginLeft);
-        let larguraDoInimigo3 = parseInt(divPosto3[i].offsetWidth);
+        let margemEsquerdaDoInimigo3 = parseInt(divPosto3.style.marginLeft);
+        let larguraDoInimigo3 = parseInt(divPosto3.offsetWidth);
         let diferencaMargem3 = Math.abs(margemEsquerdaDoPlayer3 - margemEsquerdaDoInimigo3);
         let maiorLargura3 = Math.max(larguraDoPlayer3, larguraDoInimigo3);
 
          if(diferencaMargem3 < (maiorLargura3)){
+          playgroundAudio.playGas(); 
           this.postao += 1;
-          this.docPosto.innerHTML= this.postao;
+          this.docPosto.innerHTML= Math.ceil(this.postao);
           this.container.removeChild(divPosto); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval3);
          
           
         }
       }
-    }
+  //  }
         }
-      }, this.speed/3);
+      }, this.speed);
     }
   }
 
@@ -933,6 +1185,10 @@ class PeriodoDia {
     this.montanha = document.querySelector('.montanha');
     this.horizonte = document.querySelector('.horizonte');
     this.container = document.querySelector('#container');
+    this.timer3 = document.querySelector('.timer');
+    this.varTimer3 = (this.timer3.innerHTML);
+    this.docPosto = document.querySelector('.gasolina');
+    this.postao = Math.ceil(this.docPosto.innerHTML); 
 
     this.filters = [
       {
@@ -964,10 +1220,16 @@ class PeriodoDia {
   }
   startAnimation() {
     this.changeColors();
-    setInterval(() => {
+      let frame = setInterval(() => {
+      this.varTimer3 = (this.timer3.innerHTML);
+      this.postao = Math.ceil(this.docPosto.innerHTML);
+      
+      if(this.varTimer3 === '00:00:00'||this.postao === 0){
+        clearInterval(frame);
+      }
       this.currentIndex = (this.currentIndex + 1) % this.filters.length;
       this.changeColors();
-    }, 30000);
+    }, 3000);
   }
 
   changeColors() {

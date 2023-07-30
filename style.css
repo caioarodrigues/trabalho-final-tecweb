@@ -303,6 +303,49 @@ main{
 
 }
 
+.loss{
+  position: absolute;
+  background-color: rgb(84, 49, 30);
+    width: 600px;
+    height: 400px;
+    border-radius: 20px;
+    border: solid .25rem white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 3;
+    align-items: center;
+    background-image: url('personagens/flag.png');
+  background-size: 100% 100%;
+
+}
+
+
+.win{
+  position: absolute;
+  background-color: rgb(49, 208, 113);
+    width: 600px;
+    height: 400px;
+    border-radius: 20px;
+    border: solid .25rem white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 3;
+    align-items: center;
+    background-image: url('personagens/flag.png');
+  background-size: 100% 100%;
+}
+
+.barra{
+  background-color: #7a7586;
+  padding: 10px;
+  border: solid 2px#000;
+  width: 40%;
+  border-radius: 10px;
+  
+}
+
 .start-screen .start-button{
   background-color: rgb(235, 13, 35);
   border: solid .25rem white;
@@ -452,6 +495,30 @@ select {
 
 .diminuirAlturaAnimation {
   animation: diminuirAltura 0.1s linear; /* Use a mesma animação definida anteriormente */
+}
+
+.red-blink {
+  animation: blink 1s linear infinite;
+}
+
+/* Animação de piscar */
+@keyframes blink {
+  0%{
+    color: red;
+  }
+  50% {
+    color:#ccc; ;
+  }
+
+  100% {
+    color: red;
+  }
+}
+
+.timerPassa{
+  color: rgb(229, 160, 221);
+  font-style: oblique;
+  font-size: x-large;
 }
 
 
