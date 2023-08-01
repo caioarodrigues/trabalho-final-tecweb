@@ -8,36 +8,95 @@ const larguraMargem = (larguraTela - larguraPlayground) / 2
 const larguraPlayer = 130;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
-let selectedDifficulty=2000; //valor padrao faacil
+let selecaoDificuldade=1100; //valor padrao faacil
+
+const tempo = document.querySelector('.timer');
+/*
+const posto = document.querySelector('.gasolina');
+
+
+const distancia = document.querySelector('.metros');
+
+
+const lugar = document.querySelector('.rank');
+
+
+*/
+const posto = document.querySelector('.gasolina');
+const distancia = document.querySelector('.metros');
+const lugar = document.querySelector('.rank');
+const metrosCorrida = 1000;
+posto.innerHTML = 5;
+distancia.innerHTML = metrosCorrida;
+lugar.innerHTML = 15;
 
 
 
 
-class DifficultySelect {
+// Função para atualizar as informações
+function atualizarInformacoes() {
+  // Obter os valores dos inputs
+  const metrosInseridos = parseInt(document.querySelector('.metros-input').value);
+  const postoInserido = parseInt(document.querySelector('.gasolina-input').value);
+  const lugarInserido = parseInt(document.querySelector('.rank-input').value);
+
+  // Verificar se os valores inseridos são números válidos (números ou NaN)
+  const metrosValidos = !isNaN(metrosInseridos);
+  const postoValido = !isNaN(postoInserido);
+  const lugarValido = !isNaN(lugarInserido);
+
+  // Atualizar as informações na página
+  if (metrosValidos) {
+      distancia.innerHTML = metrosInseridos;
+  } else {
+      distancia.innerHTML = metrosCorrida;
+  }
+
+  if (postoValido) {
+      posto.innerHTML = postoInserido;
+  } else {
+      posto.innerHTML = 5; // Valor padrão se não for inserido um número válido
+  }
+
+  if (lugarValido) {
+      lugar.innerHTML = lugarInserido;
+  } else {
+      lugar.innerHTML = 15; // Valor padrão se não for inserido um número válido
+  }
+}
+
+const lugarWin = document.querySelector('.posicaoWin');
+const distanciaWin = document.querySelector('.percorreuWin');
+
+
+const lugarLoss = document.querySelector('.posicaoLoss');
+const distanciaLoss = document.querySelector('.percorreuLoss');
+
+class Dificuldade {
   constructor() {
-    this.difficultySelect = document.getElementById("difficulty-select");
-    this.selected = 2000;
+    this.dificuldade = document.getElementById("selecao-dificuldade");
+    this.selecao = 2000;
     this.setupEventListeners();
   }
 
   setupEventListeners() {
-    this.difficultySelect.addEventListener("change", () => {
-      this.selected = parseInt(this.difficultySelect.value);
+    this.dificuldade.addEventListener("change", () => {
+      this.selecao = parseInt(this.dificuldade.value);
     });
   }
 
   escolhaDificuldade(callback) {
     // Chamamos o callback com o valor selecionado após o evento de mudança
-    this.difficultySelect.addEventListener("change", () => {
-      this.selected = parseInt(this.difficultySelect.value);
-      callback(this.selected);
+    this.dificuldade.addEventListener("change", () => {
+      this.selecao = parseInt(this.dificuldade.value);
+      callback(this.selecao);
     });
   }
 }
 
-const dificuldade = new DifficultySelect();
-dificuldade.escolhaDificuldade((selectedValue) => {
-  selectedDifficulty = selectedValue;
+const dificuldade = new Dificuldade();
+dificuldade.escolhaDificuldade((selecaoValue) => {
+  selecaoDificuldade = selecaoValue;
 });
 
 
@@ -96,7 +155,6 @@ class Timer {
 
     this.timer.innerHTML = this.formatarTempo(this.horas, this.minutos, this.segundos);
   }
-
   parar() {
     clearInterval(this.cronometroInterval);
     this.cronometroRodando = false;
@@ -109,20 +167,19 @@ class Timer {
   adicionarZeroEsquerda(numero) {
     return numero < 10 ? `0${numero}` : numero;
   }
-
 }
-
+let timer = new Timer();
 
 class TimerPassa {
   constructor() {
-    this.timerPassa = document.querySelector('.timerPassa');
+    this.timerPassaLoss = document.querySelector('.timerPassaLoss');
+    this.timerPassaWin = document.querySelector('.timerPassaWin');
+
     this.segundos = 0;
     this.minutos = 0;
     this.horas = 0;
     this.cronometroRodando = false;
     this.cronometroInterval = null;
-    this.timer = document.querySelector('.timer');
-    this.varTimer = (this.timer.innerHTML);
   }
 
   inicia() {
@@ -141,13 +198,9 @@ class TimerPassa {
         this.minutos = 0;
         this.horas++;
       }
-    }
-    this.varTimer = (this.timer.innerHTML);
-
-    if(this.varTimer === '00:00:00'){
-      this.parar();
-    }
-    this.timerPassa.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
+    }  
+    this.timerPassaLoss.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
+    this.timerPassaWin.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
   }
 
   formatarTempo(horas, minutos, segundos) {
@@ -171,7 +224,7 @@ class TimerPassa {
     this.timerPassa.innerText = this.formatarTempo(this.horas, this.minutos, this.segundos);
   }
 }
-
+let timerPassa = new TimerPassa();
 
 
 class Pista {
@@ -189,57 +242,63 @@ class Pista {
     }
 }
 
-/*FATIAMENTO DA IMAGEM E READEQUAÇÃO NAS 70 DIVS QUE REPRESENTAM A PISTA*/
-
+/*//////MUDANÇA NO MOVIMENTO DA ESTRADA BASEADO NA VELOCIDADE RECEBIDA, USANDO GIFS/////*/
 class IfPista{
+  constructor(){
+  this.distancia = document.querySelector('.metros');
+  this.metros = parseInt(distancia.innerHTML);
+  }
   
   usarIf(velocidadeFinal){
-    if(velocidadeFinal===0){
-      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
-      manager.distributeImage();}
-  if(velocidadeFinal>0 && velocidadeFinal<60){
-      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaLenta.gif');
+    const velocidadeRanges = [
+      { start: 0, end: 0, velocidadePista: 'pistaParada', index: 1, subtracao: 0, tipoArquivo: 'png' },
+      { start: 1, end: 60, velocidadePista: 'pistaLenta', index: 2, subtracao: 0.1, tipoArquivo: 'gif' },
+      { start: 61, end: 130, velocidadePista: 'pistaMedia', index: 3, subtracao: 0.25, tipoArquivo: 'gif' },
+      { start: 130, end: 200, velocidadePista: 'pistaRapida', index: 4, subtracao: 0.45, tipoArquivo: 'gif' },
+    ];
+
+    let selectedRange = velocidadeRanges.find(
+      (range) => velocidadeFinal >= range.start && velocidadeFinal <= range.end
+    );
+
+    if (selectedRange) {
+      this.metros -= selectedRange.subtracao;
+      this.distancia.innerHTML = Math.ceil(this.metros);
+
+      const imageUrl = `/cenarios/pista/${selectedRange.velocidadePista}.${selectedRange.tipoArquivo}`;
+      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, imageUrl);
       manager.distributeImage();
-      }
-  if(velocidadeFinal>60 && velocidadeFinal<130){
-      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaMedia.gif');
-      manager.distributeImage();
-      }
-  if(velocidadeFinal>130 && velocidadeFinal<200){
-      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaRapida.gif');
-      manager.distributeImage();
-      }
+    }
   }
 }
 
+/*///////FATIAMENTO DA IMAGEM EM CADA DIV QUE FORMA A ESTRADA/////////////////////*/
 class ImageDivManager {
-  constructor(containerSelector, divSelector, divHeight, imageHeight, imagePath) {
-    this.container = document.querySelector(containerSelector);
-    this.divs = this.container.querySelectorAll(divSelector);
-    this.divHeight = divHeight;
-    this.imageHeight = imageHeight;
-    this.imagePath = imagePath;
+  constructor(containerW, divizinha, alturadiv, alturaImagem, imagemCaminho) {
+    this.container = document.querySelector(containerW);
+    this.divs = this.container.querySelectorAll(divizinha);
+    this.alturadiv = alturadiv;
+    this.alturaImagem = alturaImagem;
+    this.imagemCaminho = imagemCaminho;
   }
-
   distributeImage() {
     this.container.style.position = 'relative';
-
     this.divs.forEach((div, index) => {
-      const offsetY = -index * this.divHeight;
-      div.style.backgroundImage = `url(${this.imagePath})`;
+      const offsetY = -index * this.alturadiv;
+      div.style.backgroundImage = `url(${this.imagemCaminho})`;
       div.style.backgroundSize = 'cover';
       div.style.backgroundPosition = `center ${offsetY}px`;
       div.style.overflow = 'hidden';
       
       div.style.top = '0';
       div.style.left = '0';
-      div.style.height = `${this.divHeight}px`;
+      div.style.height = `${this.alturadiv}px`;
      
     });
   }
 }
 
-/*///////CLASSE COM OS MÉTODOS PARA AUDIO E ATUALIZAÇÃO DO AUDIO DO CARRO PRINCIPAL/////////////////////*/
+/*///////CLASSE COM OS MÉTODOS PARA AUDIO E EFEITOS SONOROSL/////////////////////*/
 
 class PlaygroundAudio {
     constructor() {
@@ -255,16 +314,14 @@ class PlaygroundAudio {
       this.timer = document.querySelector('.timer');
       this.varTimer3 = (this.timer.innerHTML);
 
-      this.audioWin = new Audio('/music/win.mpp3');
-      this.audioLoss = new Audio('/music/loss.mpp3');
+      this.audioWin = new Audio('/music/win.mp3');
+      this.audioLoss = new Audio('/music/loss.mp3');
       this.audioGas = new Audio('/music/gasolina.mp3');
       this.audioStar = new Audio('/music/estrelas.mp3');
       this.audioWin.volume =0.2;
       this.audioLoss.volume =0.2;
       this.audioGas.volume =0.2;
-      this.audioStar.volume =0.2;
-
-      
+      this.audioStar.volume =0.2;    
      
     }
     play() {
@@ -295,37 +352,15 @@ class PlaygroundAudio {
       const frequenciaMaxima = 200;
       const proporcao = (velocidadeFinal - 0) / (200 - 0);
       const frequencia = frequenciaMinima + (proporcao * (frequenciaMaxima - frequenciaMinima));
-      this.oscillator.frequency.value = frequencia;
-
-      
+      this.oscillator.frequency.value = frequencia; 
     }
-  /*adição de trilha sonora do jogo, resta ainda ativa-la assim qque iniciar o jogo, por enquanto é só ativada ao acelerar*/
-    playMusic() {
-    
-      this.audio.play();
-    }
-
-    playWin() {
-    
-      this.audioWin.play();
-    }
-    playLoss() {
-    
-      this.audioLoss.play();
-    }
-    playGas() {
-    
-      this.audioGas.play();
-    }
-
-    playStar() {
-    
-      this.audioStar.play();
-    }
-  
-    stopMusic() {
-      this.audio.pause();
-      this.audio.currentTime = 0;
+    playMusic() { this.audio.play();}
+    playWin() { this.audioWin.play();}
+    playLoss() { this.audioLoss.play();}
+    playGas() { this.audioGas.play();}
+    playStar() { this.audioStar.play();}
+    stopMusic() { this.audio.pause();
+     this.audio.currentTime = 0;
     }
   }
 
@@ -349,11 +384,9 @@ class Carro {
     // Inicia o loop de atualização contínua para a movimentação horizontal e vertical
     this.atualizarMovimento();
   }
-
   getCarro() {
     return this.elemento;
   }
-
   getX() {
     const x = parseInt(this.elemento.style.left.split('px')[0]) || 375;
     return x;
@@ -370,12 +403,10 @@ class Carro {
       this.setX(soma);
     } else if(soma <= ptoInicialPlayround || soma >= ptoFinalPlayground)
     {
-      // Aplica dano caso saia dos limites da estrada
       this.elemento.style['filter'] = 'grayscale(10%) sepia(200%) brightness(50%)';
     }
   }
-
-  // Função para atualizar o movimento horizontal e vertical do carro de forma contínua
+  // Função para atualizar o movimento horizontal e velocidade do carro de forma contínua
   atualizarMovimento() {
     if (this.teclasPressionadas['d']) {
       this.movimentaHorizontal(10); // Ajuste a velocidade horizontal como desejar
@@ -393,9 +424,6 @@ class Jogo {
         this.altura = this.areaDoJogo.clientHeight;
         this.largura = this.areaDoJogo.clientWidth;
         this.carro = new Carro(this.largura);
-        this.timer = new Timer();
-        this.timerPassa = new TimerPassa();
-
         this.pista = new Pista();
      }
     
@@ -408,15 +436,15 @@ class Jogo {
         const pista = this.pista.getPista();
         const jogador = this.carro.getCarro();
         const elementos = [jogador, pista];
-        this.timer.iniciarTemporizador(1);
-        this.timerPassa.inicia();
-         const periodoDia = new PeriodoDia();
+        const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
         const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
-       const animationController = new AnimationController();
-      playgroundAudio.playMusic();
+        const animationController = new AnimationController();
+        playgroundAudio.playMusic();
+        timer.iniciarTemporizador(1);
+        timerPassa.inicia();
       
         
     }
@@ -426,18 +454,14 @@ class AnimationController {
   constructor() {
     this.anim = 0;
     this.step = 0; // Valor inicial do incremento
-    this.movingDiv = new MovingDiv(); // Assuming MovingDiv is a class that handles animations of the divs.
-    this.animationActivated_1 = false;
-    this.animationActivated_2 = false;
-    this.animationActivated_3 = false;
-    this.animationActivated_4 = false;
-    this.animationActivated_5 = false;
-    this.animationActivated_6 = false;
-    this.animationActivated_7 = false;
-    this.animationActivated_8 = false;
-    this.animationActivated_9 = false;
-    this.timer3 = document.querySelector('.timer');
-    this.varTimer3 = (this.timer3.innerHTML);
+    this.movingDiv = new MovingDiv(); 
+    this.animationActivated = Array(9).fill(false);
+
+    this.gasolina = parseInt(posto.innerHTML);
+    this.relogio = (tempo.innerHTML);
+    this.metros = parseInt(distancia.innerHTML);
+    this.rank = lugar.innerHTML;
+   
    
    document.addEventListener('keydown', this.handleKeyPress.bind(this));
    document.addEventListener('keyup', this.handleKeyRelease.bind(this));
@@ -468,12 +492,20 @@ class AnimationController {
     }
   
     startIncrement() {
-      this.timer = document.querySelector('.timer');
-      this.varTimer = (this.timer.innerHTML);
+      this.relogio = (tempo.innerHTML);
+      this.metros = parseInt(distancia.innerHTML);
+
       this.incrementInterval = setInterval(() => {
+        this.gasolina = parseFloat(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+  
         this.changeAnimation(this.step);
-        this.step -= 1;  
-        if(this.varTimer === '00:00:00'||this.postao === 0){
+        this.step -= 1;
+        if (this.step < 0) {
+          this.step = 0; // Define um valor mínimo para o incremento
+        }  
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
+          
           this.stopIncrement();
         }
         
@@ -485,61 +517,51 @@ class AnimationController {
     }
   
   changeAnimation(amount) {
-    this.anim += amount;
     
-    this.varTimer3 = (this.timer3.innerHTML);
-      
-    if(this.varTimer3 === '00:00:00'||this.postao === 0){
-      this.anim=0;
-      amount=0;
+    
+    this.gasolina = parseFloat(posto.innerHTML);
+    this.relogio = (tempo.innerHTML);
+    this.metros = parseInt(distancia.innerHTML);
+    this.rank = lugar.innerHTML;
+    if (this.relogio === '00:00:00' || this.metros === 0 || this.gasolina === 0) {
+      amount = 0;
     }
-    
-  
 
-    if (this.anim > 1000 && this.anim < 1500 && !this.animationActivated_1) {
-      this.movingDiv.moveDivsToLeft(1);//esquerda
-      this.animationActivated_1 = true;
-    } else if (this.anim > 2500 && this.anim < 3000 && !this.animationActivated_2) {
-      this.movingDiv.moveDivsToRight(1);//fica reto
-      this.animationActivated_2 = true;
-    } else if (this.anim > 7500 && this.anim < 8000 && !this.animationActivated_3) {
-      this.movingDiv.moveDivsToRight(1);//direita
-      this.animationActivated_3 = true;
-    } else if (this.anim > 9000 && this.anim < 10500 && !this.animationActivated_4) {
-      this.movingDiv.moveDivsToLeft(1);//fica reto
-      this.animationActivated_4 = true;
-    } else if (this.anim > 13500 && this.anim < 14000 && !this.animationActivated_5) {
-      this.movingDiv.moveDivsToLeft(1);//esquerda
-      this.animationActivated_5 = true;
-    } else if (this.anim > 15500 && this.anim < 15600 && !this.animationActivated_6) {
-      this.movingDiv.moveDivsToRight(1);//fica reto
-      this.animationActivated_6 = true;
-    } else if (this.anim > 21500 && this.anim < 22000 && !this.animationActivated_7) {
-      this.movingDiv.moveDivsToLeft(1);//esquerda
-      this.animationActivated_7 = true;
-    } else if (this.anim > 25000 && this.anim < 25500 && !this.animationActivated_8) {
-      this.movingDiv.moveDivsToRight(1);//fica reto
-      this.animationActivated_8 = true;
-    } else if (this.anim > 29500) {
-      this.anim = 0;//recomeça
-      this.animationActivated_1 = false;
-    this.animationActivated_2 = false;
-    this.animationActivated_3 = false;
-    this.animationActivated_4 = false;
-    this.animationActivated_5 = false;
-    this.animationActivated_6 = false;
-    this.animationActivated_7 = false;
-    this.animationActivated_8 = false;
-    this.animationActivated_9 = false;
+    this.anim += amount;
+
+    const animationRanges = [
+      { start: 1000, end: 1500, moveDirection: 'left', index: 1 },
+      { start: 2500, end: 3000, moveDirection: 'right', index: 2 },
+      { start: 7500, end: 8000, moveDirection: 'right', index: 3 },
+      { start: 9000, end: 10500, moveDirection: 'left', index: 4 },
+      { start: 13500, end: 14000, moveDirection: 'left', index: 5 },
+      { start: 15500, end: 15600, moveDirection: 'right', index: 6 },
+      { start: 21500, end: 22000, moveDirection: 'left', index: 7 },
+      { start: 25000, end: 25500, moveDirection: 'right', index: 8 },
+    ];
+
+    for (const range of animationRanges) {
+      if (this.anim > range.start && this.anim < range.end && !this.animationActivated[range.index]) {
+        if (range.moveDirection === 'left') {
+          this.movingDiv.moveDivsToLeft(1);//esquerda
+        } else if (range.moveDirection === 'right') {
+          this.movingDiv.moveDivsToRight(1);
+        }
+        this.animationActivated[range.index] = true;
+        break;
+      }
+    }
+    if (this.anim > 29500) {
+      this.anim = 0;
+      this.animationActivated = Array(9).fill(false);
     }
   }
 }
 
-
 /////////////////////////////////////////////////////////
 class MovingDiv {
   constructor(containerId) {
-    this.speed = 0; // Initial speed
+    this.speed = -0.5; // Initial speed
     this.maxSpeed = 1; // Maximum speed
     this.minSpeed = -1; // Minimum speed
     this.interval = null;
@@ -547,63 +569,55 @@ class MovingDiv {
     this.container = document.getElementById(containerId);
     this.container2 = document.querySelector('#container');
     this.interval = null;
-    this.docInitial=0;
-    this.maxDoc =200;
-    this.minDoc =0;
-    this.velInitial=-45;
+    this.quilometragem=0;
+    this.maxQuilometragem =200;
+    this.minQuilometragem =0;
+    this.ponteiroV=-45;
     this.maxVel =45;
     this.minVel =-45;
     this.reductionInterval = null;
-    this.docVel = document.querySelector('.velocidade-span');
+    this.medidorVel = document.querySelector('.velocidade-span');
 
-    this.docPonto = document.querySelector('.pontos');
+    this.power = document.querySelector('.pontos');
     this.pontao = 0;
 
-    this.docPosto = document.querySelector('.gasolina');
-    this.postao = 5;
-    this.docPosto.innerHTML= this.postao;
+    this.gas = parseFloat(posto.innerHTML);
+    this.gasolina = (posto.innerHTML);
+    this.relogio = (tempo.innerHTML);
+    this.metros = parseInt(distancia.innerHTML);
+    this.rank = lugar.innerHTML;
 
-    this.docRank = document.querySelector('.rank');
-    this.rankao = 10;
-    this.docRank.innerHTML= this.rankao;
-
-    this.distancia = document.querySelector('.metros');
-    this.metros = 5000; 
-    this.distancia.innerHTML= this.metros;
-
-
-
- 
+    this.loss = document.querySelector('.loss');
+    this.win = document.querySelector('.win');
 
     this.ifpista= new IfPista();
     this.elementoNeedle = document.querySelector('.needle');
 
-    this.timer3 = document.querySelector('.timer');
-    this.varTimer3 = (this.timer3.innerHTML);
-    
-    
-    this.keysPressed = {}; // Track which keys are currently pressed
+    this.mensagemWin = document.querySelector('.winRazao');
+    this.mensagemLoss = document.querySelector('.lossRazao');
+    this.keysPressed = {}; 
     this.start();
    
-    
-    document.addEventListener('keydown', this.handleKeyPress2.bind(this));
-   document.addEventListener('keyup', this.handleKeyRelease2.bind(this));
+    document.addEventListener('keydown', this.apertaTecla.bind(this));
+    document.addEventListener('keyup', this.liberaTecla.bind(this));
     window.addEventListener('blur', this.stopIncrement2.bind(this));
     playgroundAudio.play(); 
   }
-  handleKeyPress2(event) {
-    playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
-    this.ifpista.usarIf(this.docInitial);
+  apertaTecla(event) {
+    playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
+    this.ifpista.usarIf(this.quilometragem);
 
     if (event.key === 'w') {
       
       this.speed += 0.01;
-      this.docInitial+= 1;
-      this.velInitial+=0.45;
-      this.docVel.innerHTML= this.docInitial;
+      this.quilometragem+= 1;
+      this.ponteiroV+=0.45;
+      this.medidorVel.innerHTML= this.quilometragem;
      
-      this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
-
+      this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
+      this.gas -= 0.01;
+      posto.innerHTML = Math.ceil(this.gas);
+      
       
       
 
@@ -611,20 +625,19 @@ class MovingDiv {
         this.speed = this.maxSpeed; 
       }
 
-      this.postao -= 0.01;
-          this.docPosto.innerHTML= Math.ceil(this.postao);
-      if (this.postao <= 0) {
-        this.postao = 0; 
-        this.docPosto.innerHTML= Math.ceil(this.postao);
+     
+      if (this.gas <= 0) {
+        this.gas = 0; 
+        posto.innerHTML= (this.gas);
         
       }
 
-      if( this.docInitial>this.maxDoc){
-        this.docInitial = this.maxDoc;
-      this.docVel.innerHTML =this.docInitial;}
+      if( this.quilometragem>this.maxQuilometragem){
+        this.quilometragem = this.maxQuilometragem;
+      this.medidorVel.innerHTML =this.quilometragem;}
       
-      if(this.velInitial>this.maxVel){
-        this.velInitial=this.maxVel;
+      if(this.ponteiroV>this.maxVel){
+        this.ponteiroV=this.maxVel;
       }
 
 
@@ -635,63 +648,68 @@ class MovingDiv {
     } else if (event.key === 's') {
     
      this.speed -= 0.01; 
-     this.docInitial-= 1;
-     this.velInitial-= 0.45;
-     this.docVel.innerHTML= this.docInitial;
-     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
+     this.quilometragem-= 1;
+     this.ponteiroV-= 0.45;
+     this.medidorVel.innerHTML= this.quilometragem;
+     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
 
      if (this.speed < this.minSpeed) {
        this.speed = this.minSpeed; 
 
      }
 
-     if(this.docInitial <this.minDoc){
-      this.docInitial=this.minDoc;
-      this.docVel.innerHTML= this.docInitial;
+     if(this.quilometragem <this.minQuilometragem){
+      this.quilometragem=this.minQuilometragem;
+      this.medidorVel.innerHTML= this.quilometragem;
     }
     
-    if(this.velInitial<this.minVel){
-      this.velInitial=this.minVel;
+    if(this.ponteiroV<this.minVel){
+      this.ponteiroV=this.minVel;
     }
       this.stopIncrement();
       this.stopIncrement2();  
     }
   }
-    handleKeyRelease2(event) {
-      playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
-      this.ifpista.usarIf(this.docInitial);
+    liberaTecla(event) {
+      playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
+      this.ifpista.usarIf(this.quilometragem);
       this.stopIncrement2();
       this.startIncrement2(); 
     }
     startIncrement2() {
-      this.timer2 = document.querySelector('.timer');
-      this.varTimer2 = (this.timer2.innerHTML);
+    this.relogio = (tempo.innerHTML);
+ 
      
       this.incrementInterval2 = setInterval(() => {
-        this.varTimer2 = (this.timer2.innerHTML);
-        playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
-        if(this.varTimer2 === '00:00:00'||this.postao === 0){
+        this.gasolina = parseInt(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+        this.metros = parseInt(distancia.innerHTML);
+        this.rank = lugar.innerHTML;
+
+        playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
+
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           this.stopIncrement2();
         }
         
-        this.ifpista.usarIf(this.docInitial);
+        this.ifpista.usarIf(this.quilometragem);
     
      this.speed -= 0.01;
-     this.docInitial-= 1;
-     this.velInitial-=0.45;
-     this.docVel.innerHTML= this.docInitial;
-     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
+     this.quilometragem-= 1;
+     this.ponteiroV-=0.45;
+     this.medidorVel.innerHTML= this.quilometragem;
+     this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
 
      if (this.speed < this.minSpeed) {
       this.speed = this.minSpeed; 
     }
-    if(this.velInitial<this.minVel){
-      this.velInitial=this.minVel;
+    if(this.ponteiroV<this.minVel){
+      this.ponteiroV=this.minVel;
     }
 
-    if(this.docInitial <this.minDoc){
-      this.docInitial=this.minDoc;
-      this.docVel.innerHTML= this.docInitial;
+    if(this.quilometragem <this.minQuilometragem){
+      this.quilometragem=this.minQuilometragem;
+      this.medidorVel.innerHTML= this.quilometragem;
     }
 
 
@@ -710,14 +728,16 @@ class MovingDiv {
     
     this.interval = setInterval(() => {
       this.moveDiv();
-      this.varTimer3 = (this.timer3.innerHTML);
-      
-      if(this.varTimer3 === '00:00:00'||this.postao === 0){
+      this.gasolina = parseInt(posto.innerHTML);
+      this.relogio = (tempo.innerHTML);
+      this.metros = parseInt(distancia.innerHTML);
+      this.rank = lugar.innerHTML;
+      if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
         this.stop();
       }
       
 
-    }, selectedDifficulty);
+    }, selecaoDificuldade);
   }
 
   updateIntervalPonto() {
@@ -726,7 +746,7 @@ class MovingDiv {
       this.moveDivPonto();
       
 
-    }, (selectedDifficulty+5231));
+    }, (selecaoDificuldade+5231));
   }
 
   updateIntervalPosto() {
@@ -735,7 +755,7 @@ class MovingDiv {
       this.moveDivPosto();
       
 
-    }, (selectedDifficulty+10234));
+    }, (selecaoDificuldade+10234));
   }
 
   start() {
@@ -756,7 +776,7 @@ class MovingDiv {
   moveDiv() {
     const divLayers = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.5 && this.isPageVisible) { 
+    if (this.speed > -1 && this.isPageVisible) { 
       
       let divInimigo = novoElemento('div', 'movingDiv');
 
@@ -786,26 +806,63 @@ class MovingDiv {
       this.container.appendChild(divInimigo);
 
       let currentPos = 0;
+      this.gasolina = parseInt(posto.innerHTML);
+      this.relogio = (tempo.innerHTML);
+      this.metros = parseInt(distancia.innerHTML);
+      this.rank = lugar.innerHTML;
 
       let frameInterval = setInterval(() => {
-        this.varTimer3 = (this.timer3.innerHTML);
-      
-        if(this.varTimer3 === '00:00:00'||this.postao === 0){
-          clearInterval(frameInterval);
+        this.gasolina = parseInt(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+        this.metros = parseInt(distancia.innerHTML);
+        this.rank = lugar.innerHTML;
+        lugarWin.innerHTML = this.rank;
+        distanciaWin.innerHTML = metrosCorrida - this.metros;
+     
+        lugarLoss.innerHTML = this.rank;
+        distanciaLoss.innerHTML = metrosCorrida - this.metros;;
+
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
+
+        if(this.relogio !== '00:00:00'&& this.metros == 0 && this.gasolina >= 1 && this.rank == 1){
+          
+          playgroundAudio.playWin();
+          this.mensagemWin.innerHTML='Parabéns campeão!';
+          this.win.style.display='flex';
+ 
+        }else{
+          if(this.relogio === '00:00:00'&& this.metros > 0 ){
+            this.mensagemLoss.innerHTML='Você estorou o tempo limite para terminar a corrida, está eliminado'; 
+          }
+          if(this.gasolina === 0 && this.metros > 0 ){
+            this.mensagemLoss.innerHTML='Você não possui mais combustível para terminar a corrida, está eliminado';
+          }
+          if(this.relogio !== '00:00:00'&& this.metros === 0 && this.gasolina >= 1 && this.rank > 1){
+            this.mensagemLoss.innerHTML='Você terminou a corrida, mas não a venceu';
+
+          }
+          playgroundAudio.playLoss();
+          this.loss.style.display='flex';
+          
+        }
+        
+          timer.parar();
+          timerPassa.parar();
           playgroundAudio.stop();
           playgroundAudio.stopMusic();
           this.ifpista.usarIf(0);
-        }
+          clearInterval(frameInterval);
+      }
 
         if (currentPos >= (containerHeight)) {         
-          this.container.removeChild(divInimigo); // Remove a div quando atinge o limite inferior
+          this.container.removeChild(divInimigo); 
           
-          this.rankao -=1;
-          this.docRank.innerHTML= this.rankao;
+          this.rank -=1;
+          lugar.innerHTML= this.rank;
 
-          if(this.rankao <1){
-            this.rankao= 1;
-            this.docRank.innerHTML= this.rankao;
+          if(this.rank <1){
+            this.rank = 1;
+            lugar.innerHTML= this.rank;
           }
           
 
@@ -842,44 +899,52 @@ class MovingDiv {
           var MarginLeft = divLayerMarginLeft;
         
         divInimigo.style.marginLeft = parseInt(divInimigo.style.marginLeft) + MarginLeft - 220+"px"; 
-        
-        
         //const divInimigo2= document.querySelectorAll('#container .movingDiv'); 
         const divInimigo2= document.querySelector('.movingDiv'); 
         const player= document.querySelector('.player');
        // for (let i = 0; i < divInimigo2.length; i++) {
           let bottomDivInimigo = parseInt(divInimigo2.style.bottom);
           let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
-       if (bottomDivInimigo < 75) {
-        
+       if (bottomDivInimigo < 75) {     
         
         let larguraDoPlayer = parseInt( player.offsetWidth);
-
         let margemEsquerdaDoInimigo = parseInt(divInimigo2.style.marginLeft);
         let larguraDoInimigo = parseInt(divInimigo2.offsetWidth);
         let diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
         let maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
 
          if(diferencaMargem < (maiorLargura)){
-          this.speed -= 0.01;
-          this.docInitial -= 1;
-          playgroundAudio.atualizaFrequenciaOscilador( this.docInitial);
-          this.velInitial -=0.45;   
+          this.speed -= 0.02;
+          this.quilometragem -= 1;
+          playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
+          this.ponteiroV -=0.45;  
+          
+          
+        if(this.pontao>0){
+          this.container.removeChild(divInimigo); 
+          this.pontao -= 1;
+          this.power.innerHTML= this.pontao;
+        }
           
           if (this.speed < this.minSpeed) {
             this.speed = this.minSpeed; 
           }
-          if(this.velInitial<this.minVel){
-            this.velInitial=this.minVel;
+          if(this.ponteiroV<this.minVel){
+            this.ponteiroV=this.minVel;
           }
       
-          if(this.docInitial <this.minDoc){
-            this.docInitial=0;
-            this.docVel.innerHTML= this.docInitial;
+          if(this.quilometragem <this.minQuilometragem){
+            this.quilometragem=0;
+            this.medidorVel.innerHTML= this.quilometragem;
           }
-          this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.velInitial}deg)`;
 
-                
+          if(this.pontao <0){
+            this.pontao=0;
+            this.power.innerHTML= this.pontao;
+          }
+
+
+          this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;       
         }
         
       }
@@ -891,7 +956,7 @@ class MovingDiv {
   moveDivPonto() {
     const divLayers2 = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.2 && this.isPageVisible) { 
+    if (this.speed > -1 && this.isPageVisible) { 
       
       let divPonto = novoElemento('div', 'pontoDiv');
 
@@ -921,9 +986,12 @@ class MovingDiv {
       let currentPos2 = 0;
 
       let frameInterval2 = setInterval(() => {
-        this.varTimer3 = (this.timer3.innerHTML);
-      
-        if(this.varTimer3 === '00:00:00'||this.postao === 0){
+        this.gasolina = parseInt(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+        this.metros = parseInt(distancia.innerHTML);
+        this.rank = lugar.innerHTML;
+
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){   
           clearInterval(frameInterval2);
         }
         
@@ -946,6 +1014,7 @@ class MovingDiv {
           divPonto.style.width = 2+currentPos2 / 8 + "px";
           divPonto.style.height =6+ currentPos2 / 6 + "px";
           divPonto.style.opacity = 5*currentPos2 / containerHeight2;
+
 
 
           if (currentPos2 >= (containerHeight2-5)) {
@@ -983,7 +1052,7 @@ class MovingDiv {
          if(diferencaMargem2 < (maiorLargura2)){
           playgroundAudio.playStar(); 
           this.pontao += 1;
-          this.docPonto.innerHTML= this.pontao;
+          this.power.innerHTML= this.pontao;
           this.container.removeChild(divPonto);
          // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval2);
@@ -1001,7 +1070,7 @@ class MovingDiv {
   moveDivPosto() {
     const divLayers3 = document.querySelectorAll('#container .div-layer');
 
-    if (this.speed > 0.5 && this.isPageVisible) { 
+    if (this.speed > -1 && this.isPageVisible) { 
       
       let divPosto = novoElemento('div', 'postoDiv');
 
@@ -1029,13 +1098,14 @@ class MovingDiv {
       divPosto.style.filter = `hue-rotate(${randomColor3})`;
 
       this.container.appendChild(divPosto);
-
       let currentPos3 = 0;
 
       let frameInterval3 = setInterval(() => {
-        this.varTimer3 = (this.timer3.innerHTML);
-      
-        if(this.varTimer3 === '00:00:00'||this.postao === 0){
+        this.gasolina = parseFloat(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+        this.metros = parseInt(distancia.innerHTML);
+        this.rank = lugar.innerHTML;
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           clearInterval(frameInterval3);
         }
         
@@ -1093,11 +1163,10 @@ class MovingDiv {
 
          if(diferencaMargem3 < (maiorLargura3)){
           playgroundAudio.playGas(); 
-          this.postao += 1;
-          this.docPosto.innerHTML= Math.ceil(this.postao);
+          this.gas += 1;
+          posto.innerHTML= Math.ceil(this.gas);
           this.container.removeChild(divPosto); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval3);
-         
           
         }
       }
@@ -1111,8 +1180,8 @@ class MovingDiv {
   
 
   generateRandomColor() {
-    const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
-    return `${hue}deg`;
+    const cor = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
+    return `${cor}deg`;
   }
 
   novoElemento(tagName, className) {
@@ -1185,10 +1254,11 @@ class PeriodoDia {
     this.montanha = document.querySelector('.montanha');
     this.horizonte = document.querySelector('.horizonte');
     this.container = document.querySelector('#container');
-    this.timer3 = document.querySelector('.timer');
-    this.varTimer3 = (this.timer3.innerHTML);
-    this.docPosto = document.querySelector('.gasolina');
-    this.postao = Math.ceil(this.docPosto.innerHTML); 
+
+    this.gasolina = parseInt(posto.innerHTML);
+    this.relogio = (tempo.innerHTML);
+    this.metros = parseInt(distancia.innerHTML);
+    this.rank = lugar.innerHTML;
 
     this.filters = [
       {
@@ -1221,15 +1291,17 @@ class PeriodoDia {
   startAnimation() {
     this.changeColors();
       let frame = setInterval(() => {
-      this.varTimer3 = (this.timer3.innerHTML);
-      this.postao = Math.ceil(this.docPosto.innerHTML);
+        this.gasolina = parseFloat(posto.innerHTML);
+        this.relogio = (tempo.innerHTML);
+        this.metros = parseInt(distancia.innerHTML);
+        this.rank = lugar.innerHTML;
       
-      if(this.varTimer3 === '00:00:00'||this.postao === 0){
+      if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
         clearInterval(frame);
       }
       this.currentIndex = (this.currentIndex + 1) % this.filters.length;
       this.changeColors();
-    }, 3000);
+    }, 30000);
   }
 
   changeColors() {
@@ -1259,10 +1331,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Obtém elementos do DOM
   const startScreen = document.querySelector(".start-screen");
   const startButton = document.querySelector(".start-button");
+  const parametros = document.querySelector('.parametros');
 
   // Adiciona um ouvinte de evento para o botão de início
   startButton.addEventListener("click", function () {
-      startScreen.style.display = "none"; // Esconde a tela de start
+      startScreen.style.display = "none";
+      parametros.style.display = "none";
+
       const jogo = new Jogo();
      jogo.inicia();
      const movingDivInstance = new MovingDiv("container");

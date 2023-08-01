@@ -21,57 +21,83 @@
         <section class="playground">
             <div class="start-screen">
                 <h2>Welcome to Enduro!</h2>
-                <label for="difficulty-select2">Select the difficulty</label>
-                <select id="difficulty-select">
-                    <option value="2000">Easy</option>
-                    <option value="1500">Normal</option>
-                    <option value="600">Hard</option>
+                <label for="dificuldade">Select the difficulty</label>
+                <select id="selecao-dificuldade">
+                    <option value="1100">Easy</option>
+                    <option value="800">Normal</option>
+                    <option value="500">Hard</option>
                 </select>
 
+                
 
-                <button class="start-button">Iniciar</button>
+
+<div class="parametros">
+                <h4 style="color: aliceblue;" >Insira as informações da corrida:</h4>
+                <div class="param">
+                    <i class="fas fa-road" style="font-size: 24px; color: #3b54e3;"></i>
+                    <input style="width: 35px;" type="number" class="metros-input" placeholder="0">
+                    m
+                </div>
+        
+                <div class="param">
+                    <i class="fas fa-flag-checkered" style="font-size: 24px; color: #00e5ff;"></i>
+                    <input style="width: 35px;"type="number" class="rank-input" placeholder="0">
+                    rd place
+                </div>
+        
+                <div class="param">
+                    <i class="fas fa-gas-pump" style="font-size: 24px; color: #cd7c18;"></i>
+                    <input style="width: 35px;" type="number" class="gasolina-input" placeholder="0">
+                </div>
+        
+               
+
             </div>
 
-            <div class="loss" style="display: none;">
+
+                <button onclick="atualizarInformacoes()" class="start-button">Iniciar</button>
+            </div>
+
+            <div class="loss"style="display: none"  >
                 <h2 style="color: white;">
-                    You lost the race</h2>
+                    YOU LOST THE RACE!</h2>
+                    <h2 class="lossRazao">Você não possui mais combustível para terminar a corrida, está eliminado</h2>
                 <div class="barra">
                 <i class="fas fa-flag-checkered" style="font-size: 24px; color: #00e5ff;"></i>
-                    <span class="posicao">0</span>rd place
+                    <span class="posicaoLoss">0</span>rd place
                 </div>
 
                 <div class="barra">
-                  <i class="fas fa-road" style="font-size: 24px; color: #3b54e3;"></i>
-                  <span class="percorreu"></span> m
+                  <i class="fas fa-road" style="font-size: 24px; color: #33439c;"></i>
+                  <span class="percorreuLoss"></span> m
                  </div>
 
                  <div class="barra">
                     <i class="fas fa-stopwatch" style="font-size: 24px; color: #5ae33b;"></i>
-                    <span class="timerPassa" style="background-color: #cd7c18;">00:00:00</span>
+                    <span class="timerPassaLoss">00:00:00</span>
                 </div>
             </div>
 
-            <div class="win" style="display: none;">
-                <h2 style="color: white;">YOU WIN!</h2>
-                <div class="barra">
-                <i class="fas fa-flag-checkered" style="font-size: 24px; color: #00e5ff;"></i>
-                    <span class="posicao" >0</span>rd place
+            <div class="win"style="display: none;" >
+                <h2 style="color: white;">YOU WON THE RACE!</h2>
+                <h2 class="winRazao">razao</h2>
+                <div class="barra2">
+                <i class="fas fa-flag-checkered" style="font-size: 24px; color: #3868d8;"></i>
+                    <span class="posicaoWin" >0</span>rd place
                 </div>
 
-                <div class="barra">
-                  <i class="fas fa-road" style="font-size: 24px; color: #3b54e3;"></i>
-                  <span class="percorreu"></span> m
+                <div class="barra2">
+                  <i class="fas fa-road" style="font-size: 24px; color: #de6f5b;"></i>
+                  <span class="percorreuWin"></span> m
                  </div>
 
-                 <div class="barra">
-                    <i class="fas fa-stopwatch" style="font-size: 24px; color: #5ae33b;"></i>
-                    <span class="timerPassa" style="background-color: #cd7c18;">00:00:00</span>
+                 <div class="barra2">
+                    <i class="fas fa-stopwatch" style="font-size: 24px; color: #f39193;"></i>
+                    <span class="timerPassaWin" >00:00:00</span>
                 </div>
             </div>
 
-
-
-
+            
             <div class="espaco-jogador">
                 <div class="horizonte">
                     <div class="montanha"></div>
@@ -83,6 +109,22 @@
 
         </section>
         <div class="metricas">
+
+            
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
             <div class="display">
 
                 <div class="relogio">

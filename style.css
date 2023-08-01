@@ -97,6 +97,24 @@ main{
     justify-content: space-evenly
 }
 
+.parametros{
+  background-color: rgb(235, 13, 35);
+  padding: 0.4rem;
+  margin-block: 0.2rem;
+  border-radius: 10px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    width: 200px;
+    height: 125px;
+    border-radius: 10px;
+    border: solid 3px white;
+   justify-content: space-around;
+    z-index: 3;
+    align-items: center;
+    font-style: oblique;
+    color: rgb(229, 160, 221);
+
+}
+
 .metricas{
   width: 800px;
     display: flex;
@@ -169,6 +187,7 @@ main{
   background-position: center;
   overflow: hidden;
   background-size: cover;
+  background-color:  #897c7d;
    /* Define a origem da transformação no centro da parte inferior da div */
   /* transition: margin-left 12s ease;*/
 
@@ -209,22 +228,7 @@ main{
 
   }
   
-/*
-  .obstaculos{
-    position: relative;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-}
 
-.obstaculo{
-    width: 50px;
-    height: 50px;
-    background-color: green;
-    display: inline-block;
-    position: relative;
-}
-*/
 
   
 .movingDiv {
@@ -305,20 +309,38 @@ main{
 
 .loss{
   position: absolute;
-  background-color: rgb(84, 49, 30);
+  background-color: rgb(58, 62, 63);
     width: 600px;
     height: 400px;
     border-radius: 20px;
     border: solid .25rem white;
-    display: flex;
     flex-direction: column;
     justify-content: center;
     z-index: 3;
     align-items: center;
     background-image: url('personagens/flag.png');
-  background-size: 100% 100%;
+    background-size: 100% 100%;
+    margin-left: 100px;
+    margin-top: 100px;
 
 }
+
+.lossRazao{
+  color:#5ae33b;
+  font-size: 16px; 
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  width: 300px;
+}
+
+.winRazao{
+  color:#3be3d8;
+  font-size: 16px; 
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  width: 300px;
+}
+
 
 
 .win{
@@ -335,10 +357,21 @@ main{
     align-items: center;
     background-image: url('personagens/flag.png');
   background-size: 100% 100%;
+  margin-left: 100px;
+  margin-top: 100px;
 }
 
 .barra{
-  background-color: #7a7586;
+  background-color: #353438;
+  padding: 10px;
+  border: solid 2px#000;
+  width: 40%;
+  border-radius: 10px;
+  
+}
+
+.barra2{
+  background-color: #16d7e1;
   padding: 10px;
   border: solid 2px#000;
   width: 40%;
@@ -373,7 +406,7 @@ main{
 
 
 
-.start-screen #difficulty-select label{
+.start-screen #selecao-dificuldade label{
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   font-size: 30px;
   border-radius: 10px;
@@ -381,7 +414,7 @@ main{
   
 }
 
-.start-screen #difficulty-select option{
+.start-screen #selecao-dificuldade option{
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
  
   border-radius: 10px;
@@ -390,7 +423,7 @@ main{
 }
 
 
-.start-screen #difficulty-select{
+.start-screen #selecao-dificuldade{
   
   color: rgb(57, 35, 6);
   font-size: 30px;
@@ -522,7 +555,21 @@ select {
 }
 
 
+.metros-input{
+  border-radius: 5px;
+  border: 1px solid #ffffff;
+}
+.rank-input{
+  border-radius: 5px;
+  border: 1px solid #ffffff;
 
+
+}
+.gasolina-input{
+  border-radius: 5px;
+  border: 1px solid #ffffff;
+
+}
 
 
 
