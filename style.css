@@ -103,8 +103,8 @@ main{
   margin-block: 0.2rem;
   border-radius: 10px;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    width: 200px;
-    height: 125px;
+    width: 240px;
+    height: 140px;
     border-radius: 10px;
     border: solid 3px white;
    justify-content: space-around;
@@ -112,24 +112,25 @@ main{
     align-items: center;
     font-style: oblique;
     color: rgb(229, 160, 221);
+    
 
+}
+
+.param{
+  margin-bottom: 0.6vh;
 }
 
 .metricas{
   width: 800px;
-    display: flex;
-    justify-content: center;
-    background-color: rgb(185, 133, 133);
-    font-size: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(185, 133, 133);
+  font-size: 20px;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   font-size: 16px;
   color: #007bff;
   font-weight: bold;
   border-radius: 10px;
-
-  
-
-
 }
 
 
@@ -175,19 +176,19 @@ main{
     height: 100%;
     display: flex;   
     flex-direction: column;
-   background-color: green;
-   position: relative;
+    background-color: green;
+    position: relative;
   
     
     
 }
 .div-layer {
-  height: 6px; 
+  height: 2px; 
   background-size: cover;
   background-position: center;
   overflow: hidden;
   background-size: cover;
-  background-color:  #897c7d;
+  background-color:  #a57c80;
    /* Define a origem da transformação no centro da parte inferior da div */
   /* transition: margin-left 12s ease;*/
 
@@ -219,8 +220,8 @@ main{
   }
 
   .montanha{
-    height: 80px;
-    width: 60%;
+    height: 50px;
+    width: 40%;
     background-size: 100% 100%;
     background-image: url('/cenarios/montanhas/montanha1.png');
     position: absolute;
@@ -515,7 +516,7 @@ select {
 
 @keyframes diminuirAltura {
   from {
-    height: 100px; /* Altura inicial (100% do tamanho original) */
+    height: 75px; /* Altura inicial (100% do tamanho original) */
     overflow : hidden;
     opacity: 1;
   }
@@ -569,6 +570,11 @@ select {
   border-radius: 5px;
   border: 1px solid #ffffff;
 
+}
+
+.hora-input{
+  border-radius: 5px;
+  border: 1px solid #ffffff;
 }
 
 
