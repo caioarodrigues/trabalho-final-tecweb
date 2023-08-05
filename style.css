@@ -53,9 +53,9 @@ main{
 
 /*Parte modificada, coloquei altura e tamanho relativos ao tamanho do sprite 96px de largura por 64 de altura e coloquei como background a figura, tbm retirei a cor que estava*/
 .player {
-  height:75px;
-  width: 110px;
-  bottom: 0px;
+  height:61px;
+  width: 89px;
+  bottom: 100px;
   left: 375px;
   position: absolute;
   background-image: url('/Sprites/carBack.gif');
@@ -195,7 +195,7 @@ main{
 }
 
   #container {
-    height: 420px; /* Defina a altura desejada para a pilha de divs */ 
+    height: 315px; /* Defina a altura desejada para a pilha de divs */ 
     margin-top: 180px;
     align-items:center;
     display: flex;

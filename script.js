@@ -5,7 +5,7 @@ const alturaEspacoJogador = espacoJogador.clientHeight;
 const larguraTela = main.clientWidth;
 const larguraPlayground = playground.clientWidth;
 const larguraMargem = (larguraTela - larguraPlayground) / 2
-const larguraPlayer = 130;
+const larguraPlayer = 100;
 const ptoInicialPlayround = 0 + larguraPlayer;
 const ptoFinalPlayground = larguraTela - larguraMargem * 2 - larguraPlayer;
 let selecaoDificuldade=2000; //valor padrao faacil
@@ -274,7 +274,7 @@ class IfPista{
       }
 
       const imageUrl = `/cenarios/pista/${selectedRange.velocidadePista}.${selectedRange.tipoArquivo}`;
-      const manager = new ImageDivManager('#container', '.div-layer', 6, 517, imageUrl);
+      const manager = new ImageDivManager('#container', '.div-layer', 4, 517, imageUrl);
       manager.distributeImage();
     }
   }
@@ -447,7 +447,7 @@ class Jogo {
         const periodoDia = new PeriodoDia();
         periodoDia.startAnimation();
         this.insereNoPlayground(...elementos);
-        const manager = new ImageDivManager('#container', '.div-layer', 6, 517, '/cenarios/pista/pistaParada.png');
+        const manager = new ImageDivManager('#container', '.div-layer', 4, 517, '/cenarios/pista/pistaParada.png');
         manager.distributeImage(); 
         const animationController = new AnimationController();
         playgroundAudio.playMusic();
@@ -862,7 +862,7 @@ class MovingDiv {
       let containerWidth = this.container.offsetWidth;
       let containerHeight = this.container.offsetHeight;
       let containerLeft = this.container.offsetLeft;
-      let varMarginInitial =containerLeft + (containerWidth/2)- 150 ;
+      let varMarginInitial =containerLeft + (containerWidth/2)- 180 ;
 
       let randomMarginLeft = Math.floor(Math.random() * (containerWidth - 200)); //margem inferior que o elemento irá alacançar
 
@@ -928,15 +928,15 @@ class MovingDiv {
           //caso o player fique mais lento que os demais elementos, estes elementos irão até o horizonte da pista e serão apagados em
           //virtude de não sobrecarregar o container com divs ultrapassando o limite superior.
           const limSup= parseInt(novoInimigo.style.bottom);
-          if(limSup>420){
+          if(limSup> 315){
             this.container.removeChild(novoInimigo);    
           }  
           
           
           //nessa lógica, conforme o bottom do inimigo abaixa a cada multiplo de 6px do divBottom(altura de cada div da pista), ele toma pra si a margem dessa div e mais uma margem adicional adiquirida anteriormente, respeitando o formato da curva, seja curvada ou reta.
           //da div corres)
-          const divBottom =420-parseInt(novoInimigo.style.bottom);
-          const constIndice = Math.floor(parseInt(divBottom/6)); //indices de cada div, Ex: div[3], possui bottom 420 - 402= 18(6*3).
+          const divBottom = 315-parseInt(novoInimigo.style.bottom);
+          const constIndice = Math.floor(parseInt(divBottom/4)); //indices de cada div, Ex: div[3], possui bottom 420 - 402= 18(6*3).
 
           const fatias = fatiasEstrada[constIndice];  
           const fatiasMarginLeft = fatias.offsetLeft;
@@ -1070,11 +1070,11 @@ class MovingDiv {
           }
           const limSup2= parseInt(divPonto.style.bottom);
 
-          if(limSup2>420){
+          if(limSup2>315){
             this.container.removeChild(divPonto);    
           }        
-          const divBottom2 =402-parseInt(divPonto.style.bottom);
-          const constIndice2 = Math.floor(parseInt(divBottom2/6));
+          const divBottom2 = 315-parseInt(divPonto.style.bottom);
+          const constIndice2 = Math.floor(parseInt(divBottom2/4));
 
           const fatias2 = fatiasPista[constIndice2];  
           const fatiasMarginLeft2 = fatias2.offsetLeft;
@@ -1114,7 +1114,7 @@ class MovingDiv {
     if (this.speed >= -0.5 && this.isPageVisible) { 
       
       let divPosto = novoElemento('div', 'postoDiv');
-      let numeroAleatorio3 = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
+      let numeroAleatorio3 = Math.floor(Math.random() * 31) - 10; // Gera um número aleatório entre -20 e 20
       divPosto.style.left = numeroAleatorio3 + 'px';
 
       let containerWidth3 = this.container.offsetWidth;
@@ -1165,11 +1165,11 @@ class MovingDiv {
           }
           const limSup3= parseInt(divPosto.style.bottom);
 
-          if(limSup3>420){
+          if(limSup3>315){
             this.container.removeChild(divPosto);    
           }        
-          const divBottom3 =402-parseInt(divPosto.style.bottom);
-          const constIndice3 = Math.floor(parseInt(divBottom3/6));
+          const divBottom3 =315-parseInt(divPosto.style.bottom);
+          const constIndice3 = Math.floor(parseInt(divBottom3/4));
 
           const fatias3 = fatiasEstrada3[constIndice3];  
           const fatiasMarginLeft3 = fatias3.offsetLeft;
@@ -1231,7 +1231,7 @@ class MovingDiv {
       const widthPercentage =(i * 1);
       fatiasEstrada[i].style.width = widthPercentage + '%';   
       
-      if (i >= 0 && i < 15) {
+      if (i >= 0 && i < 8) {
           fatiasEstrada[i].remove();
         }
     }
@@ -1241,7 +1241,7 @@ class MovingDiv {
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
    
-    for (var i = 0; i < 85; i++) {
+    for (var i = 0; i < 92; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
       var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));       
@@ -1257,7 +1257,7 @@ class MovingDiv {
     const fatiasEstrada = document.querySelectorAll('#container .div-layer'); 
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0); 
-    for (var i = 0; i < 85; i++) {
+    for (var i = 0; i < 92; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
       var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));     
