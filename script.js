@@ -255,9 +255,9 @@ class IfPista{
   usarIf(velocidadeFinal){
     const velocidadeRanges = [
       { start: 0, end: 0, velocidadePista: 'pistaParada', index: 1, subtracao: 0, tipoArquivo: 'png' },
-      { start: 1, end: 60, velocidadePista: 'pistaLenta', index: 2, subtracao: 0.5, tipoArquivo: 'gif' },
-      { start: 61, end: 130, velocidadePista: 'pistaMedia', index: 3, subtracao: 1, tipoArquivo: 'gif' },
-      { start: 130, end: 200, velocidadePista: 'pistaRapida', index: 4, subtracao: 2, tipoArquivo: 'gif' },
+      { start: 1, end: 60, velocidadePista: 'pistaLenta', index: 2, subtracao: 1, tipoArquivo: 'gif' },
+      { start: 61, end: 130, velocidadePista: 'pistaMedia', index: 3, subtracao: 2, tipoArquivo: 'gif' },
+      { start: 130, end: 200, velocidadePista: 'pistaRapida', index: 4, subtracao: 3, tipoArquivo: 'gif' },
     ];
 
     let selectedRange = velocidadeRanges.find(
@@ -265,11 +265,11 @@ class IfPista{
 
     if (selectedRange) {
       this.metros -= selectedRange.subtracao;
-      this.distancia.innerHTML = Math.ceil(this.metros);
+      this.distancia.innerHTML = (this.metros);
 
       if(this.metros <0){
         this.metros = 0;
-        this.distancia.innerHTML = Math.ceil(this.metros);
+        this.distancia.innerHTML = (this.metros);
 
       }
 
@@ -453,6 +453,9 @@ class Jogo {
         playgroundAudio.playMusic();
         timer.iniciarTemporizador(hours);
         timerPassa.inicia();
+
+        const verificar = new MovingDiv();
+        verificar.verificaCondicoes();
       
         
     }
@@ -512,7 +515,7 @@ class AnimationController {
         if (this.step < 0) {
           this.step = 0; // Define um valor mínimo para o incremento
         }  
-        if(this.relogio === '00:00:00'|| this.metros == 0 || this.gasolina === 0){
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           
           this.stopIncrement();
         }
@@ -531,7 +534,7 @@ class AnimationController {
     this.relogio = (tempo.innerHTML);
     this.metros = parseInt(distancia.innerHTML);
     this.rank = lugar.innerHTML;
-    if (this.relogio === '00:00:00' || this.metros == 0 || this.gasolina === 0) {
+    if (this.relogio === '00:00:00' || this.metros === 0 || this.gasolina === 0) {
       amount = 0;
     }
 
@@ -606,6 +609,7 @@ class MovingDiv {
     this.mensagemLoss = document.querySelector('.lossRazao');
     this.keysPressed = {}; 
    // this.start();
+   //this.verificaCondicoes();
    
     document.addEventListener('keydown', this.apertaTecla.bind(this));
     document.addEventListener('keyup', this.liberaTecla.bind(this));
@@ -733,8 +737,6 @@ class MovingDiv {
     this.interval = setInterval(() => {
       const movingDivElements = document.querySelectorAll('.movingDiv');
       const numberOfMovingDivs = movingDivElements.length;
-
-
       if(numberOfMovingDivs>=0 && numberOfMovingDivs<=4){
       this.moveDiv();
     }
@@ -742,6 +744,7 @@ class MovingDiv {
       this.relogio = (tempo.innerHTML);
       this.metros = parseInt(distancia.innerHTML);
       this.rank = lugar.innerHTML;
+       
       if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
         this.stop();
       }
@@ -756,7 +759,6 @@ class MovingDiv {
 
       const movingPontosElements = document.querySelectorAll('.pontoDiv');
       const numberOfPontosDivs = movingPontosElements.length;
-
 
       if(numberOfPontosDivs >=0 && numberOfPontosDivs<=5){
         this.moveDivPonto();
@@ -791,7 +793,56 @@ class MovingDiv {
     
   }
 
+  verificaCondicoes(){
 
+    this.intervalVerifica = setInterval(() => {
+    this.gasolina = parseInt(posto.innerHTML);
+    this.relogio = (tempo.innerHTML);
+    this.metros = parseInt(distancia.innerHTML);
+    
+    this.rank = lugar.innerHTML;
+    lugarWin.innerHTML = this.rank;
+    distanciaWin.innerHTML = this.total - this.metros;
+     
+    lugarLoss.innerHTML = this.rank;
+    distanciaLoss.innerHTML = this.total - this.metros;
+
+    if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){ 
+    distancia.innerHTML = this.metros;
+
+    if(this.relogio !== '00:00:00' && this.metros === 0 && this.gasolina >= 1 && this.rank == 1){
+                   
+        playgroundAudio.playWin();
+        this.mensagemWin.innerHTML='Parabéns campeão!';
+        this.win.style.display='flex';
+          
+    }else{
+        if(this.relogio == '00:00:00' && this.metros > 0 ){
+        this.mensagemLoss.innerHTML='Você estorou o tempo limite para terminar a corrida, está eliminado'; 
+        }
+        if(this.gasolina == 0 && this.metros > 0 ){
+        this.mensagemLoss.innerHTML='Você não possui mais combustível para terminar a corrida, está eliminado';
+        }
+        if(this.relogio !== '00:00:00' && this.metros === 0 && this.gasolina >= 1 && this.rank > 1){
+        this.mensagemLoss.innerHTML='Você terminou a corrida, mas não a venceu';
+        }
+        playgroundAudio.playLoss();
+        this.loss.style.display='flex';
+                   
+        }
+                
+        timer.parar();
+        timerPassa.parar();
+        playgroundAudio.stop();
+        playgroundAudio.stopMusic();
+        this.ifpista.usarIf(0);
+        clearInterval(this.intervalVerifica);
+                  
+    }
+
+  }, 10);
+
+  }
 
   moveDiv() {
     const fatiasEstrada = document.querySelectorAll('#container .div-layer');
@@ -811,7 +862,7 @@ class MovingDiv {
       let containerWidth = this.container.offsetWidth;
       let containerHeight = this.container.offsetHeight;
       let containerLeft = this.container.offsetLeft;
-      let varMarginInitial =containerLeft + (containerWidth/2)-120 ;
+      let varMarginInitial =containerLeft + (containerWidth/2)- 150 ;
 
       let randomMarginLeft = Math.floor(Math.random() * (containerWidth - 200)); //margem inferior que o elemento irá alacançar
 
@@ -826,54 +877,19 @@ class MovingDiv {
       novoInimigo.style.filter = `hue-rotate(${randomColor})`;// variação nas cores dos elementos(carros inimigos)
 
       let posicaoAtual = 0;   
-     this.gasolina = parseInt(posto.innerHTML);
+      this.gasolina = parseInt(posto.innerHTML);
       this.relogio = (tempo.innerHTML);
       this.metros = parseInt(distancia.innerHTML);
       this.rank = lugar.innerHTML;
 
       let frameInterval = setInterval(() => {
-        this.gasolina = parseInt(posto.innerHTML);
-        this.relogio = (tempo.innerHTML);
-        this.metros = parseInt(distancia.innerHTML);
-        this.rank = lugar.innerHTML;
-        lugarWin.innerHTML = this.rank;
-        distanciaWin.innerHTML = this.metros;
-     
-        lugarLoss.innerHTML = this.rank;
-        distanciaLoss.innerHTML = this.metros;
 
-        if(this.relogio == '00:00:00'|| this.metros == 0 || this.gasolina == 0){ //análise de condições da corrida
- //caso alguma condição de eliminação ou término da corrida, os efeitos sonoros cessarão e a animação da pista estagnará, além do movimento dos
-          //elementos parar.
-          timer.parar();
-          timerPassa.parar();
-          playgroundAudio.stop();
-          playgroundAudio.stopMusic();
-          this.ifpista.usarIf(0);
+        if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           clearInterval(frameInterval);
-        if(this.relogio !== '00:00:00' && this.metros == 0 && this.gasolina >= 1 && this.rank == 1){
-          
-          playgroundAudio.playWin();
-          this.mensagemWin.innerHTML='Parabéns campeão!';
-          this.win.style.display='flex';
- 
-        }else{
-          if(this.relogio == '00:00:00'&& parseInt(this.metros) > 0 ){
-            this.mensagemLoss.innerHTML='Você estorou o tempo limite para terminar a corrida, está eliminado'; 
-          }
-          if(this.gasolina == 0 && parseInt(this.metros) > 0 ){
-            this.mensagemLoss.innerHTML='Você não possui mais combustível para terminar a corrida, está eliminado';
-          }
-          if(this.relogio !== '00:00:00' && (this.metros) == 0 && this.gasolina >= 1 && this.rank > 1){
-            this.mensagemLoss.innerHTML='Você terminou a corrida, mas não a venceu';
 
-          }
-          playgroundAudio.playLoss();
-          this.loss.style.display='flex';
-          
         }
-         
-      }
+
+        
 
         if (posicaoAtual >= (containerHeight)) {    //se o elemento chegar na base do container ele será deletado       
           this.container.removeChild(novoInimigo); 
@@ -1225,10 +1241,10 @@ class MovingDiv {
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
    
-    for (var i = 0; i < 70; i++) {
+    for (var i = 0; i < 85; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
-      var newMargin = currentMargin + Math.exp((50 - i/2) / 8);      
+      var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));       
       div.style.marginLeft = newMargin + 'px';  
      div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
     }
@@ -1236,21 +1252,21 @@ class MovingDiv {
     montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
     
   }
-  
+  //Math.exp((6.055 - 0.04*i));
   moveDivsToLeft(tempoDeTransicao) {
     const fatiasEstrada = document.querySelectorAll('#container .div-layer'); 
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0); 
-    for (var i = 0; i < 70; i++) {
+    for (var i = 0; i < 85; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
-      var newMargin = currentMargin + Math.exp((50 - i / 2) / 8);      
+      var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));     
       div.style.marginRight = newMargin + 'px';
       
       div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
     }
     montanha.style.marginLeft = currentMargin2+200 + 'px';
-    montanha.style.transition = `margin-left ${tempoDeTransicao*3}s ease`;
+    montanha.style.transition = `margin-left ${tempoDeTransicao*1}s ease`;
   }
 }
 
