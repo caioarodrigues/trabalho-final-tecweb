@@ -55,14 +55,16 @@ main{
 .player {
   height:61px;
   width: 89px;
-  bottom: 100px;
+  bottom: 105px;
   left: 375px;
   position: absolute;
   background-image: url('/Sprites/carBack.gif');
   background-size: 100% 100%;
   animation: shake 0.3s linear infinite;
   overflow : hidden;
-  z-index: 2;
+  z-index: 3;
+  border-radius: 30px 30px 5px 5px;
+  
   
 }
 
@@ -87,7 +89,7 @@ main{
 }
 
 .display{
-    background-color: rgb(72, 63, 84);
+    background-color: rgba(146, 120, 49, 0.817);
     display: flex;
     padding: 1rem;
     width: 750px ;
@@ -95,6 +97,20 @@ main{
     border-radius: 10px;
     align-items: end;
     justify-content: space-evenly
+}
+
+
+.metricas{
+  width: 800px;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(10, 1, 88);
+  font-size: 20px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 16px;
+  color: #007bff;
+  font-weight: bold;
+  border-radius: 10px;
 }
 
 .parametros{
@@ -120,18 +136,7 @@ main{
   margin-bottom: 0.6vh;
 }
 
-.metricas{
-  width: 800px;
-  display: flex;
-  justify-content: center;
-  background-color: rgb(185, 133, 133);
-  font-size: 20px;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 16px;
-  color: #007bff;
-  font-weight: bold;
-  border-radius: 10px;
-}
+
 
 
 .metricas .timer{
@@ -188,7 +193,9 @@ main{
   background-position: center;
   overflow: hidden;
   background-size: cover;
-  background-color:  #a57c80;
+  background-color:  #7d8487;
+  border-left: 5px solid red;
+  border-right: 5px solid red;
    /* Define a origem da transformação no centro da parte inferior da div */
   /* transition: margin-left 12s ease;*/
 
@@ -323,7 +330,7 @@ main{
     background-image: url('personagens/flag.png');
     background-size: 100% 100%;
     margin-left: 100px;
-    margin-top: 100px;
+    margin-top: 10px;
 
 }
 
@@ -360,7 +367,7 @@ main{
     background-image: url('personagens/flag.png');
   background-size: 100% 100%;
   margin-left: 100px;
-  margin-top: 100px;
+  margin-top: 10px;
 }
 
 .barra{
@@ -529,11 +536,34 @@ select {
 }
 
 .diminuirAlturaAnimation {
-  animation: diminuirAltura 0.1s linear; /* Use a mesma animação definida anteriormente */
+  animation: diminuirAltura 0.1s linear; 
 }
 
+
+
+
+
+@keyframes power {
+  0%, 50% {
+    filter: brightness(2);
+     /* Brilho normal no início e no meio do ciclo */
+  }
+  25%, 75% {
+    filter: brightness(4);
+    background-color: rgba(0, 0, 255, 0.3);
+  }
+  100% {
+    filter: brightness(1); /* Voltar ao brilho normal no final */
+  }
+}
+
+.powerAnimation {
+  animation: power 0.5s  linear; /* 2s de duração e manter o estado final */
+}
+
+
 .red-blink {
-  animation: blink 1s linear infinite;
+  animation: blink 1s infinite forwards;
 }
 
 /* Animação de piscar */

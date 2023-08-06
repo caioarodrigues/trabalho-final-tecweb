@@ -66,7 +66,7 @@ function atualizarInformacoes() {
   if (metrosValidos) {
       distancia.innerHTML = metrosInseridos;
   } else {
-      distancia.innerHTML = 2000;
+      distancia.innerHTML = 10000;
   }
 
   if (postoValido) {
@@ -292,9 +292,9 @@ class ImageDivManager {
   distributeImage() {
     this.container.style.position = 'relative';
     this.divs.forEach((div, index) => {
-      const offsetY = -index * this.alturadiv;
+      const offsetY = -index * this.alturadiv*5;
       div.style.backgroundImage = `url(${this.imagemCaminho})`;
-      div.style.backgroundSize = 'cover';
+      div.style.backgroundSize = '100%';
       div.style.backgroundPosition = `center ${offsetY}px`;
       div.style.overflow = 'hidden';
       
@@ -314,10 +314,10 @@ class PlaygroundAudio {
       this.volume = this.context.createGain();   
       this.volume.connect(this.context.destination);
       this.oscillator = null;
-      this.audio = new Audio('/music/musicCar.mp3');
-      this.audio.volume =0.2;
+      this.audio = new Audio('/music/MusicCarJimmyFontanez.mp3');
+      this.audio.volume =0.1;
       this.audio.loop = true;
-      this.volumeFixo = 0.05; // Valor fixo para o volume (por exemplo, 0.5)
+      this.volumeFixo = 0.03; // Valor fixo para o volume (por exemplo, 0.5)
       this.volume.gain.value = this.volumeFixo;
       this.timer = document.querySelector('.timer');
       this.varTimer3 = (this.timer.innerHTML);
@@ -326,10 +326,12 @@ class PlaygroundAudio {
       this.audioLoss = new Audio('/music/loss.mp3');
       this.audioGas = new Audio('/music/gasolina.mp3');
       this.audioStar = new Audio('/music/estrelas.mp3');
-      this.audioWin.volume =0.2;
-      this.audioLoss.volume =0.2;
-      this.audioGas.volume =0.2;
-      this.audioStar.volume =0.2;    
+      this.audioPower = new Audio('music/power.mp3');
+      this.audioWin.volume =0.1;
+      this.audioLoss.volume =0.1;
+      this.audioGas.volume =0.1;
+      this.audioStar.volume =0.1;  
+      this.audioPower.volume =0.2;    
      
     }
     play() {
@@ -367,6 +369,7 @@ class PlaygroundAudio {
     playLoss() { this.audioLoss.play();}
     playGas() { this.audioGas.play();}
     playStar() { this.audioStar.play();}
+    playPower() { this.audioPower.play();}
     stopMusic() { this.audio.pause();
      this.audio.currentTime = 0;
     }
@@ -541,8 +544,8 @@ class AnimationController {
     this.anim += amount;
 
     const animationRanges = [
-      { start: 1000, end: 1500, moveDirection: 'left', index: 1 },
-      { start: 2500, end: 3000, moveDirection: 'right', index: 2 },
+      { start: 3000, end: 3500, moveDirection: 'left', index: 1 },
+      { start: 4000, end: 4500, moveDirection: 'right', index: 2 },
       { start: 7500, end: 8000, moveDirection: 'right', index: 3 },
       { start: 9000, end: 10500, moveDirection: 'left', index: 4 },
       { start: 13500, end: 14000, moveDirection: 'left', index: 5 },
@@ -573,8 +576,8 @@ class AnimationController {
 class MovingDiv {
   constructor(containerId) {
     this.speed = -0.5; // Initial speed
-    this.maxSpeed = 1.5; // Maximum speed
-    this.minSpeed = -1.5; // Minimum speed
+    this.maxSpeed = 1.0; // Maximum speed
+    this.minSpeed = -1.0; // Minimum speed
     this.interval = null;
     this.isPageVisible = true;
     this.container = document.getElementById(containerId);
@@ -622,13 +625,13 @@ class MovingDiv {
 
     if (event.key === 'w') {
       
-      this.speed += 0.015;
-      this.quilometragem+= 1;
-      this.ponteiroV+=0.45;
-      this.medidorVel.innerHTML= this.quilometragem;
+      this.speed += 0.005;
+      this.quilometragem+= 0.5;
+      this.ponteiroV+=0.225;
+      this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
      
       this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
-      this.gas -= 0.01;
+      this.gas -= 0.005;
       posto.innerHTML = Math.ceil(this.gas);
       
       
@@ -657,10 +660,10 @@ class MovingDiv {
      
     } else if (event.key === 's') {
     
-     this.speed -= 0.015; 
-     this.quilometragem-= 1;
-     this.ponteiroV-= 0.45;
-     this.medidorVel.innerHTML= this.quilometragem;
+     this.speed -= 0.005; 
+     this.quilometragem-= 0.5;
+     this.ponteiroV-= 0.225;
+     this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
      this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
 
      if (this.speed < this.minSpeed) {
@@ -670,7 +673,7 @@ class MovingDiv {
 
      if(this.quilometragem <this.minQuilometragem){
       this.quilometragem=this.minQuilometragem;
-      this.medidorVel.innerHTML= this.quilometragem;
+      this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
     }
     
     if(this.ponteiroV<this.minVel){
@@ -704,10 +707,10 @@ class MovingDiv {
         
         this.ifpista.usarIf(this.quilometragem);
     
-        this.speed -= 0.015;
-        this.quilometragem-= 1;
-        this.ponteiroV-=0.45;
-        this.medidorVel.innerHTML= this.quilometragem;
+        this.speed -= 0.005;
+        this.quilometragem-= 0.5;
+        this.ponteiroV-=0.225;
+        this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
         this.elementoNeedle.style.transform = `translate(-50%, -50%) rotate(${this.ponteiroV}deg)`;
 
         if (this.speed < this.minSpeed) {
@@ -719,7 +722,7 @@ class MovingDiv {
 
         if(this.quilometragem <this.minQuilometragem){
          this.quilometragem=this.minQuilometragem;
-         this.medidorVel.innerHTML= this.quilometragem;
+         this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
         }
 
 
@@ -854,23 +857,23 @@ class MovingDiv {
       let novoInimigo = novoElemento('div', 'movingDiv');
       this.container.appendChild(novoInimigo);// o carro torna-se "filho" do elemento container
 
-      let numeroAleatorio = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
+      let numeroAleatorio = Math.floor(Math.random() * 31) - 10; // Gera um número aleatório entre -20 e 20
       novoInimigo.style.left = numeroAleatorio + 'px';
 
 
       //informações do container
-      let containerWidth = this.container.offsetWidth;
-      let containerHeight = this.container.offsetHeight;
-      let containerLeft = this.container.offsetLeft;
-      let varMarginInitial =containerLeft + (containerWidth/2)- 180 ;
+      this.containerWidth = this.container.offsetWidth;
+      this.containerHeight = this.container.offsetHeight;
+      this.containerLeft = this.container.offsetLeft;
+      this.varMarginInitial = this.containerLeft + (this.containerWidth/2)- 160 ;
 
-      let randomMarginLeft = Math.floor(Math.random() * (containerWidth - 200)); //margem inferior que o elemento irá alacançar
+      let randomMarginLeft = Math.floor(Math.random() * (this.containerWidth - 200)); //margem inferior que o elemento irá alacançar
 
-      let horizontal = Math.floor(varMarginInitial - randomMarginLeft); //variação nas posições de surgimento dos elementos no entorno do meio do container
+      let horizontal = Math.floor(this.varMarginInitial - randomMarginLeft); //variação nas posições de surgimento dos elementos no entorno do meio do container
 
-      let taxaHorPorVert = horizontal/containerHeight;/* conforme o elemento desce pele container, ele varia à uma taxa horizontal relativo a uma  taxa vertical, dependendo da posição aletória que o elemento vai alcançar a margem inferior do container*/
+      let taxaHorPorVert = horizontal/this.containerHeight;/* conforme o elemento desce pele container, ele varia à uma taxa horizontal relativo a uma  taxa vertical, dependendo da posição aletória que o elemento vai alcançar a margem inferior do container*/
 
-      novoInimigo.style.marginLeft = varMarginInitial + "px";
+      novoInimigo.style.marginLeft = this.varMarginInitial + "px";
 
       // Generate a random filter color
       const randomColor = this.generateRandomColor();
@@ -891,7 +894,7 @@ class MovingDiv {
 
         
 
-        if (posicaoAtual >= (containerHeight)) {    //se o elemento chegar na base do container ele será deletado       
+        if (posicaoAtual >= (this.containerHeight)) {    //se o elemento chegar na base do container ele será deletado       
           this.container.removeChild(novoInimigo); 
           
           this.rank -=1;   //caso o player tenha estrelas, ele poderá usá-las para eliminar alguns carros que impedem sua passagem
@@ -905,23 +908,23 @@ class MovingDiv {
 
         } else {
           posicaoAtual += this.speed;  //a posição atual dependerá da variável speed que é influenciada por diversas variaveis, evento de teclas e a falta de tais eventos, simulando o efeito do carro desacelerar caso não haja nenhum comando no carro do player.
-          novoInimigo.style.bottom = containerHeight - posicaoAtual + "px";
+          novoInimigo.style.bottom = this.containerHeight - posicaoAtual + "px";
 
           if (taxaHorPorVert >= 0) {  //controle do carro desde a margem inicial até a margem final, com um certo intervalo de aleatoriedade
             novoInimigo.style.marginLeft =
-              varMarginInitial - (posicaoAtual) * taxaHorPorVert*0.45 + "px"; //esquerda
+              this.varMarginInitial - (posicaoAtual) * taxaHorPorVert*0.4 + "px"; //esquerda
           } else {
             novoInimigo.style.marginLeft =
-              varMarginInitial - (posicaoAtual) * taxaHorPorVert*1.6 + "px"; //direita
+              this.varMarginInitial - (posicaoAtual) * taxaHorPorVert*1.6 + "px"; //direita
           }
 
           //uso do posicionamento do carro para simular a perspectiva de aumento ou diminuição do tamanho co carro conforme se distancia ou se aproxima do player
           novoInimigo.style.width = 10+posicaoAtual / 4 + "px";
           novoInimigo.style.height =8+ posicaoAtual / 6 + "px";
-          novoInimigo.style.opacity = 10*posicaoAtual / containerHeight;
+          novoInimigo.style.opacity = 10*posicaoAtual / this.containerHeight;
 
 
-          if (posicaoAtual >= (containerHeight-5)) { //animacao momentos antes dos elementos sumirem
+          if (posicaoAtual >= (this.containerHeight-5)) { //animacao momentos antes dos elementos sumirem
              novoInimigo.classList.add('diminuirAlturaAnimation');
           }
 
@@ -945,34 +948,36 @@ class MovingDiv {
         novoInimigo.style.marginLeft = parseInt(novoInimigo.style.marginLeft) + MarginLeft - 200+"px";  //movimento guiado pelas divs da estrada, com ajuste de 200 para que os ellementos venham pela pista
 
         const inimigosTodos= document.querySelectorAll('.movingDiv');
-        
-        
-        for (let i = 0; i < inimigosTodos.length; i++) {
 
-       // const inimigos= document.querySelector('.movingDiv'); 
         const player= document.querySelector('.player');
-        let bottomNovoInimigo = parseInt(inimigosTodos[i].style.bottom);
-        let margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;
+        
+        this.margemEsquerdaDoPlayer = parseInt(player.style.left.split('px')[0]) || 375;   
+        this.larguraDoPlayer = parseInt(player.offsetWidth);
+
+        for (let i = 0; i < inimigosTodos.length; i++) {
+         let bottomNovoInimigo = parseInt(inimigosTodos[i].style.bottom);
+       // const inimigos= document.querySelector('.movingDiv');        
         //identificação de batidas ou obtenção de gasolina e pontos nos outros metodos abaixo.(75 é a altura do carro do player, que é fixo)
-        if (bottomNovoInimigo < 75) {
-        //logica para se identicar colisão por meio da margem esquerda      
-        let larguraDoPlayer = parseInt( player.offsetWidth);
+        if (bottomNovoInimigo < 60) {
+     
         let margemEsquerdaDoInimigo = parseInt(inimigosTodos[i].style.marginLeft);
         let larguraDoInimigo = parseInt(inimigosTodos[i].offsetWidth);
-        let diferencaMargem = Math.abs(margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
-        let maiorLargura = Math.max(larguraDoPlayer, larguraDoInimigo);
+        let diferencaMargem = Math.abs(this.margemEsquerdaDoPlayer - margemEsquerdaDoInimigo);
+        let maiorLargura = Math.max(this.larguraDoPlayer, larguraDoInimigo);
 
          if(diferencaMargem < (maiorLargura)){//aplicação de redução de velocidade
-          this.speed -= 0.01;
-          this.quilometragem -= 1;
-          playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
-          this.ponteiroV -=0.45;  
+          this.speed -= 0.05;
+          this.quilometragem -= 5;
+          playgroundAudio.atualizaFrequenciaOscilador(this.quilometragem);
+          this.ponteiroV -=2.5;  
           
           
         if(this.pontao>0){ //caso, eu tenha pontos de "poderes", posso eliminar os carros na frente do player com um simples "toque"
           this.container.removeChild(inimigosTodos[i]); 
           this.pontao -= 1;
           this.power.innerHTML= this.pontao;
+          playgroundAudio.playPower();
+          player.classList.add('powerAnimation'); 
 
           this.rank -=1;   
           lugar.innerHTML= this.rank;
@@ -981,6 +986,13 @@ class MovingDiv {
             this.rank = 1;
             lugar.innerHTML= this.rank;
           }
+          
+          setTimeout(function() {
+            player.classList.remove('powerAnimation');
+          }, 500);
+          
+
+          
         }    
         //limites impostos as variáveis
           if (this.speed < this.minSpeed) {
@@ -991,7 +1003,7 @@ class MovingDiv {
           }  
           if(this.quilometragem <this.minQuilometragem){
             this.quilometragem=0;
-            this.medidorVel.innerHTML= this.quilometragem;
+            this.medidorVel.innerHTML= Math.ceil(this.quilometragem);
           }
           if(this.pontao <0){
             this.pontao=0;
@@ -1015,20 +1027,16 @@ class MovingDiv {
     if (this.speed >= -0.5 && this.isPageVisible) { 
       
       let divPonto = novoElemento('div', 'pontoDiv');
-      let numeroAleatorio2 = Math.floor(Math.random() * 51) - 10; // Gera um número aleatório entre -20 e 20
+      let numeroAleatorio2 = Math.floor(Math.random() * 31) - 10; // Gera um número aleatório entre -20 e 20
 
       divPonto.style.left = numeroAleatorio2 + 'px';
-      let containerWidth2 = this.container.offsetWidth;
-      let containerHeight2 = this.container.offsetHeight;
-      let containerLeft2 = this.container.offsetLeft;
-      
-      let varMarginInitial2 =containerLeft2 + (containerWidth2/2)-80 ;
-      let randomMarginLeft2 = Math.floor(Math.random() * (containerWidth2 - 200)); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
 
-      let horizontal2 = Math.floor(varMarginInitial2 - randomMarginLeft2);
-      let taxaHorPorVert2 = horizontal2 / containerHeight2;
+      let randomMarginLeft2 = Math.floor(Math.random() * (this.containerWidth - 200)); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
 
-      divPonto.style.marginLeft = varMarginInitial2 + "px";
+      let horizontal2 = Math.floor(this.varMarginInitial - randomMarginLeft2);
+      let taxaHorPorVert2 = horizontal2 / this.containerHeight;
+
+      divPonto.style.marginLeft = this.varMarginInitial + "px";
       this.container.appendChild(divPonto);
 
       let posicaoAtual2 = 0;
@@ -1043,29 +1051,29 @@ class MovingDiv {
           clearInterval(frameInterval2);
         }
         
-        if (posicaoAtual2 >= (containerHeight2)) {
+        if (posicaoAtual2 >= (this.containerHeight)) {
           
           this.container.removeChild(divPonto); 
           clearInterval(frameInterval2);
         } else {
           posicaoAtual2 += this.speed;
-          divPonto.style.bottom = containerHeight2 - posicaoAtual2 + "px";
+          divPonto.style.bottom = this.containerHeight - posicaoAtual2 + "px";
 
           if (taxaHorPorVert2 >= 0) {
             divPonto.style.marginLeft =
-              varMarginInitial2 - (posicaoAtual2) * taxaHorPorVert2*0.50 + "px"; //taxa de curvatura da parte esquerda
+              this.varMarginInitial - (posicaoAtual2) * taxaHorPorVert2*0.40 + "px"; //taxa de curvatura da parte esquerda
           } else {
             divPonto.style.marginLeft =
-              varMarginInitial2 - (posicaoAtual2) * taxaHorPorVert2*1.5 + "px"; //taxa de curvatura da parte direita
+              this.varMarginInitial - (posicaoAtual2) * taxaHorPorVert2*1.5 + "px"; //taxa de curvatura da parte direita
           }
 
           divPonto.style.width = 2+posicaoAtual2 / 8 + "px";
           divPonto.style.height =6+ posicaoAtual2 / 6 + "px";
-          divPonto.style.opacity = 5*posicaoAtual2 / containerHeight2;
+          divPonto.style.opacity = 5*posicaoAtual2 / this.containerHeight;
 
 
 
-          if (posicaoAtual2 >= (containerHeight2-5)) {
+          if (posicaoAtual2 >= (this.containerHeight-5)) {
             divPonto.classList.add('diminuirAlturaAnimation');
           }
           const limSup2= parseInt(divPonto.style.bottom);
@@ -1082,18 +1090,16 @@ class MovingDiv {
         
         divPonto.style.marginLeft = parseInt(divPonto.style.marginLeft) + MarginLeft2 - 220+"px";   
 
-        const divPonto2= document.querySelector('.pontoDiv'); 
+        const divPonto2= document.querySelector('.pontoDiv');
+
 
         let bottomDivPonto2 = parseInt(divPonto2.style.bottom);
-       if (bottomDivPonto2 < 70) {
-        const player2= document.querySelector('.player');
-        let margemEsquerdaDoPlayer2 = parseInt(player2.style.left.split('px')[0]) || 375;
-        let larguraDoPlayer2 = parseInt( player2.offsetWidth);
+       if (bottomDivPonto2 < 60) {
 
         let margemEsquerdaDoInimigo2 = parseInt(divPonto2.style.marginLeft);
         let larguraDoInimigo2 = parseInt(divPonto2.offsetWidth);
-        let diferencaMargem2 = Math.abs(margemEsquerdaDoPlayer2 - margemEsquerdaDoInimigo2);
-        let maiorLargura2 = Math.max(larguraDoPlayer2, larguraDoInimigo2);
+        let diferencaMargem2 = Math.abs(this.margemEsquerdaDoPlayer - margemEsquerdaDoInimigo2);
+        let maiorLargura2 = Math.max(this.larguraDoPlayer, larguraDoInimigo2);
 
          if(diferencaMargem2 < (maiorLargura2)){
           playgroundAudio.playStar(); 
@@ -1117,17 +1123,12 @@ class MovingDiv {
       let numeroAleatorio3 = Math.floor(Math.random() * 31) - 10; // Gera um número aleatório entre -20 e 20
       divPosto.style.left = numeroAleatorio3 + 'px';
 
-      let containerWidth3 = this.container.offsetWidth;
-      let containerHeight3 = this.container.offsetHeight;
-      let containerLeft3 = this.container.offsetLeft;
-      let varMarginInitial3 =containerLeft3 + (containerWidth3/2)-80 ;
+      let randomMarginLeft3 = Math.floor(Math.random() * (this.containerWidth - 200)); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
 
-      let randomMarginLeft3 = Math.floor(Math.random() * (containerWidth3 - 200)); // Ajuste o valor "100" de acordo com a largura desejada para as divs  
+      let horizontal3 = Math.floor(this.varMarginInitial - randomMarginLeft3);
+      let taxaHorPorVert3 = horizontal3 / this.containerHeight;
 
-      let horizontal3 = Math.floor(varMarginInitial3 - randomMarginLeft3);
-      let taxaHorPorVert3 = horizontal3 / containerHeight3;
-
-      divPosto.style.marginLeft = varMarginInitial3 + "px";
+      divPosto.style.marginLeft = this.varMarginInitial + "px";
 
       // Generate a random filter color
       const randomColor3 = this.generateRandomColor();
@@ -1144,23 +1145,23 @@ class MovingDiv {
         if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           clearInterval(frameInterval3);
         }     
-        if (posicaoAtual3 >= (containerHeight3)) {      
+        if (posicaoAtual3 >= (this.containerHeight)) {      
           this.container.removeChild(divPosto); // Remove a div quando atinge o limite inferior
           clearInterval(frameInterval3);
         } else {
           posicaoAtual3 += this.speed;
-          divPosto.style.bottom = containerHeight3 - posicaoAtual3 + "px";
+          divPosto.style.bottom = this.containerHeight - posicaoAtual3 + "px";
           if (taxaHorPorVert3 >= 0) {
             divPosto.style.marginLeft =
-              varMarginInitial3 - (posicaoAtual3) * taxaHorPorVert3*0.50 + "px"; //taxa de curvatura da parte esquerda
+              this.varMarginInitial - (posicaoAtual3) * taxaHorPorVert3*0.40 + "px"; //taxa de curvatura da parte esquerda
           } else {
             divPosto.style.marginLeft =
-              varMarginInitial3 - (posicaoAtual3) * taxaHorPorVert3*1.5 + "px"; //taxa de curvatura da parte direita
+              this.varMarginInitial - (posicaoAtual3) * taxaHorPorVert3*1.5 + "px"; //taxa de curvatura da parte direita
           }
           divPosto.style.width = 2+posicaoAtual3 / 8 + "px";
           divPosto.style.height =6+ posicaoAtual3 / 6 + "px";
-          divPosto.style.opacity = 5*posicaoAtual3 / containerHeight3;
-          if (posicaoAtual3 >= (containerHeight3-5)) {
+          divPosto.style.opacity = 5*posicaoAtual3 / this.containerHeight;
+          if (posicaoAtual3 >= (this.containerHeight-5)) {
             divPosto.classList.add('diminuirAlturaAnimation');
           }
           const limSup3= parseInt(divPosto.style.bottom);
@@ -1180,15 +1181,12 @@ class MovingDiv {
         const divPosto3= document.querySelector('.postoDiv');
        
        let bottomDivPosto3 = parseInt(divPosto3.style.bottom);
-       if (bottomDivPosto3 < 70) {
-        const player3= document.querySelector('.player');
-        let margemEsquerdaDoPlayer3 = parseInt(player3.style.left.split('px')[0]) || 375;
-        let larguraDoPlayer3 = parseInt( player3.offsetWidth);
+       if (bottomDivPosto3 < 60) {
 
         let margemEsquerdaDoInimigo3 = parseInt(divPosto3.style.marginLeft);
         let larguraDoInimigo3 = parseInt(divPosto3.offsetWidth);
-        let diferencaMargem3 = Math.abs(margemEsquerdaDoPlayer3 - margemEsquerdaDoInimigo3);
-        let maiorLargura3 = Math.max(larguraDoPlayer3, larguraDoInimigo3);
+        let diferencaMargem3 = Math.abs(this.margemEsquerdaDoPlayer - margemEsquerdaDoInimigo3);
+        let maiorLargura3 = Math.max(this.larguraDoPlayer, larguraDoInimigo3);
 
          if(diferencaMargem3 < (maiorLargura3)){
           playgroundAudio.playGas(); 
@@ -1241,7 +1239,7 @@ class MovingDiv {
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
    
-    for (var i = 0; i < 92; i++) {
+    for (var i = 0; i < 90; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginLeft || 0);
       var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));       
@@ -1257,7 +1255,7 @@ class MovingDiv {
     const fatiasEstrada = document.querySelectorAll('#container .div-layer'); 
     const montanha = document.querySelector('.montanha');
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0); 
-    for (var i = 0; i < 92; i++) {
+    for (var i = 0; i < 90; i++) {
       var div = fatiasEstrada[i];
       var currentMargin = parseInt(window.getComputedStyle(div).marginRight || 0);
       var newMargin = currentMargin + Math.exp((6.055 - 0.04*i));     
