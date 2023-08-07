@@ -181,7 +181,7 @@ main{
     height: 100%;
     display: flex;   
     flex-direction: column;
-    background-color: green;
+    
     position: relative;
   
     
@@ -208,7 +208,9 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: end;
-    
+   /* background-image: url('/cenarios/pista/grass.png');
+    background-size: 100% 50%;*/
+
     
   }
 
@@ -228,8 +230,8 @@ main{
   }
 
   .montanha{
-    height: 50px;
-    width: 40%;
+    height: 10%;
+    width: 20%;
     background-size: 100% 100%;
     background-image: url('/cenarios/montanhas/montanha1.png');
     position: absolute;
@@ -524,7 +526,7 @@ select {
 
 @keyframes diminuirAltura {
   from {
-    height: 75px; /* Altura inicial (100% do tamanho original) */
+    height: 60px; /* Altura inicial (100% do tamanho original) */
     overflow : hidden;
     opacity: 1;
   }

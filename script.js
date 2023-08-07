@@ -99,6 +99,8 @@ const distanciaWin = document.querySelector('.percorreuWin');
 const lugarLoss = document.querySelector('.posicaoLoss');
 const distanciaLoss = document.querySelector('.percorreuLoss');
 
+const distanciaMontain = parseInt(distancia.innerHTML);
+
 
 
 
@@ -249,15 +251,21 @@ class IfPista{
   constructor(){
   this.distancia = document.querySelector('.metros');
   this.metros = parseInt(distancia.innerHTML);
+  this.montanha = document.querySelector('.montanha');
+  this.width = 20;  //objtivo 80%
+  this.height = 10;  //objetivo 40%
+  this.total = parseInt(distancia.innerHTML);
+  
+  
   
   }
   
   usarIf(velocidadeFinal){
     const velocidadeRanges = [
       { start: 0, end: 0, velocidadePista: 'pistaParada', index: 1, subtracao: 0, tipoArquivo: 'png' },
-      { start: 1, end: 60, velocidadePista: 'pistaLenta', index: 2, subtracao: 1, tipoArquivo: 'gif' },
-      { start: 61, end: 130, velocidadePista: 'pistaMedia', index: 3, subtracao: 2, tipoArquivo: 'gif' },
-      { start: 130, end: 200, velocidadePista: 'pistaRapida', index: 4, subtracao: 3, tipoArquivo: 'gif' },
+      { start: 1, end: 60, velocidadePista: 'pistaLenta', index: 2,  subtracao: 0.1, tipoArquivo: 'gif' },
+      { start: 61, end: 130, velocidadePista: 'pistaMedia', index: 3,  subtracao: 0.2, tipoArquivo: 'gif' },
+      { start: 130, end: 200, velocidadePista: 'pistaRapida', index: 4,  subtracao: 0.3, tipoArquivo: 'gif' },
     ];
 
     let selectedRange = velocidadeRanges.find(
@@ -265,7 +273,25 @@ class IfPista{
 
     if (selectedRange) {
       this.metros -= selectedRange.subtracao;
-      this.distancia.innerHTML = (this.metros);
+      this.distancia.innerHTML = Math.ceil(this.metros);
+      
+      if( selectedRange.subtracao !== 0){
+      this.totalInterval = this.total/selectedRange.subtracao;
+      this.taxaWidth = (60)/this.totalInterval;
+      this.taxaHeight = (30)/this.totalInterval;
+
+      }
+      else{
+        this.taxaWidth = 0;
+        this.taxaHeight = 0;
+      }
+
+
+      this.width += this.taxaWidth;
+      this.height += this.taxaHeight;
+
+      this.montanha.style.width = this.width + "%";
+      this.montanha.style.height = this.height  + "%";
 
       if(this.metros <0){
         this.metros = 0;
@@ -315,6 +341,7 @@ class PlaygroundAudio {
       this.volume.connect(this.context.destination);
       this.oscillator = null;
       this.audio = new Audio('/music/MusicCarJimmyFontanez.mp3');
+     // this.audio = new Audio('/music/musicCar.mp3');
       this.audio.volume =0.1;
       this.audio.loop = true;
       this.volumeFixo = 0.03; // Valor fixo para o volume (por exemplo, 0.5)
@@ -621,7 +648,7 @@ class MovingDiv {
   }
   apertaTecla(event) {
     playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
-     this.ifpista.usarIf(this.quilometragem);
+     
 
     if (event.key === 'w') {
       
@@ -699,13 +726,13 @@ class MovingDiv {
         this.rank = lugar.innerHTML;
 
         playgroundAudio.atualizaFrequenciaOscilador( this.quilometragem);
-        this.ifpista.usarIf(this.quilometragem);
+        
 
         if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
           this.stopIncrement2();
         }
         
-        this.ifpista.usarIf(this.quilometragem);
+        
     
         this.speed -= 0.005;
         this.quilometragem-= 0.5;
@@ -802,10 +829,11 @@ class MovingDiv {
     this.gasolina = parseInt(posto.innerHTML);
     this.relogio = (tempo.innerHTML);
     this.metros = parseInt(distancia.innerHTML);
-    
+    this.ifpista.usarIf(this.quilometragem);
     this.rank = lugar.innerHTML;
     lugarWin.innerHTML = this.rank;
     distanciaWin.innerHTML = this.total - this.metros;
+    
      
     lugarLoss.innerHTML = this.rank;
     distanciaLoss.innerHTML = this.total - this.metros;
@@ -884,10 +912,17 @@ class MovingDiv {
       this.relogio = (tempo.innerHTML);
       this.metros = parseInt(distancia.innerHTML);
       this.rank = lugar.innerHTML;
-
+        distanciaWin.innerHTML = this.total - this.metros;
+         distanciaLoss.innerHTML = this.total - this.metros;
+         distancia.innerHTML= this.metros;
       let frameInterval = setInterval(() => {
+         
+         
 
         if(this.relogio === '00:00:00'|| this.metros === 0 || this.gasolina === 0){
+          distanciaWin.innerHTML = this.total - this.metros;
+         distanciaLoss.innerHTML = this.total - this.metros;
+         distancia.innerHTML= this.metros;
           clearInterval(frameInterval);
 
         }
@@ -924,7 +959,7 @@ class MovingDiv {
           novoInimigo.style.opacity = 10*posicaoAtual / this.containerHeight;
 
 
-          if (posicaoAtual >= (this.containerHeight-5)) { //animacao momentos antes dos elementos sumirem
+          if (posicaoAtual >= (this.containerHeight-10)) { //animacao momentos antes dos elementos sumirem
              novoInimigo.classList.add('diminuirAlturaAnimation');
           }
 
@@ -1073,7 +1108,7 @@ class MovingDiv {
 
 
 
-          if (posicaoAtual2 >= (this.containerHeight-5)) {
+          if (posicaoAtual2 >= (this.containerHeight-10)) {
             divPonto.classList.add('diminuirAlturaAnimation');
           }
           const limSup2= parseInt(divPonto.style.bottom);
@@ -1161,7 +1196,7 @@ class MovingDiv {
           divPosto.style.width = 2+posicaoAtual3 / 8 + "px";
           divPosto.style.height =6+ posicaoAtual3 / 6 + "px";
           divPosto.style.opacity = 5*posicaoAtual3 / this.containerHeight;
-          if (posicaoAtual3 >= (this.containerHeight-5)) {
+          if (posicaoAtual3 >= (this.containerHeight-10)) {
             divPosto.classList.add('diminuirAlturaAnimation');
           }
           const limSup3= parseInt(divPosto.style.bottom);
@@ -1237,6 +1272,7 @@ class MovingDiv {
   moveDivsToRight(tempoDeTransicao) {
     const fatiasEstrada = document.querySelectorAll('#container .div-layer'); 
     const montanha = document.querySelector('.montanha');
+
     let currentMargin2 = parseInt(window.getComputedStyle(montanha).marginRight || 0);
    
     for (var i = 0; i < 90; i++) {
@@ -1246,7 +1282,7 @@ class MovingDiv {
       div.style.marginLeft = newMargin + 'px';  
      div.style.transition = `margin-left ${tempoDeTransicao}s ease`;
     }
-    montanha.style.marginRight = currentMargin2+200 + 'px';
+    montanha.style.marginRight = currentMargin2+50 + 'px';
     montanha.style.transition = `margin-right ${tempoDeTransicao*3}s ease`;
     
   }
@@ -1263,7 +1299,7 @@ class MovingDiv {
       
       div.style.transition = `margin-right ${tempoDeTransicao}s ease`;
     }
-    montanha.style.marginLeft = currentMargin2+200 + 'px';
+    montanha.style.marginLeft = currentMargin2+50 + 'px';
     montanha.style.transition = `margin-left ${tempoDeTransicao*1}s ease`;
   }
 }
